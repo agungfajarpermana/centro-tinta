@@ -10,6 +10,8 @@ import { store } from './store';
 
 Vue.use(VueRouter);
 
+export const Bus = new Vue();
+
 const router = new VueRouter({
     mode: 'history',
     routes

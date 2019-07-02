@@ -11,10 +11,6 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'HomeController@index')->name('home');
 
-Route::get('/{name}', function(){
-	return redirect('/');
-})->where('name', '[A-Za-z]+');
+Route::get('{name}', 'HomeController@index')->where('name', '([A-z\d\/_.]+)?');
