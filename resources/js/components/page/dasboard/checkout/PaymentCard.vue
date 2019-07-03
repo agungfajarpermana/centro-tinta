@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="col s12 cards" v-if="mode == 'card'">
+        <div class="col s12 cards animated fadeInRight" v-if="mode == 'card'">
             <form action="#" class="col s12">
                 <div class="row">
                     <div class="input-field col s6">
@@ -37,7 +37,10 @@ export default {
             type: String,
             required: true
         }
-    }
+    },
+    created(){
+        this.$store.state.checkout.mode = 'cash'
+    },
 }
 </script>
 

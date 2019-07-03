@@ -1,5 +1,6 @@
 import Login from './components/Login.vue';
 import Home from './components/page/Home.vue';
+import PosManagement from './components/page/pos/PosManagement.vue';
 
 export const routes = [
     {
@@ -8,8 +9,13 @@ export const routes = [
         component: Login
     },
     {
-        path: '/home',
+        path: '/dashboard',
         name: 'Home',
         component: Home
+    },
+    {
+        path: '/management',
+        name: 'POS',
+        component: PosManagement
     }
 ];

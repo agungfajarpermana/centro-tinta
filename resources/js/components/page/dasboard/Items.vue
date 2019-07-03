@@ -1,5 +1,5 @@
 <template>
-    <div class="col s6 l3" v-if="!show">
+    <div class="col s6 l3 animated fadeIn" v-if="!show">
         <div class="card medium hoverable">
             <div class="card-image waves-block">
                 <img class="activator" src="assets/toner.jpg" width="100" height="100">

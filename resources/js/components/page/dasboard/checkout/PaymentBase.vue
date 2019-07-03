@@ -2,7 +2,7 @@
     <div class="container" v-if="show">
         <h6 class="center-align title">Metode Pembayaran</h6>
 
-        <div class="row">
+        <div class="row animated fadeIn">
             <div class="col s10 offset-s2">
                 <div class="col s5">
                     <label>

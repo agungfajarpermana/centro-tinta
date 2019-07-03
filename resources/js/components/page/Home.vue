@@ -2,7 +2,7 @@
     <div>
         <Navbar/>
 
-        <div class="row">
+        <div class="row animated fadeIn">
             <div class="col s12 m8 l8">
                 <Items :show="show" />
 

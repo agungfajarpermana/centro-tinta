@@ -1,9 +1,14 @@
 // Fonts
 @import url('https://fonts.googleapis.com/css?family=Nunito');
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+@import 'https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css';
 
 // Variables
 // @import 'variables';
 
 // MaterializeCss
 @import '~materialize-css/sass/materialize';
+
+.router-link-active{
+    background-color: rgba(192, 89, 93, 0.5);
+}

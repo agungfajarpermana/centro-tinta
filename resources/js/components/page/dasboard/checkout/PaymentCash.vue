@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="col s12 cash" v-if="mode == 'cash'">
+        <div class="col s12 cash animated fadeInLeft" v-if="mode == 'cash'">
             <form action="#" class="col s12">
                 <div class="row">
                     <div class="input-field col s6">
