@@ -2633,7 +2633,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "\n.sidenav.sidenav-fixed[data-v-30557508]{\r\n    top: 9% !important;\r\n    width: 290px;\n}\r\n", ""]);
+exports.push([module.i, "\n.sidenav.sidenav-fixed[data-v-30557508]{\r\n    top: 9% !important;\r\n    width: 390px;\r\n    /* width: 290px; */\n}\r\n", ""]);
 
 // exports
 

@@ -17,10 +17,9 @@ class ProductCollection extends Resource
         // return parent::toArray($request);
         return [
             'product'       => $this->nama_product,
-            'price'         => $this->harga,
-            'stock'         => $this->stok,
             'description'   => $this->detail_product,
             'type'          => $this->jenis_product,
+            'category'      => $this->kategori_product,
             'href'          => [
                 'detail' => route('products.show', $this->id)
             ]
