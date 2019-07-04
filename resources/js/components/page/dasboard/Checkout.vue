@@ -80,9 +80,16 @@
                 </table>
             </div>
             <div class="card-action">
-                <button class="btn-small red darken-4" @click="changeHide" v-if="hide">Batalkan</button>
-                <button class="btn-small blue darken-3" @click="changeHide" v-else>Lanjut Bayar</button>
-                <button class="btn-small amber darken-4 right">Skip Bayar</button>
+                <div class="col s6 m6 l6">
+                    <button class="btn-small waves-effect red darken-4" @click="changeHide" v-if="hide">Batalkan</button>
+                    <button class="btn-small waves-effect light-blue darken-1" @click="changeHide" v-else>Lanjut Bayar</button>
+                </div>
+                
+                <div class="col s6 m6 l6">
+                    <button class="btn-small waves-effect amber darken-4 right">Skip Bayar</button>
+                </div>
+
+                <div class="clearfix"></div>
             </div>
         </div>
     </div>

@@ -4,27 +4,38 @@
         <table class="striped">
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Item Name</th>
-                    <th>Item Price</th>
+                    <th colspan="5">Branches</th>
+                    <th colspan="5">Customer</th>
+                    <th colspan="2">Total Items</th>
+                    <th colspan="2">Total Price</th>
                 </tr>
             </thead>
 
             <tbody>
                 <tr>
-                    <td>Alvin</td>
-                    <td>Eclair</td>
-                    <td>$0.87</td>
+                    <td colspan="5">Centro Link (Jakarta)</td>
+                    <td colspan="5">M. Arif Nur</td>
+                    <td colspan="2">3 Item</td>
+                    <td colspan="2">Rp. 500.000</td>
+                    <td>
+                        <i class="material-icons dropdown-trigger" data-target='dropdown1'>more_vert</i>
+                    </td>
+
+                    <!-- Dropdown Structure -->
+                    <ul id='dropdown1' class='dropdown-content'>
+                        <li><a href="#!"><i class="material-icons">edit</i>edit</a></li>
+                        <li><a href="#!"><i class="material-icons">delete</i>delete</a></li>
+                        <li><a href="#!"><i class="material-icons">add</i>detail</a></li>
+                    </ul>
                 </tr>
                 <tr>
-                    <td>Alan</td>
-                    <td>Jellybean</td>
-                    <td>$3.76</td>
-                </tr>
-                <tr>
-                    <td>Jonathan</td>
-                    <td>Lollipop</td>
-                    <td>$7.00</td>
+                    <td colspan="5">Centro Link (Bekasi)</td>
+                    <td colspan="5">Agung Fajar Permana</td>
+                    <td colspan="2">5 Item</td>
+                    <td colspan="2">Rp. 700.000</td>
+                    <td>
+                        <i class="material-icons">more_vert</i>
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -38,6 +49,15 @@ export default {
             type: String,
             required: true
         }
+    },
+    mounted(){
+        M.AutoInit()
     }
 }
 </script>
+
+<style scoped>
+i:hover{
+    cursor: pointer;
+}
+</style>

@@ -17,9 +17,9 @@ class ProductResource extends JsonResource
         // return parent::toArray($request);
         return [
             'product'       => $this->nama_product,
-            'price'         => ($this->details ? $this->details->harga : null),
+            'price'         => $this->details->harga ?? 0,
             'type'          => $this->jenis_product,
-            'sales'         => ($this->details ? $this->details->penjualan : null)
+            'sales'         => $this->details->penjualan ?? 0
         ];
     }
 }

@@ -4,27 +4,34 @@
         <table class="striped">
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Item Name</th>
-                    <th>Item Price</th>
+                    <th>Product</th>
+                    <th>Type</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Sales</th>
                 </tr>
             </thead>
 
             <tbody>
                 <tr>
-                    <td>Alvin</td>
-                    <td>Eclair</td>
-                    <td>$0.87</td>
+                    <td>Toner Catrige Refill</td>
+                    <td>Catrige-CO1</td>
+                    <td>Tinta</td>
+                    <td>Rp. 35.000</td>
+                    <td>10 Item</td>
+                    <td>
+                        <i class="material-icons">more_vert</i>
+                    </td>
                 </tr>
                 <tr>
-                    <td>Alan</td>
-                    <td>Jellybean</td>
-                    <td>$3.76</td>
-                </tr>
-                <tr>
-                    <td>Jonathan</td>
-                    <td>Lollipop</td>
-                    <td>$7.00</td>
+                    <td>Toner Catrige Refill Series</td>
+                    <td>Catrige-CO1S</td>
+                    <td>Tinta</td>
+                    <td>Rp. 80.000</td>
+                    <td>10 Item</td>
+                    <td>
+                        <i class="material-icons">more_vert</i>
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -41,3 +48,9 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+i:hover{
+    cursor: pointer;
+}
+</style>

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <nav>
+        <nav class="light-blue darken-1">
             <div class="nav-wrapper">
                 <a href="#" class="left burger-menu sidenav-trigger" data-target="slide-out">
                     <i class="material-icons">menu</i>

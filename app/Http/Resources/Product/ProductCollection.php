@@ -14,14 +14,16 @@ class ProductCollection extends Resource
      */
     public function toArray($request)
     {
+        // dd($this->details);
         // return parent::toArray($request);
         return [
             'product'       => $this->nama_product,
             'description'   => $this->detail_product,
             'type'          => $this->jenis_product,
             'category'      => $this->kategori_product,
-            'href'          => [
-                'detail' => route('products.show', $this->id)
+            'detail'        => [
+                'harga' => $this->details->harga ?? null,
+                'uniqid'=> $this->product_id ?? null
             ]
         ];
     }

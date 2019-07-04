@@ -22,7 +22,7 @@
 
                 <div class="row">
                     <div class="input-field col s6">
-                        <button type="submit" class="btn btn-flat cyan darken-2 white-text">Simpan</button>
+                        <button type="submit" class="btn btn-flat amber darken-4 white-text">Simpan</button>
                     </div>
                 </div>
             </form>

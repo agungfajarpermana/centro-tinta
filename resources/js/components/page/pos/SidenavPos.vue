@@ -36,7 +36,7 @@ export default {
 <style scoped>
 .sidenav.sidenav-fixed{
     top: 9% !important;
-    width: 390px;
-    /* width: 290px; */
+    /* width: 390px; */
+    width: 290px;
 }
 </style>
