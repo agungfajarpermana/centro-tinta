@@ -23,12 +23,13 @@
 
             <div v-else class="card medium hoverable">
                 <div class="card-image waves-block">
-                    <img class="activator" src="assets/toner.jpg" width="100" height="100">
+                    <img class="activator" src="assets/tinta.png" width="100" height="130">
                 </div>
                 <div class="card-content">
                     <div>
                         <p class="grey-text text-darken-4" nowrap="nowrap">{{ product.product }}</p>
                         <p><span class="blue-text ph-col-4">Rp. {{ product.detail.harga ? parseInt(product.detail.harga).toLocaleString('id') : 0 }}</span></p>
+                        <p><strong>Stock:</strong> <span class="red-text text-darken-4">5</span></p>
                     </div>
                 </div>
                 <div class="card-reveal">
@@ -83,6 +84,6 @@ export default {
 }
 .medium{
     margin-left: -11px;
-    height: 275px;
+    height: 290px;
 }
 </style>

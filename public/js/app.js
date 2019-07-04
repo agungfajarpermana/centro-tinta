@@ -2118,6 +2118,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2620,7 +2621,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "\n.pagination[data-v-4192c7e5]{\r\n    margin-bottom:0;\r\n    position: fixed;\r\n    top:90%;\r\n    left: -1%;\n}\n.input-field[data-v-4192c7e5]{\r\n    width:20%;\r\n    margin-top:-3px;\r\n    margin-left:50px;\r\n    margin-bottom:0;\r\n    position: fixed;\r\n    top:90%;\r\n    left: 40%\n}\r\n", ""]);
+exports.push([module.i, "\n.pagination[data-v-4192c7e5]{\r\n    margin-bottom:0;\r\n    position: fixed;\r\n    top:92%;\r\n    left: -1%;\n}\n.input-field[data-v-4192c7e5]{\r\n    width:20%;\r\n    margin-top:-3px;\r\n    margin-left:50px;\r\n    margin-bottom:0;\r\n    position: fixed;\r\n    top:92%;\r\n    left: 40%\n}\r\n", ""]);
 
 // exports
 
@@ -2639,7 +2640,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "\n.ph-item[data-v-0d20a6e6]{\r\n    margin-top: 5px;\n}\n.medium[data-v-0d20a6e6]{\r\n    margin-left: -11px;\r\n    height: 275px;\n}\r\n", ""]);
+exports.push([module.i, "\n.ph-item[data-v-0d20a6e6]{\r\n    margin-top: 5px;\n}\n.medium[data-v-0d20a6e6]{\r\n    margin-left: -11px;\r\n    height: 290px;\n}\r\n", ""]);
 
 // exports
 
@@ -35341,9 +35342,9 @@ var render = function() {
                             _c("img", {
                               staticClass: "activator",
                               attrs: {
-                                src: "assets/toner.jpg",
+                                src: "assets/tinta.png",
                                 width: "100",
-                                height: "100"
+                                height: "130"
                               }
                             })
                           ]),
@@ -35375,6 +35376,16 @@ var render = function() {
                                         )
                                     )
                                   ]
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c("p", [
+                                _c("strong", [_vm._v("Stock:")]),
+                                _vm._v(" "),
+                                _c(
+                                  "span",
+                                  { staticClass: "red-text text-darken-4" },
+                                  [_vm._v("5")]
                                 )
                               ])
                             ])

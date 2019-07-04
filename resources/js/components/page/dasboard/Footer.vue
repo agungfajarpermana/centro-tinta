@@ -52,7 +52,7 @@ export default {
 .pagination{
     margin-bottom:0;
     position: fixed;
-    top:90%;
+    top:92%;
     left: -1%;
 }
 .input-field{
@@ -61,7 +61,7 @@ export default {
     margin-left:50px;
     margin-bottom:0;
     position: fixed;
-    top:90%;
+    top:92%;
     left: 40%
 }
 </style>
