@@ -2119,6 +2119,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -35329,6 +35330,8 @@ var render = function() {
                             _c("div", { staticClass: "ph-picture" }),
                             _vm._v(" "),
                             _c("div", { staticClass: "ph-row" }, [
+                              _c("div", { staticClass: "ph-col-12" }),
+                              _vm._v(" "),
                               _c("div", { staticClass: "ph-col-8" }),
                               _vm._v(" "),
                               _c("div", { staticClass: "ph-col-6" }),

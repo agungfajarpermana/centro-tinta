@@ -18,7 +18,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::Resource('/products', 'API\ProductController');
+Route::Resource('/branch', 'API\BranchProductController');
+Route::match(['GET'], '/branch/{search}/search', 'API\BranchProductController@searchData');
 
-Route::group(['prefix' => 'products'], function(){
-    Route::apiResource('/{product}/branch-product', 'API\BranchProductController');
-});
+// Route::group(['prefix' => 'branch'], function(){
+//     Route::apiResource('/search/{branch}', 'API\BranchProductController@search');
+// });

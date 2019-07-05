@@ -3,24 +3,19 @@
 namespace App\Http\Controllers\API;
 
 use App\Model\Branch;
-use App\Model\Product;
-use App\Model\BranchProduct;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Branch\BranchProductResource;
-use App\Http\Resources\Branch\BranchProductCollection as Branches;
-use App\Http\Resources\Branch\BranchSearchCollection as Searching;
 
-class BranchProductController extends Controller
+class BranchController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        return Branches::collection(BranchProduct::where('branch_id', 1)->paginate(8));
+        return 'hai';
     }
 
     /**
@@ -42,7 +37,7 @@ class BranchProductController extends Controller
      */
     public function show(Branch $branch)
     {
-        return new BranchProductResource($branch);
+        //
     }
 
     /**
@@ -52,7 +47,7 @@ class BranchProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Branch $branch)
     {
         //
     }
@@ -63,14 +58,8 @@ class BranchProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Branch $branch)
     {
         //
-    }
-
-    public function searchData($search)
-    {
-        $data = Product::where('nama_product', 'LIKE', '%'.$search.'%')->paginate(2);
-        return Searching::collection($data);
     }
 }
