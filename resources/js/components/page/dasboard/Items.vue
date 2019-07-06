@@ -7,7 +7,7 @@
         <!-- component text empty product -->
         <TextEmptyProduct v-if="products.length < 1 && loadingFirst"/>
 
-        <div v-else class="col s6 l3 animated" :class="{'fadeIn':loading}" v-for="product in products" :key="product.uniqid">
+        <div v-else class="col s6 l3 animated" :class="{'fadeIn':loading}" v-for="(product, index) in products" :key="product.detail_branch.uniqid">
             <div class="clearfix"></div>
 
             <div class="ph-item" v-if="!loading">
@@ -28,18 +28,20 @@
                 </div>
                 <div class="card-content">
                     <div>
-                        <p class="grey-text text-darken-4" nowrap="nowrap">{{ product.product }}</p>
-                        <p><span class="blue-text ph-col-4">Rp. {{ product.detail.harga ? parseInt(product.detail.harga).toLocaleString('id') : 0 }}</span></p>
-                        <p><strong>Stock:</strong> <span class="red-text text-darken-4">5</span></p>
+                        <p class="grey-text text-darken-4" nowrap="nowrap">{{ product.detail_product.product }}</p>
+                        <p><span class="blue-text ph-col-4">Rp. {{ product.detail_product.price ? parseInt(product.detail_product.price).toLocaleString('id') : 0 }}</span></p>
+                        <p><strong>Stock:</strong> <span class="red-text text-darken-4">{{ product.detail_stock.last_stock }}</span></p>
                     </div>
                 </div>
                 <div class="card-reveal">
                     <span class="card-title grey-text text-darken-4"><i class="material-icons right">close</i></span>
-                    <p class="justify-align">{{ product.description }}</p>
+                    <p class="justify-align">{{ product.detail_product.description }}</p>
                 </div>
                 <div class="card-action">
-                    <a class="waves-block waves-effect btn-small amber darken-4">
-                        PILIH
+                    <a class="waves-block waves-effect btn-small amber darken-4"
+                        :disabled="product.button"
+                        @click.prevent="buyProducts(index)">
+                        {{ product.btnTextProduct }}
                     </a>
                 </div>
             </div>
@@ -63,7 +65,7 @@ export default {
         TextEmptyProduct
     },
     created(){
-        this.$store.dispatch('getProducts', '/api/products')
+        this.$store.dispatch('getProducts', '/api/branch')
     },
     computed: {
         loadingFirst(){
@@ -74,6 +76,18 @@ export default {
         },
         products(){
             return this.$store.getters.products
+        }
+    },
+    methods: {
+        buyProducts(key){
+            let product = this.products[key]
+            
+            if(product.detail_stock.last_stock > 0)
+                product.detail_stock.last_stock--
+
+                if(product.detail_stock.last_stock < 1)
+                    product.button = !product.button
+                    product.btnTextProduct = 'stock habis'
         }
     }
 }

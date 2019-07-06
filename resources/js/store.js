@@ -36,16 +36,21 @@ export const store = new Vuex.Store({
     },
     mutations: {
         SET_DATA_PRODUCT_ITEMS(state, payloadProduct){
-            let pagination = {
+            const item = []
+            payloadProduct.data.map(val => {
+                item.push(Object.assign({}, val, {button:false,btnTextProduct:"pilih"}))
+            })
+            
+            const pagination = {
                 current_page : payloadProduct.meta.current_page,
                 last_page    : payloadProduct.meta.last_page,
                 next_page_url: payloadProduct.links.next,
                 prev_page_url: payloadProduct.links.prev
             }
 
-            state.product.loadingFirst = true
-            state.product.loading = true
-            state.product.items = payloadProduct.data
+            state.product.loadingFirst   = true
+            state.product.loading        = true
+            state.product.items          = item
             state.product.attrPagination = pagination
         },
         SET_DATA_PRODUCT_PAGINATION(state, payloadUrlProduct){

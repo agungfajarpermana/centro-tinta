@@ -2120,6 +2120,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2134,7 +2136,7 @@ __webpack_require__.r(__webpack_exports__);
     TextEmptyProduct: _items_TextEmptyProduct__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
   created: function created() {
-    this.$store.dispatch('getProducts', '/api/products');
+    this.$store.dispatch('getProducts', '/api/branch');
   },
   computed: {
     loadingFirst: function loadingFirst() {
@@ -2145,6 +2147,14 @@ __webpack_require__.r(__webpack_exports__);
     },
     products: function products() {
       return this.$store.getters.products;
+    }
+  },
+  methods: {
+    buyProducts: function buyProducts(key) {
+      var product = this.products[key];
+      if (product.detail_stock.last_stock > 0) product.detail_stock.last_stock--;
+      if (product.detail_stock.last_stock < 1) product.button = !product.button;
+      product.btnTextProduct = 'stock habis';
     }
   }
 });
@@ -35313,11 +35323,11 @@ var render = function() {
           _vm._v(" "),
           _vm.products.length < 1 && _vm.loadingFirst
             ? _c("TextEmptyProduct")
-            : _vm._l(_vm.products, function(product) {
+            : _vm._l(_vm.products, function(product, index) {
                 return _c(
                   "div",
                   {
-                    key: product.uniqid,
+                    key: product.detail_branch.uniqid,
                     staticClass: "col s6 l3 animated",
                     class: { fadeIn: _vm.loading }
                   },
@@ -35360,7 +35370,7 @@ var render = function() {
                                   staticClass: "grey-text text-darken-4",
                                   attrs: { nowrap: "nowrap" }
                                 },
-                                [_vm._v(_vm._s(product.product))]
+                                [_vm._v(_vm._s(product.detail_product.product))]
                               ),
                               _vm._v(" "),
                               _c("p", [
@@ -35371,9 +35381,9 @@ var render = function() {
                                     _vm._v(
                                       "Rp. " +
                                         _vm._s(
-                                          product.detail.harga
+                                          product.detail_product.price
                                             ? parseInt(
-                                                product.detail.harga
+                                                product.detail_product.price
                                               ).toLocaleString("id")
                                             : 0
                                         )
@@ -35388,7 +35398,11 @@ var render = function() {
                                 _c(
                                   "span",
                                   { staticClass: "red-text text-darken-4" },
-                                  [_vm._v("5")]
+                                  [
+                                    _vm._v(
+                                      _vm._s(product.detail_stock.last_stock)
+                                    )
+                                  ]
                                 )
                               ])
                             ])
@@ -35411,7 +35425,7 @@ var render = function() {
                             ),
                             _vm._v(" "),
                             _c("p", { staticClass: "justify-align" }, [
-                              _vm._v(_vm._s(product.description))
+                              _vm._v(_vm._s(product.detail_product.description))
                             ])
                           ]),
                           _vm._v(" "),
@@ -35420,11 +35434,20 @@ var render = function() {
                               "a",
                               {
                                 staticClass:
-                                  "waves-block waves-effect btn-small amber darken-4"
+                                  "waves-block waves-effect btn-small amber darken-4",
+                                attrs: { disabled: product.button },
+                                on: {
+                                  click: function($event) {
+                                    $event.preventDefault()
+                                    return _vm.buyProducts(index)
+                                  }
+                                }
                               },
                               [
                                 _vm._v(
-                                  "\n                    PILIH\n                "
+                                  "\n                    " +
+                                    _vm._s(product.btnTextProduct) +
+                                    "\n                "
                                 )
                               ]
                             )
@@ -53561,6 +53584,13 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
   },
   mutations: {
     SET_DATA_PRODUCT_ITEMS: function SET_DATA_PRODUCT_ITEMS(state, payloadProduct) {
+      var item = [];
+      payloadProduct.data.map(function (val) {
+        item.push(Object.assign({}, val, {
+          button: false,
+          btnTextProduct: "pilih"
+        }));
+      });
       var pagination = {
         current_page: payloadProduct.meta.current_page,
         last_page: payloadProduct.meta.last_page,
@@ -53569,7 +53599,7 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
       };
       state.product.loadingFirst = true;
       state.product.loading = true;
-      state.product.items = payloadProduct.data;
+      state.product.items = item;
       state.product.attrPagination = pagination;
     },
     SET_DATA_PRODUCT_PAGINATION: function SET_DATA_PRODUCT_PAGINATION(state, payloadUrlProduct) {

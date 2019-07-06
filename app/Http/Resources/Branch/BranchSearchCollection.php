@@ -16,8 +16,29 @@ class BranchSearchCollection extends Resource
     {
         // return parent::toArray($request);
         return [
-            'product' => $this->nama_product,
-            'category'=> $this->kategori_product
+            "detail_branch"  => [
+                'uniqid'    => $this->branch->id,
+                'branch'    => $this->branch->nama_cabang,
+                'address'   => $this->branch->alamat,
+                'telphone'  => $this->branch->telpon,
+                'fax'       => $this->branch->fax,
+                'email'     => $this->branch->email,
+                'leader'    => $this->branch->kepala_cabang
+            ],
+            "detail_product" => [
+                'product'       => $this->nama_product,
+                'type'          => $this->jenis_product,
+                'category'      => $this->kategori_product,
+                'description'   => $this->detail_product,
+                'price'         => $this->details->harga,
+                'sales'         => $this->details->penjualan
+            ],
+            "detail_stock" => [
+                'first_stock' => $this->branch_product->stok_awal,
+                'income_stock'=> $this->branch_product->stok_masuk,
+                'stock_out'   => $this->branch_product->stok_keluar,
+                'last_stock'  => $this->branch_product->stok_akhir
+            ]
         ];
     }
 }
