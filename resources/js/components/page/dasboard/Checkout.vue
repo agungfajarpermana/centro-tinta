@@ -6,17 +6,28 @@
                 <hr>
                 <table class="table">
                     <tbody>
-                        <!-- <tr>
+                        <tr v-if="itemsCheckout.length < 1">
                             <td colspan="3" class="center-align">
-                                <span class="blue-text text-darken-3">Belum ada menu yang dipilih</span>
+                                <span class="blue-text text-darken-3">Belum ada produk yang dipilih</span>
                             </td>
-                        </tr> -->
+                        </tr>
 
-                        <tr class="item">
-                            <td wrap="wrap">Test</td>
-                            <td class="red-text text-darken-4 left-align" width="10%">2</td>
+                        <tr v-else class="item" v-for="(items, index) in itemsCheckout" :key="index"
+                            @click.prevent="cancelItems(index, items.detail_product.uniqid)">
+                            <td wrap="wrap">{{ items.detail_product.product }}</td>
+                            <td class="red-text text-darken-4 left-align" width="10%">
+                                {{ items.numberOfPurchases }}
+                            </td>
                             <td class="right">
-                                30.000
+                                <number
+                                    class="bold transition"
+                                    ref="price"
+                                    :from="numberFrom"
+                                    :format="theFormat"
+                                    :to="items.detail_product.price * items.numberOfPurchases"
+                                    :duration="duration"
+                                    easing="Power4.easeOut"
+                                />
                             </td>
                         </tr>
                     </tbody>
@@ -32,15 +43,15 @@
                             <td>Subtotal</td>
                             <td class="right">
                                 <strong>
-                                    <!-- <number
+                                    <number
                                         class="bold transition"
                                         ref="subtotal"
-                                        :from="numberFrom.toString()"
+                                        :from="numberFrom"
                                         :format="theFormat"
-                                        :to="subtotal.toString()"
+                                        :to="subtotal"
                                         :duration="duration"
                                         easing="Power4.easeOut"
-                                    /> -->
+                                    />
                                 </strong>
                             </td>
                         </tr>
@@ -48,15 +59,15 @@
                             <td>Ppn (10%)</td>
                             <td class="right">
                                 <strong>
-                                    <!-- <number
+                                    <number
                                         class="bold transition"
                                         ref="ppn"
-                                        :from="numberFrom.toString()"
+                                        :from="numberFrom"
                                         :format="theFormat"
-                                        :to="ppn.toString()"
+                                        :to="ppn"
                                         :duration="duration"
                                         easing="Power4.easeOut"
-                                    /> -->
+                                    />
                                 </strong>
                             </td>
                         </tr>
@@ -64,15 +75,15 @@
                             <td>Total</td>
                             <td class="right">
                                 <strong>
-                                    <!-- <number
+                                    <number
                                         class="bold transition"
                                         ref="total"
-                                        :from="numberFrom.toString()"
+                                        :from="numberFrom"
                                         :format="theFormat"
-                                        :to="total.toString()"
+                                        :to="total"
                                         :duration="duration"
                                         easing="Power4.easeOut"
-                                    /> -->
+                                    />
                                 </strong>
                             </td>
                         </tr>
@@ -101,14 +112,53 @@ import {Bus} from '../../../app';
 export default {
     data(){
         return {
-            hide: false
+            hide: false,
         }
     },
+    computed: {
+        numberFrom(){
+            return this.$store.getters.numberFrom
+        },
+        duration(){
+            return this.$store.getters.duration
+        },
+        itemsCheckout(){
+            return this.$store.getters.itemsCheckout
+        },
+        subtotal(){
+            return this.$store.getters.subtotal
+        },
+        ppn(){
+            return this.$store.getters.ppn
+        },
+        total(){
+            return this.$store.getters.total
+        },
+    },
     methods: {
+        theFormat(number){
+            return parseInt(number).toLocaleString('id')
+        },
+
         changeHide(){
             this.hide = !this.hide
             Bus.$emit('showItems', this.hide)
+        },
+
+        cancelItems(key,id){
+            let itemsCheckout = this.itemsCheckout[key]
+            this.$store.dispatch('cancelItems', {
+                itemsCheckout:itemsCheckout,
+                key:key,
+                id:id
+            })
         }
     }
 }
 </script>
+
+<style scoped>
+.item:hover{
+    cursor: pointer;
+}
+</style>

@@ -53,7 +53,7 @@ export default {
     margin-bottom:0;
     position: fixed;
     top:92%;
-    left: -1%;
+    left: -0.1%;
 }
 .input-field{
     width:20%;

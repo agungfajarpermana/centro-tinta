@@ -30,7 +30,7 @@
                     <div>
                         <p class="grey-text text-darken-4" nowrap="nowrap">{{ product.detail_product.product }}</p>
                         <p><span class="blue-text ph-col-4">Rp. {{ product.detail_product.price ? parseInt(product.detail_product.price).toLocaleString('id') : 0 }}</span></p>
-                        <p><strong>Stock:</strong> <span class="red-text text-darken-4">{{ product.detail_stock.last_stock }}</span></p>
+                        <p><strong>Stok:</strong> <span class="red-text text-darken-4">{{ product.detail_stock.last_stock }}</span></p>
                     </div>
                 </div>
                 <div class="card-reveal">
@@ -40,7 +40,7 @@
                 <div class="card-action">
                     <a class="waves-block waves-effect btn-small amber darken-4"
                         :disabled="product.button"
-                        @click.prevent="buyProducts(index)">
+                        @click.prevent="buyProducts(index, product.detail_product.uniqid)">
                         {{ product.btnTextProduct }}
                     </a>
                 </div>
@@ -79,15 +79,21 @@ export default {
         }
     },
     methods: {
-        buyProducts(key){
+        buyProducts(key, id){
             let product = this.products[key]
             
-            if(product.detail_stock.last_stock > 0)
+            if(product.detail_stock.last_stock > 0){
                 product.detail_stock.last_stock--
+                this.$store.dispatch('pushItemToCheckOut', {
+                    product:product,
+                    id:id
+                })
 
-                if(product.detail_stock.last_stock < 1)
+                if(product.detail_stock.last_stock < 1){
                     product.button = !product.button
-                    product.btnTextProduct = 'stock habis'
+                    product.btnTextProduct = 'stok habis'
+                }
+            }   
         }
     }
 }
