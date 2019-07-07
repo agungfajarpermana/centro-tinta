@@ -3,10 +3,10 @@
         <div class="card">
             <div class="card-content">
                 <span class="card-title activator grey-text text-darken-4">
-                    #: INV-100000  
+                    #: INV-{{ order }}  
                     <span class="grey-text text-darken-4"
                         v-if="itemsCheckout.length > 0">
-                            <i class="material-icons right">close</i>
+                            <i class="material-icons right" @click.prevent="clearItemCheckout">close</i>
                     </span>
                 </span>
                 <hr>
@@ -122,6 +122,9 @@ export default {
         }
     },
     computed: {
+        order(){
+            return this.$store.getters.order
+        },
         numberFrom(){
             return this.$store.getters.numberFrom
         },
@@ -142,6 +145,7 @@ export default {
         },
     },
     mounted(){
+        this.$store.state.checkout.order = new Date().getTime().toString().slice(-8,10)
         this.scrollTableVertical()
     },
     methods: {
@@ -161,6 +165,10 @@ export default {
                 key:key,
                 id:id
             })
+        },
+
+        clearItemCheckout(){
+            this.$store.dispatch('clearItemCheckout')
         },
 
         scrollTableVertical(){

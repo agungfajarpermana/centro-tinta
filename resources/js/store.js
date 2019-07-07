@@ -9,6 +9,7 @@ export const store = new Vuex.Store({
         checkout: {
             check: false,
             mode: 'cash',
+            order: null,
             numberFrom: 0,
             duration: 2,
             items: [],
@@ -27,6 +28,10 @@ export const store = new Vuex.Store({
         // state checkout
         mode(state){
             return state.checkout.mode
+        },
+
+        order(state){
+            return state.checkout.order
         },
 
         numberFrom(state){
@@ -167,6 +172,28 @@ export const store = new Vuex.Store({
                     state.checkout.items.splice(items.key, 1)
                 }, 100)
             }
+        },
+
+        CLEAR_ITEM_PRODUCT_TO_CHECKOUT(state){
+            let i = 0
+            while(state.checkout.items.length){
+                const products = state.product.items.find(product => product.detail_product.uniqid == state.checkout.items[i].detail_product.uniqid)
+                console.log(products)
+                const subtotal = products.detail_product.price * state.checkout.items[i].numberOfPurchases
+                
+                // set stock product items
+                products.detail_stock.last_stock = products.detail_stock.last_stock + state.checkout.items[i].numberOfPurchases
+                if(products.detail_stock.last_stock > 0){
+                    products.button = false
+                    products.btnTextProduct = 'pilih'
+                }
+                
+                state.checkout.subtotal = subtotal - (state.checkout.items[i].detail_product.price * state.checkout.items[i].numberOfPurchases)
+                state.checkout.ppn = (10 * state.checkout.subtotal)/100
+                state.checkout.total = state.checkout.subtotal - state.checkout.ppn
+                
+                state.checkout.items.splice(i, 1)
+            }
         }
     },
     actions: {
@@ -187,6 +214,10 @@ export const store = new Vuex.Store({
 
         cancelItems({commit}, items){
             commit('DELETE_ITEM_PRODUCT_TO_CHECK_OUT', items)
+        },
+
+        clearItemCheckout({commit}){
+            commit('CLEAR_ITEM_PRODUCT_TO_CHECKOUT')
         }
     }
 });

@@ -2009,6 +2009,9 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   computed: {
+    order: function order() {
+      return this.$store.getters.order;
+    },
     numberFrom: function numberFrom() {
       return this.$store.getters.numberFrom;
     },
@@ -2029,6 +2032,7 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   mounted: function mounted() {
+    this.$store.state.checkout.order = new Date().getTime().toString().slice(-8, 10);
     this.scrollTableVertical();
   },
   methods: {
@@ -2046,6 +2050,9 @@ __webpack_require__.r(__webpack_exports__);
         key: key,
         id: id
       });
+    },
+    clearItemCheckout: function clearItemCheckout() {
+      this.$store.dispatch('clearItemCheckout');
     },
     scrollTableVertical: function scrollTableVertical() {
       var $table = $('table.scroll'),
@@ -43893,12 +43900,26 @@ var render = function() {
           "span",
           { staticClass: "card-title activator grey-text text-darken-4" },
           [
-            _vm._v("\n                #: INV-100000  \n                "),
+            _vm._v(
+              "\n                #: INV-" +
+                _vm._s(_vm.order) +
+                "  \n                "
+            ),
             _vm.itemsCheckout.length > 0
               ? _c("span", { staticClass: "grey-text text-darken-4" }, [
-                  _c("i", { staticClass: "material-icons right" }, [
-                    _vm._v("close")
-                  ])
+                  _c(
+                    "i",
+                    {
+                      staticClass: "material-icons right",
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          return _vm.clearItemCheckout($event)
+                        }
+                      }
+                    },
+                    [_vm._v("close")]
+                  )
                 ])
               : _vm._e()
           ]
@@ -62645,6 +62666,7 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
     checkout: {
       check: false,
       mode: 'cash',
+      order: null,
       numberFrom: 0,
       duration: 2,
       items: [],
@@ -62663,6 +62685,9 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
     // state checkout
     mode: function mode(state) {
       return state.checkout.mode;
+    },
+    order: function order(state) {
+      return state.checkout.order;
     },
     numberFrom: function numberFrom(state) {
       return state.checkout.numberFrom;
@@ -62790,6 +62815,29 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
           state.checkout.items.splice(items.key, 1);
         }, 100);
       }
+    },
+    CLEAR_ITEM_PRODUCT_TO_CHECKOUT: function CLEAR_ITEM_PRODUCT_TO_CHECKOUT(state) {
+      var i = 0;
+
+      while (state.checkout.items.length) {
+        var products = state.product.items.find(function (product) {
+          return product.detail_product.uniqid == state.checkout.items[i].detail_product.uniqid;
+        });
+        console.log(products);
+        var subtotal = products.detail_product.price * state.checkout.items[i].numberOfPurchases; // set stock product items
+
+        products.detail_stock.last_stock = products.detail_stock.last_stock + state.checkout.items[i].numberOfPurchases;
+
+        if (products.detail_stock.last_stock > 0) {
+          products.button = false;
+          products.btnTextProduct = 'pilih';
+        }
+
+        state.checkout.subtotal = subtotal - state.checkout.items[i].detail_product.price * state.checkout.items[i].numberOfPurchases;
+        state.checkout.ppn = 10 * state.checkout.subtotal / 100;
+        state.checkout.total = state.checkout.subtotal - state.checkout.ppn;
+        state.checkout.items.splice(i, 1);
+      }
     }
   },
   actions: {
@@ -62810,6 +62858,10 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
     cancelItems: function cancelItems(_ref4, items) {
       var commit = _ref4.commit;
       commit('DELETE_ITEM_PRODUCT_TO_CHECK_OUT', items);
+    },
+    clearItemCheckout: function clearItemCheckout(_ref5) {
+      var commit = _ref5.commit;
+      commit('CLEAR_ITEM_PRODUCT_TO_CHECKOUT');
     }
   }
 });
