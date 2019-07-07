@@ -7,7 +7,7 @@
         <!-- component text empty product -->
         <TextEmptyProduct v-if="products.length < 1 && loadingFirst"/>
 
-        <div v-else class="col s6 l3 animated" :class="{'fadeIn':loading}" v-for="(product, index) in products" :key="product.detail_branch.uniqid">
+        <div v-else class="col s12 m4 l3 animated" :class="{'fadeIn':loading}" v-for="(product, index) in products" :key="product.detail_branch.uniqid">
             <div class="clearfix"></div>
 
             <div class="ph-item" v-if="!loading">
@@ -93,7 +93,7 @@ export default {
                     product.button = !product.button
                     product.btnTextProduct = 'stok habis'
                 }
-            }   
+            }
         }
     }
 }

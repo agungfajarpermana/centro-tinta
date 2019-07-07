@@ -2,23 +2,29 @@
     <div>
         <div class="card">
             <div class="card-content">
-                <span class="card-title activator grey-text text-darken-4">ORDER #: 00000 <span class="right">NABILA</span></span>
+                <span class="card-title activator grey-text text-darken-4">
+                    #: INV-100000  
+                    <span class="grey-text text-darken-4"
+                        v-if="itemsCheckout.length > 0">
+                            <i class="material-icons right">close</i>
+                    </span>
+                </span>
                 <hr>
-                <table class="table">
+                <table class="table table-order scroll">
                     <tbody>
                         <tr v-if="itemsCheckout.length < 1">
-                            <td colspan="3" class="center-align">
+                            <td colspan="3" class="center-align empty">
                                 <span class="blue-text text-darken-3">Belum ada produk yang dipilih</span>
                             </td>
                         </tr>
 
                         <tr v-else class="item" v-for="(items, index) in itemsCheckout" :key="index"
                             @click.prevent="cancelItems(index, items.detail_product.uniqid)">
-                            <td wrap="wrap">{{ items.detail_product.product }}</td>
-                            <td class="red-text text-darken-4 left-align" width="10%">
+                            <td class="notEmpty">{{ items.detail_product.product }}</td>
+                            <td class="red-text text-darken-4 left-align notEmpty" width="10%">
                                 {{ items.numberOfPurchases }}
                             </td>
-                            <td class="right">
+                            <td class="notEmpty">
                                 <number
                                     class="bold transition"
                                     ref="price"
@@ -135,6 +141,9 @@ export default {
             return this.$store.getters.total
         },
     },
+    mounted(){
+        this.scrollTableVertical()
+    },
     methods: {
         theFormat(number){
             return parseInt(number).toLocaleString('id')
@@ -152,6 +161,24 @@ export default {
                 key:key,
                 id:id
             })
+        },
+
+        scrollTableVertical(){
+            let $table = $('table.scroll'),
+                $bodyCells = $table.find('tbody tr:first').children(),
+                colWidth;
+        
+            $(window).resize(function() {
+                // Get the tbody columns width array
+                colWidth = $bodyCells.map(function() {
+                    return $(this).width();
+                }).get();
+                
+                // Set the width of thead columns
+                $table.find('thead tr').children().each(function(i, v) {
+                    v.width(colWidth[i]);
+                });    
+            }).resize();
         }
     }
 }
@@ -160,5 +187,35 @@ export default {
 <style scoped>
 .item:hover{
     cursor: pointer;
+}
+
+.table-order.scroll tbody { 
+    display: block; 
+}
+
+.table-order.scroll tbody {
+    height: 215px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.table-order .notEmpty {
+    width: 80%;
+}
+
+.table-order .empty {
+    width: 50%;
+}
+
+.table-order tbody::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+}
+
+.table-order tbody::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  border: 3px solid #fff;
+  background-color: rgba(240, 9, 9, 0.3);
 }
 </style>

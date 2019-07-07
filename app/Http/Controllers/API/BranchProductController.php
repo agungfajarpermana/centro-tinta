@@ -20,7 +20,7 @@ class BranchProductController extends Controller
      */
     public function index(Request $request)
     {
-        return Branches::collection(BranchProduct::where('branch_id', 1)->paginate(8));
+        return Branches::collection(BranchProduct::whereIn('branch_id', [1,2])->paginate(8));
     }
 
     /**

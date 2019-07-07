@@ -77,6 +77,7 @@ export const store = new Vuex.Store({
                 item.push(Object.assign({}, val, {button:false,btnTextProduct:"pilih"}))
             })
             
+            // validation condition button, btnTextProduct, stock
             const itemCheckout = state.checkout.items.map(itemCheckout => {
                 return itemCheckout
             })
@@ -85,10 +86,15 @@ export const store = new Vuex.Store({
                 itemCheckout.forEach(productCheckout => {
                     if(productItem.detail_product.uniqid === productCheckout.detail_product.uniqid){
                         productItem.detail_stock.last_stock = productItem.detail_stock.last_stock - productCheckout.numberOfPurchases
-                        console.log(productItem.detail_stock.last_stock)
+                        
+                        if(productItem.detail_stock.last_stock == 0){
+                            productItem.button = true
+                            productItem.btnTextProduct = 'stok habis'
+                        }
                     }
                 })
             })
+            // end validation condition button, btnTextProduct, stock
 
             const pagination = {
                 current_page : payloadProduct.meta.current_page,
@@ -142,11 +148,14 @@ export const store = new Vuex.Store({
             })
 
             items.itemsCheckout.numberOfPurchases--
-            products.detail_stock.last_stock++
+            
+            if(products){
+                products.detail_stock.last_stock++
 
-            if(products.detail_stock.last_stock > 0){
-                products.button = false
-                products.btnTextProduct = 'pilih'
+                if(products.detail_stock.last_stock > 0){
+                    products.button = false
+                    products.btnTextProduct = 'pilih'
+                }
             }
 
             state.checkout.subtotal = subtotal - items.itemsCheckout.detail_product.price

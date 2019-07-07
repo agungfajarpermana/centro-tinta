@@ -3,13 +3,13 @@
         <Navbar/>
 
         <div class="row animated fadeIn">
-            <div class="col s12 m8 l8">
+            <div class="col s12 m12 l9">
                 <Items :show="show" />
 
                 <PaymentBase :show="show" />
             </div>
 
-            <div class="col s12 m4 l4">
+            <div class="col s12 m12 l3">
                 <Checkout/>
             </div>
 

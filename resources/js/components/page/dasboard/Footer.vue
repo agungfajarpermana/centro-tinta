@@ -62,6 +62,6 @@ export default {
     margin-bottom:0;
     position: fixed;
     top:92%;
-    left: 40%
+    left: 50%
 }
 </style>
