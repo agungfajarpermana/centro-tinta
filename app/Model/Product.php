@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
-    public function details()
+    public function productDetail()
     {
         return $this->hasOne(ProductDetails::class);
     }
@@ -19,7 +19,7 @@ class Product extends Model
         return $this->hasOne(Branch::class, 'id');
     }
 
-    public function branch_product()
+    public function branchProduct()
     {
         return $this->hasOne(BranchProduct::class);
     }

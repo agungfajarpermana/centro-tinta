@@ -65,7 +65,7 @@ export default {
         TextEmptyProduct
     },
     created(){
-        this.$store.dispatch('getProducts', '/api/branch')
+        this.$store.dispatch('getProducts', '/api/products')
     },
     computed: {
         loadingFirst(){

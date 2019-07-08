@@ -99,7 +99,7 @@
             <div class="card-action">
                 <div class="col s6 m6 l6">
                     <button class="btn-small waves-effect red darken-4" @click="changeHide" v-if="hide">Batalkan</button>
-                    <button class="btn-small waves-effect light-blue darken-1" @click="changeHide" v-else>Lanjut Bayar</button>
+                    <button class="btn-small waves-effect light-blue darken-1" @click="changeHide" v-else>Bayar</button>
                 </div>
                 
                 <div class="col s6 m6 l6">

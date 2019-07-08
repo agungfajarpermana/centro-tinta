@@ -1,48 +1,44 @@
 <template>
-    <div v-if="menu == 'CO'" class="animated fadeIn">
+    <div v-if="menu == 'CO'" class="banner-card">
         <span class="card-title">Customer Orders</span>
         <table class="striped">
             <thead>
                 <tr>
                     <th colspan="5">Branches</th>
                     <th colspan="5">Customer</th>
-                    <th colspan="2">Total Items</th>
+                    <th colspan="2" class="center-align">Total Items</th>
                     <th colspan="2">Total Price</th>
                 </tr>
             </thead>
 
             <tbody>
-                <tr>
-                    <td colspan="5">Centro Link (Jakarta)</td>
-                    <td colspan="5">M. Arif Nur</td>
-                    <td colspan="2">3 Item</td>
-                    <td colspan="2">Rp. 500.000</td>
-                    <td>
-                        <i class="material-icons dropdown-trigger" data-target='dropdown1'>more_vert</i>
+                <tr v-if="!loadingOrder">
+                    <td colspan="13">
+                        <div class="center-align animated flash loader">
+                            Loading...
+                        </div>
                     </td>
-
-                    <!-- Dropdown Structure -->
-                    <ul id='dropdown1' class='dropdown-content'>
-                        <li><a href="#!"><i class="material-icons">edit</i>edit</a></li>
-                        <li><a href="#!"><i class="material-icons">delete</i>delete</a></li>
-                        <li><a href="#!"><i class="material-icons">add</i>detail</a></li>
-                    </ul>
                 </tr>
-                <tr>
-                    <td colspan="5">Centro Link (Bekasi)</td>
-                    <td colspan="5">Agung Fajar Permana</td>
-                    <td colspan="2">5 Item</td>
-                    <td colspan="2">Rp. 700.000</td>
+
+                <tr v-else class="animated" :class="{'fadeIn':loadingOrder}" v-for="order in orders" :key="order.customer_order.uniqid">
+                    <td colspan="5">{{ order.customer_order.branches }}</td>
+                    <td colspan="5">{{ order.customer_order.customer }}</td>
+                    <td colspan="2" class="center-align">{{ order.customer_order.qty }}</td>
+                    <td colspan="2">Rp. {{ parseInt(order.customer_order.total_sales).toLocaleString('id') }}</td>
                     <td>
                         <i class="material-icons">more_vert</i>
                     </td>
                 </tr>
             </tbody>
         </table>
+
+        <FooterOrder v-if="loadingOrder" />
     </div>
 </template>
 
 <script>
+import FooterOrder from './FooterOrder';
+
 export default {
     props: {
         menu: {
@@ -50,8 +46,20 @@ export default {
             required: true
         }
     },
+    components: {
+        FooterOrder
+    },
+    computed: {
+        loadingOrder(){
+            return this.$store.getters.loadingOrder
+        },
+
+        orders(){
+            return this.$store.getters.orders
+        }
+    },
     mounted(){
-        M.AutoInit()
+        this.$store.dispatch('getOrder', 'api/order')
     }
 }
 </script>
@@ -59,5 +67,9 @@ export default {
 <style scoped>
 i:hover{
     cursor: pointer;
+}
+
+.banner-card{
+    margin-bottom: -20px;
 }
 </style>

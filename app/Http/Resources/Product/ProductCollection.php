@@ -17,13 +17,28 @@ class ProductCollection extends Resource
         // dd($this->details);
         // return parent::toArray($request);
         return [
-            'product'       => $this->nama_product,
-            'description'   => $this->detail_product,
-            'type'          => $this->jenis_product,
-            'category'      => $this->kategori_product,
-            'detail'        => [
-                'harga' => $this->details->harga ?? null,
-                'uniqid'=> $this->product_id ?? null
+            'detail_branch' => [
+                'branch'    => $this->branch->nama_cabang,
+                'address'   => $this->branch->alamat,
+                'telphone'  => $this->branch->telpon,
+                'fax'       => $this->branch->fax,
+                'email'     => $this->branch->email,
+                'leader'    => $this->branch->kepala_cabang
+            ],
+            'detail_product' => [
+                'uniqid'        => $this->id,
+                'product'       => $this->nama_product,
+                'type'          => $this->jenis_product,
+                'category'      => $this->kategori_product,
+                'description'   => $this->detail_product,
+                'price'         => $this->productDetail->harga ?? null,
+                'sales'         => $this->productDetail->penjualan ?? null
+            ],
+            'detail_stock'  => [
+                'first_stock'   => $this->branchProduct->stok_awal,
+                'income_stock'  => $this->branchProduct->stok_masuk,
+                'stock_out'     => $this->branchProduct->stok_keluar,
+                'last_stock'    => $this->branchProduct->stok_akhir,
             ]
         ];
     }

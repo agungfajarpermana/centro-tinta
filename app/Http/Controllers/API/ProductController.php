@@ -6,7 +6,7 @@ use App\Model\Product;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Product\ProductResource;
-use App\Http\Resources\Product\ProductCollection as ProductCollect;
+use App\Http\Resources\Product\ProductCollection as Products;
 
 class ProductController extends Controller
 {
@@ -15,9 +15,9 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($search = null)
     {
-        return ProductCollect::collection(Product::paginate(8));
+        return Products::collection(Product::orderBy('nama_product', 'ASC')->paginate(8));
     }
 
     /**

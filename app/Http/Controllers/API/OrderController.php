@@ -2,25 +2,31 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Model\Branch;
-use App\Model\Product;
-use App\Model\BranchProduct;
+use App\Model\Order;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Branch\BranchProductResource;
-use App\Http\Resources\Branch\BranchProductCollection as Branches;
-use App\Http\Resources\Branch\BranchSearchCollection as Searching;
+use App\Http\Resources\Order\OrderCollection as Orders;
 
-class BranchProductController extends Controller
+class OrderController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index($search = null)
     {
-        return Branches::collection(BranchProduct::whereIn('branch_id', [1,2])->orderBy('product_id', 'ASC')->paginate(8));
+        return Orders::collection(Order::paginate(8));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
     }
 
     /**
@@ -40,9 +46,20 @@ class BranchProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Branch $branch)
+    public function show($id)
     {
-        return new BranchProductResource($branch);
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        //
     }
 
     /**
@@ -66,11 +83,5 @@ class BranchProductController extends Controller
     public function destroy($id)
     {
         //
-    }
-
-    public function searchData($search)
-    {
-        $data = Product::where('nama_product', 'LIKE', '%'.$search.'%')->paginate(2);
-        return Searching::collection($data);
     }
 }

@@ -22,6 +22,11 @@ export const store = new Vuex.Store({
             loading: false,
             items: [],
             attrPagination: []
+        },
+        customer: {
+            loadingOrder: false,
+            orders: [],
+            attrPaginationOrder: []
         }
     },
     getters: {
@@ -74,6 +79,18 @@ export const store = new Vuex.Store({
         attrPagination(state){
             return state.product.attrPagination
         },
+
+        loadingOrder(state){
+            return state.customer.loadingOrder
+        },
+
+        orders(state){
+            return state.customer.orders
+        },
+
+        attrPaginationOrder(state){
+            return state.customer.attrPaginationOrder
+        }
     },
     mutations: {
         SET_DATA_PRODUCT_ITEMS(state, payloadProduct){
@@ -112,6 +129,14 @@ export const store = new Vuex.Store({
             state.product.loading        = true
             state.product.items          = item
             state.product.attrPagination = pagination
+
+            state.product.items.sort((a,b) => {
+                if(a.detail_product.product < b.detail_product.product){
+                    return -1
+                }else if(a.detail_product.product > b.detail_product.product){
+                    return 1
+                }
+            })
         },
 
         SET_DATA_PRODUCT_PAGINATION(state, payloadUrlProduct){
@@ -177,23 +202,45 @@ export const store = new Vuex.Store({
         CLEAR_ITEM_PRODUCT_TO_CHECKOUT(state){
             let i = 0
             while(state.checkout.items.length){
+                let subtotal;
                 const products = state.product.items.find(product => product.detail_product.uniqid == state.checkout.items[i].detail_product.uniqid)
-                console.log(products)
-                const subtotal = products.detail_product.price * state.checkout.items[i].numberOfPurchases
                 
-                // set stock product items
-                products.detail_stock.last_stock = products.detail_stock.last_stock + state.checkout.items[i].numberOfPurchases
-                if(products.detail_stock.last_stock > 0){
-                    products.button = false
-                    products.btnTextProduct = 'pilih'
+                if(products){
+                    subtotal = products.detail_product.price * state.checkout.items[i].numberOfPurchases
+                
+                    // set stock product items
+                    products.detail_stock.last_stock = products.detail_stock.last_stock + state.checkout.items[i].numberOfPurchases
+                    if(products.detail_stock.last_stock > 0){
+                        products.button = false
+                        products.btnTextProduct = 'pilih'
+                    }
                 }
                 
-                state.checkout.subtotal = subtotal - (state.checkout.items[i].detail_product.price * state.checkout.items[i].numberOfPurchases)
+                state.checkout.subtotal = (subtotal ? subtotal - (state.checkout.items[i].detail_product.price * state.checkout.items[i].numberOfPurchases) : 0)
                 state.checkout.ppn = (10 * state.checkout.subtotal)/100
                 state.checkout.total = state.checkout.subtotal - state.checkout.ppn
                 
                 state.checkout.items.splice(i, 1)
             }
+        },
+
+        SET_DATA_ORDER_CUSTOMER(state, payloadOrder){
+            state.customer.loadingOrder = true
+            state.customer.orders = payloadOrder.data
+
+            const pagination = {
+                current_page : payloadOrder.meta.current_page,
+                last_page    : payloadOrder.meta.last_page,
+                next_page_url: payloadOrder.links.next,
+                prev_page_url: payloadOrder.links.prev
+            }
+
+            state.customer.attrPaginationOrder = pagination
+        },
+
+        SET_DATA_ORDER_PAGINATION(state, payloadUrlOrder){
+            state.customer.loadingOrder = !state.customer.loadingOrder
+            store.dispatch('getOrder', payloadUrlOrder)
         }
     },
     actions: {
@@ -218,6 +265,19 @@ export const store = new Vuex.Store({
 
         clearItemCheckout({commit}){
             commit('CLEAR_ITEM_PRODUCT_TO_CHECKOUT')
+        },
+
+        getOrder({commit}, url){
+            axios.get(url)
+                .then(res => {
+                    commit('SET_DATA_ORDER_CUSTOMER', res.data)
+                }).catch(err => {
+                    console.log(err)
+                })
+        },
+
+        getdataOrderPagination({commit}, url){
+            commit('SET_DATA_ORDER_PAGINATION', url)
         }
     }
 });
