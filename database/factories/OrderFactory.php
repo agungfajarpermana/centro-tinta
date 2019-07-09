@@ -9,7 +9,8 @@ use Faker\Generator as Faker;
 
 $factory->define(Order::class, function (Faker $faker) {
     return [
-        'branch_id'    => function() {
+        'no_order'      => $faker->postcode,
+        'branch_id'     => function() {
             return Branch::all()->random();
         },
         'customer_id'    => function() {

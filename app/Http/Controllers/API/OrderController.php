@@ -16,7 +16,11 @@ class OrderController extends Controller
      */
     public function index($search = null)
     {
-        return Orders::collection(Order::paginate(8));
+        if(!$search){
+            return Orders::collection(Order::orderBy('id', 'DESC')->paginate(8));
+        }
+        
+        return Orders::collection(Order::where('jenis_product', 'LIKE', '%'.$search.'%')->orderBy('id', 'DESC')->paginate(8));
     }
 
     /**

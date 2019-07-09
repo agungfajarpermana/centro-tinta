@@ -17,13 +17,15 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/products', 'API\ProductController@index');
+Route::Resource('/products', 'API\ProductController');
 Route::get('/products/{search}/items', 'API\ProductController@index');
+
+Route::Resource('/customer', 'API\CustomerController');
 
 Route::Resource('/branch', 'API\BranchProductController');
 Route::match(['GET'], '/branch/{search}/search', 'API\BranchProductController@searchData');
 
-Route::get('/order', 'API\OrderController@index');
+Route::Resource('/order', 'API\OrderController');
 Route::get('/order/{search}/customer', 'API\OrderController@index');
 
 // Route::group(['prefix' => 'branch'], function(){

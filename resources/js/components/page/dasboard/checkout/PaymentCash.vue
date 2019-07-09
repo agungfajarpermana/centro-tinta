@@ -4,24 +4,24 @@
             <form action="#" class="col s12">
                 <div class="row">
                     <div class="input-field col s6">
-                        <input id="customer" type="text" class="validate">
-                        <label for="customer">Nama Pelanggan</label>
-                    </div>
-                    <div class="input-field col s6">
                         <input id="total" type="text" class="validate">
                         <label for="total">Total Bayar (Rp)</label>
+                    </div>
+                    <div class="input-field col s6">
+                        <input id="customer" type="text" class="validate">
+                        <label for="customer">Nama Pelanggan</label>
                     </div>
                 </div>
 
                 <div class="row">
-                    <div class="input-field col s6">
+                    <div class="input-field col s12">
                         <input id="bayar" type="text" class="validate">
                         <label for="bayar">Jumlah Bayar (Rp)</label>
                     </div>
-                    <div class="input-field col s6">
+                    <!-- <div class="input-field col s6">
                         <input id="kembali" type="text" class="validate">
                         <label for="kembali">Kembali</label>
-                    </div>
+                    </div> -->
                 </div>
                 
                 <div class="row">

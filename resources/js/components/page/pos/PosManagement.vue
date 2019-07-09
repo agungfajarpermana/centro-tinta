@@ -48,6 +48,20 @@ export default {
         Bus.$on('changeMenu', (data) => {
             this.menu = data
         })
+
+        Bus.$on('searchCustomerOrder', (data) => {
+            this.$store.dispatch('searchDataCustomerOrder', {
+                url: 'api/order',
+                search: data
+            })
+        })
+
+        Bus.$on('searchItemManagement', (data) => {
+            this.$store.dispatch('searchDataItemManagement', {
+                url: 'api/products',
+                search: data
+            })
+        })
     }
 }
 </script>

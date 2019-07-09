@@ -17,7 +17,15 @@ class ProductController extends Controller
      */
     public function index($search = null)
     {
-        return Products::collection(Product::orderBy('nama_product', 'ASC')->paginate(8));
+        if(!$search){
+            return Products::collection(Product::orderBy('nama_product', 'ASC')->paginate(8));
+        }
+
+        return Products::collection(
+            Product::where('nama_product', 'LIKE', '%'.$search.'%')
+                        ->orderBy('nama_product', 'ASC')
+                        ->paginate(3)
+        );
     }
 
     /**

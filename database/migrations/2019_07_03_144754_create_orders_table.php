@@ -16,6 +16,8 @@ class CreateOrdersTable extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->bigIncrements('id');
 
+            $table->string('no_order');
+
             $table->bigInteger('branch_id')->unsigned()->index();
             $table->foreign('branch_id')->references('id')->on('branches')->onDelete('cascade');
 

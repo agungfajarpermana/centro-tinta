@@ -18,6 +18,7 @@ class OrderCollection extends Resource
         return [
             "customer_order" => [
                 'uniqid'   => $this->id,
+                'order'    => $this->no_order,
                 'branches' => $this->branch->nama_cabang,
                 'customer' => $this->customer->nama_customer,
                 'type'     => $this->jenis_product,

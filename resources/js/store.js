@@ -27,6 +27,11 @@ export const store = new Vuex.Store({
             loadingOrder: false,
             orders: [],
             attrPaginationOrder: []
+        },
+        management: {
+            loadingManage: false,
+            items: [],
+            attrPaginationManagement: []
         }
     },
     getters: {
@@ -90,6 +95,18 @@ export const store = new Vuex.Store({
 
         attrPaginationOrder(state){
             return state.customer.attrPaginationOrder
+        },
+
+        loadingManage(state){
+            return state.management.loadingManage
+        },
+
+        manageItems(state){
+            return state.management.items
+        },
+
+        attrPaginationManagement(state){
+            return state.management.attrPaginationManagement
         }
     },
     mutations: {
@@ -241,6 +258,42 @@ export const store = new Vuex.Store({
         SET_DATA_ORDER_PAGINATION(state, payloadUrlOrder){
             state.customer.loadingOrder = !state.customer.loadingOrder
             store.dispatch('getOrder', payloadUrlOrder)
+        },
+
+        SET_DATA_ITEM_MANAGEMENT(state, payloadItemManagement){
+            const item = []
+            payloadItemManagement.data.map(val => {
+                item.push(val.detail_product)
+            })
+
+            const pagination = {
+                current_page    : payloadItemManagement.meta.current_page,
+                last_page       : payloadItemManagement.meta.last_page,
+                next_page_url   : payloadItemManagement.links.next,
+                prev_page_url   : payloadItemManagement.links.prev
+            }
+
+            state.management.loadingManage = true
+            state.management.items = item
+            state.management.attrPaginationManagement = pagination
+        },
+
+        SET_DATA_MANAGEMENT_PAGINATION(state, payloadUrlManage){
+            state.management.loadingManage = !state.management.loadingManage
+            store.dispatch('getItemManagement', payloadUrlManage)
+        },
+
+        SET_DATA_SEARCH_ITEM_MANAGEMENT(state, payloadSearch){
+            let url;
+
+            if(payloadSearch.search){
+                url = `${payloadSearch.url}/${payloadSearch.search}/items`
+            }else{
+                url = 'api/products'
+            }
+
+            state.management.loadingManage = false
+            store.dispatch('getItemManagement', url)
         }
     },
     actions: {
@@ -278,6 +331,23 @@ export const store = new Vuex.Store({
 
         getdataOrderPagination({commit}, url){
             commit('SET_DATA_ORDER_PAGINATION', url)
+        },
+
+        getItemManagement({commit}, url){
+            axios.get(url)
+                .then(res => {
+                    commit('SET_DATA_ITEM_MANAGEMENT', res.data)
+                }).catch(err => {
+                    console.log(err)
+                })
+        },
+
+        getDataPaginationManage({commit}, url){
+            commit('SET_DATA_MANAGEMENT_PAGINATION', url)
+        },
+
+        searchDataItemManagement({commit}, value){
+            commit('SET_DATA_SEARCH_ITEM_MANAGEMENT', value)
         }
     }
 });

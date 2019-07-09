@@ -10,7 +10,7 @@
                             checked
                             @change="modeChange('cash')"
                             value="cash" />
-                        <span>Payment Cash</span>
+                        <span>Piutang</span>
                     </label>
                 </div>
                 <div class="col s5">
@@ -19,7 +19,7 @@
                             @change="modeChange('card')" 
                             value="credit" 
                         />
-                        <span>Debit / Credit Card</span>
+                        <span>Bayar Cash</span>
                     </label>
                 </div>
             </div>
