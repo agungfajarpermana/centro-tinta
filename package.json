@@ -29,6 +29,7 @@
         "materialize-css": "^1.0.0-rc.2",
         "moment": "^2.24.0",
         "placeholder-loading": "^0.2.2",
-        "vue-number-animation": "^1.0.5"
+        "vue-number-animation": "^1.0.5",
+        "vue2-datepicker": "^2.12.0"
     }
 }

@@ -260,6 +260,19 @@ export const store = new Vuex.Store({
             store.dispatch('getOrder', payloadUrlOrder)
         },
 
+        SET_DATA_SEARCH_ORDER(state, payloadSearchOrder){
+            let url
+
+            if(payloadSearchOrder.search){
+                url = `${payloadSearchOrder.url}/${payloadSearchOrder.search}/customer`
+            }else{
+                url = 'api/order'
+            }
+
+            state.customer.loadingOrder = false
+            store.dispatch('getOrder', url)
+        },
+
         SET_DATA_ITEM_MANAGEMENT(state, payloadItemManagement){
             const item = []
             payloadItemManagement.data.map(val => {
@@ -283,11 +296,11 @@ export const store = new Vuex.Store({
             store.dispatch('getItemManagement', payloadUrlManage)
         },
 
-        SET_DATA_SEARCH_ITEM_MANAGEMENT(state, payloadSearch){
+        SET_DATA_SEARCH_ITEM_MANAGEMENT(state, payloadSearchItem){
             let url;
 
-            if(payloadSearch.search){
-                url = `${payloadSearch.url}/${payloadSearch.search}/items`
+            if(payloadSearchItem.search){
+                url = `${payloadSearchItem.url}/${payloadSearchItem.search}/items`
             }else{
                 url = 'api/products'
             }
@@ -331,6 +344,10 @@ export const store = new Vuex.Store({
 
         getdataOrderPagination({commit}, url){
             commit('SET_DATA_ORDER_PAGINATION', url)
+        },
+
+        searchDataCustomerOrder({commit}, data){
+            commit("SET_DATA_SEARCH_ORDER", data)
         },
 
         getItemManagement({commit}, url){

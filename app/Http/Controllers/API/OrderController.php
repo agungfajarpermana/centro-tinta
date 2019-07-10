@@ -20,7 +20,7 @@ class OrderController extends Controller
             return Orders::collection(Order::orderBy('id', 'DESC')->paginate(8));
         }
         
-        return Orders::collection(Order::where('jenis_product', 'LIKE', '%'.$search.'%')->orderBy('id', 'DESC')->paginate(8));
+        return Orders::collection(Order::where('no_order', 'LIKE', '%'.$search.'%')->orderBy('id', 'DESC')->paginate(8));
     }
 
     /**

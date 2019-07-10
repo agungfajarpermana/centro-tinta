@@ -18,6 +18,9 @@
 
                         <!-- component items management -->
                         <ItemsManagement :menu="menu"/>
+
+                        <!-- component report management -->
+                        <ReportManagement :menu="menu"/>
                     </div>
                 </div>
             </div>
@@ -31,6 +34,7 @@ import Navbar from '../Navbar';
 import SidenavPos from './SidenavPos';
 import CustomerOrders from './sidenavmenu/CustomerOrders';
 import ItemsManagement from './sidenavmenu/ItemsManagement';
+import ReportManagement from './sidenavmenu/ReportManagement';
 
 export default {
     data(){
@@ -42,7 +46,8 @@ export default {
         Navbar,
         SidenavPos,
         CustomerOrders,
-        ItemsManagement
+        ItemsManagement,
+        ReportManagement
     },
     created(){
         Bus.$on('changeMenu', (data) => {

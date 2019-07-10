@@ -18,5 +18,6 @@ class DatabaseSeeder extends Seeder
         factory(App\Model\BranchProduct::class, 20)->create();
         factory(App\Model\Customer::class, 30)->create();
         factory(App\Model\Order::class, 30)->create();
+        factory(App\Model\Piutang::class, 20)->create();
     }
 }

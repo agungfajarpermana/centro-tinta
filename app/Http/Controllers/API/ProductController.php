@@ -24,7 +24,7 @@ class ProductController extends Controller
         return Products::collection(
             Product::where('nama_product', 'LIKE', '%'.$search.'%')
                         ->orderBy('nama_product', 'ASC')
-                        ->paginate(3)
+                        ->paginate(8)
         );
     }
 

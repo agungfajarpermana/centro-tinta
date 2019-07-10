@@ -13,7 +13,7 @@
                 </a>
             </li>
             <li>
-                <a href="#!" class="waves-effect">
+                <a href="#!" class="waves-effect" @click.prevent="selectMenu('RM')">
                     <i class="material-icons">insert_chart</i> Report Management
                 </a>
             </li>

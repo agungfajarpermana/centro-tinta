@@ -21,6 +21,14 @@
             </thead>
 
             <tbody>
+                <tr v-if="loadingManage && manageItems.length < 1">
+                    <td colspan="13">
+                        <div class="center-align animated flash loader">
+                            Product yang dicari tidak ditemukan!
+                        </div>
+                    </td>
+                </tr>
+
                 <tr v-if="!loadingManage">
                     <td colspan="13">
                         <div class="center-align animated flash loader">
@@ -43,7 +51,7 @@
             </tbody>
         </table>
 
-        <FooterItem v-if="loadingManage" />
+        <FooterItem v-if="loadingManage && manageItems.length > 0" />
     </div>
 </template>
 

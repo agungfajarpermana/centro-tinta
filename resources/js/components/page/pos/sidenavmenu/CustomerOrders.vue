@@ -21,6 +21,14 @@
             </thead>
 
             <tbody>
+                <tr v-if="loadingOrder && orders.length < 1">
+                    <td colspan="14">
+                        <div class="center-align animated flash loader">
+                            No.order yang dicari tidak ditemukan!
+                        </div>
+                    </td>
+                </tr>
+
                 <tr v-if="!loadingOrder">
                     <td colspan="14">
                         <div class="center-align animated flash loader">
@@ -44,7 +52,7 @@
             </tbody>
         </table>
 
-        <FooterOrder v-if="loadingOrder" />
+        <FooterOrder v-if="loadingOrder && orders.length > 0" />
     </div>
 </template>
 
