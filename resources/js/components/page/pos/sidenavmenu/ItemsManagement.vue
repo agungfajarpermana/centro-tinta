@@ -16,6 +16,7 @@
                     <th>Type</th>
                     <th>Category</th>
                     <th>Price</th>
+                    <th>Stock</th>
                     <th>Sales</th>
                 </tr>
             </thead>
@@ -42,6 +43,7 @@
                     <td>{{ item.type }}</td>
                     <td>{{ item.category }}</td>
                     <td>Rp. {{ parseInt(item.price).toLocaleString('id') }}</td>
+                    <td>{{ item.stock }} item</td>
                     <td>{{ item.sales }} Item</td>
                     <td>
                         <i class="tiny material-icons blue-text">edit</i> &nbsp;

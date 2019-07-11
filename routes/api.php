@@ -28,6 +28,9 @@ Route::match(['GET'], '/branch/{search}/search', 'API\BranchProductController@se
 Route::Resource('/order', 'API\OrderController');
 Route::get('/order/{search}/customer', 'API\OrderController@index');
 
+Route::Resource('/piutang', 'API\PiutangController');
+Route::get('/piutang/{dates}/order', 'API\PiutangController@index');
+
 // Route::group(['prefix' => 'branch'], function(){
 //     Route::apiResource('/search/{branch}', 'API\BranchProductController@search');
 // });

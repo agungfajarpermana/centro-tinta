@@ -276,7 +276,7 @@ export const store = new Vuex.Store({
         SET_DATA_ITEM_MANAGEMENT(state, payloadItemManagement){
             const item = []
             payloadItemManagement.data.map(val => {
-                item.push(val.detail_product)
+                item.push(Object.assign({}, val.detail_product, {stock:val.detail_stock.last_stock}))
             })
 
             const pagination = {

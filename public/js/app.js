@@ -2827,6 +2827,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 
 
@@ -2896,6 +2898,30 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
@@ -2921,7 +2947,11 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     eventDate: function eventDate() {
-      console.log(this.valueDate);
+      if (this.valueDate[0]) {
+        window.open("/api/piutang/".concat(this.valueDate, "/order"), '_blank');
+      } else {
+        console.log('empty');
+      }
     }
   }
 });
@@ -45735,6 +45765,8 @@ var render = function() {
                           )
                         ]),
                         _vm._v(" "),
+                        _c("td", [_vm._v(_vm._s(item.stock) + " item")]),
+                        _vm._v(" "),
                         _c("td", [_vm._v(_vm._s(item.sales) + " Item")]),
                         _vm._v(" "),
                         _vm._m(4, true)
@@ -45775,6 +45807,8 @@ var staticRenderFns = [
         _c("th", [_vm._v("Category")]),
         _vm._v(" "),
         _c("th", [_vm._v("Price")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Stock")]),
         _vm._v(" "),
         _c("th", [_vm._v("Sales")])
       ])
@@ -45894,9 +45928,43 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col s12" }, [
-        _c("p", { staticClass: "center-align" }, [
-          _vm._v("Laporan penjualan tidak ditemukan!")
+      _c("div", { staticClass: "col s12 m6" }, [
+        _c("div", { staticClass: "card" }, [
+          _c("div", { staticClass: "card-content black-text" }, [
+            _c("span", { staticClass: "card-title" }, [_vm._v("Card Title")]),
+            _vm._v(" "),
+            _c("p", [
+              _vm._v(
+                "I am a very simple card. I am good at containing small bits of information.\n                    I am convenient because I require little markup to use effectively."
+              )
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "card-action" }, [
+            _c("a", { attrs: { href: "#" } }, [_vm._v("This is a link")]),
+            _vm._v(" "),
+            _c("a", { attrs: { href: "#" } }, [_vm._v("This is a link")])
+          ])
+        ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col s12 m6" }, [
+        _c("div", { staticClass: "card" }, [
+          _c("div", { staticClass: "card-content black-text" }, [
+            _c("span", { staticClass: "card-title" }, [_vm._v("Card Title")]),
+            _vm._v(" "),
+            _c("p", [
+              _vm._v(
+                "I am a very simple card. I am good at containing small bits of information.\n                    I am convenient because I require little markup to use effectively."
+              )
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "card-action" }, [
+            _c("a", { attrs: { href: "#" } }, [_vm._v("This is a link")]),
+            _vm._v(" "),
+            _c("a", { attrs: { href: "#" } }, [_vm._v("This is a link")])
+          ])
         ])
       ])
     ])
@@ -63956,7 +64024,9 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
     SET_DATA_ITEM_MANAGEMENT: function SET_DATA_ITEM_MANAGEMENT(state, payloadItemManagement) {
       var item = [];
       payloadItemManagement.data.map(function (val) {
-        item.push(val.detail_product);
+        item.push(Object.assign({}, val.detail_product, {
+          stock: val.detail_stock.last_stock
+        }));
       });
       var pagination = {
         current_page: payloadItemManagement.meta.current_page,
