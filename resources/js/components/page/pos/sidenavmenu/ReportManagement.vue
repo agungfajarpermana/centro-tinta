@@ -4,23 +4,23 @@
             <div class="col s12 m12 l7" style="margin-bottom:20px;">
                 <span class="card-title">Report Management</span>
             </div>
-
-            <div class="input-field col s12 m12 l5" style="margin-top:-14px;">
-                <date-picker v-model="valueDate" valueType="format" range confirm :lang="lang" @change="eventDate"></date-picker>
-            </div>
         </div>
 
         <div class="row">
             <div class="col s12 m6">
                 <div class="card">
                     <div class="card-content black-text">
-                        <span class="card-title">Card Title</span>
-                        <p>I am a very simple card. I am good at containing small bits of information.
-                        I am convenient because I require little markup to use effectively.</p>
-                    </div>
-                    <div class="card-action">
-                        <a href="#">This is a link</a>
-                        <a href="#">This is a link</a>
+                        <span class="card-title">Laporan penjualan</span>
+
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <input id="last_name" type="text" class="validate" placeholder="Cari berdasarkan nama product">
+                            </div>
+                            
+                            <div class="input-field col s12">
+                                <date-picker v-model="penjualan" valueType="format" range confirm :lang="lang" @change="printPenjualan"></date-picker>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -28,13 +28,35 @@
             <div class="col s12 m6">
                 <div class="card">
                     <div class="card-content black-text">
-                        <span class="card-title">Card Title</span>
-                        <p>I am a very simple card. I am good at containing small bits of information.
-                        I am convenient because I require little markup to use effectively.</p>
+                        <span class="card-title">Laporan piutang</span>
+
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <input id="last_name" type="text" class="validate" placeholder="Cari berdasarkan nama product">
+                            </div>
+                            
+                            <div class="input-field col s12">
+                                <date-picker v-model="piutang" valueType="format" range confirm :lang="lang" @change="printPiutang"></date-picker>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-action">
-                        <a href="#">This is a link</a>
-                        <a href="#">This is a link</a>
+                </div>
+            </div>
+
+            <div class="col s12 m6 offset-m3">
+                <div class="card">
+                    <div class="card-content black-text">
+                        <span class="card-title">Laporan Cash</span>
+
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <input id="last_name" type="text" class="validate" placeholder="Cari berdasarkan nama product">
+                            </div>
+                            
+                            <div class="input-field col s12">
+                                <date-picker v-model="cash" valueType="format" range confirm :lang="lang" @change="printCash"></date-picker>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -54,7 +76,6 @@ export default {
     },
     data(){
         return {
-            valueDate: [],
             lang: {
                 days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
                 pickers: ['next 7 days', 'next 30 days', 'previous 7 days', 'previous 30 days'],
@@ -67,13 +88,52 @@ export default {
     components: {
         DatePicker
     },
+    computed: {
+        penjualan: {
+            get(){
+                return this.$store.getters.penjualan
+            },
+
+            set(value){
+                this.$store.state.laporan.penjualan = value
+            }
+        },
+
+        piutang: {
+            get(){
+                return this.$store.getters.piutang
+            },
+
+            set(value){
+                this.$store.state.laporan.piutang = value
+            }
+        },
+
+        cash: {
+            get(){
+                return this.$store.getters.cash
+            },
+
+            set(value){
+                this.$store.state.laporan.cash = value
+            }
+        }
+    },
     methods: {
-        eventDate(){
-            if(this.valueDate[0]){
-                window.open(`/api/piutang/${this.valueDate}/order`, '_blank');
+        printPiutang(){
+            if(this.piutang[0]){
+                window.open(`/api/piutang/${this.piutang}/order`, '_blank');
             }else{
                 console.log('empty')
             }
+        },
+
+        printPenjualan(){
+
+        },
+
+        printCash(){
+
         }
     }
 }

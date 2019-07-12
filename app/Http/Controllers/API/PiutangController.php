@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use PDF;
 use App\Model\Piutang;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -16,18 +17,30 @@ class PiutangController extends Controller
      */
     public function index($dates = null)
     {
-        return view('print.laporan_piutang');
         $dates = explode(",",$dates);
         
         if($dates[0]){
             $collect = collect($dates)->flatten();
             
-            return Piutangs::collection(
+            $data = Piutangs::collection(
                     Piutang::whereBetween('tgl', [$collect[0], $collect[1]])
                              ->where('kode', '12000001')->get()
             );
+        }else{
+            $data = Piutangs::collection(Piutang::all());
         }
-        return Piutangs::collection(Piutang::all());
+
+        return $data;
+        // $pdf = PDF::loadView('print.laporan_piutang', compact('data'));
+        // return $pdf->setOption('page-size', 'A4')
+        //             ->setOrientation('landscape')
+        //             ->setOption('margin-bottom', '1cm')
+        //             ->setOption('margin-left', '2cm')
+        //             ->setOption('margin-right', '2cm')
+        //             ->setOption('margin-top', '1cm')
+        //             ->setOption('footer-right', 'Hal : [page] / [toPage]')
+        //             ->setOption('footer-font-size', 8)
+        //             ->stream();
     }
 
     /**

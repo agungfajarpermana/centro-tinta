@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Laporan Piutang</title>
+    <title>Laporan Cash</title>
     <style>
 		/* Font Definitions */
 		@font-face
@@ -149,17 +149,17 @@
 								</tr>
                             </thead>
                             <tbody>
-                               @foreach($data as $key => $value)
+                               
                                 <tr class="tr">
                                     <td class="td-border py-2" style="text-align:center;">1</td>
-                                    <td class="td-border py-2" style="text-align:center;">{{ $value->tgl }}</td>
-                                    <td class="td-border py-2" style="text-align:center;">INV-{{ $value->orders->no_order }}</td>
-                                    <td class="td-border py-2">{{ $value->ket }}</td>
-                                    <td class="td-border py-2" nowarp="nowrap" style="text-align:center;">346346</td>
+                                    <td class="td-border py-2" style="text-align:center;">gsdgsddss</td>
+                                    <td class="td-border py-2" style="text-align:center;">fdhdfhdfh</td>
+                                    <td class="td-border py-2">fdgsddsg</td>
+                                    <td class="td-border py-2" nowarp="nowrap" style="text-align:center;">dfsgsdg</td>
                                     <td class="td-border py-2" nowrap="nowrap" style="text-align:center;">34636</td>
                                     <td class="td-border py-2" nowrap="nowrap" style="text-align:right;">dgsdg</td>
                                 </tr>
-                               @endforeach
+                               
 							</tbody>
                             <footer>
                                 <tr class="tr">

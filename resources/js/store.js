@@ -32,6 +32,11 @@ export const store = new Vuex.Store({
             loadingManage: false,
             items: [],
             attrPaginationManagement: []
+        },
+        laporan: {
+            piutang: [],
+            penjualan: [],
+            cash: []
         }
     },
     getters: {
@@ -107,6 +112,19 @@ export const store = new Vuex.Store({
 
         attrPaginationManagement(state){
             return state.management.attrPaginationManagement
+        },
+
+        // laporan
+        piutang(state){
+            return state.laporan.piutang
+        },
+        
+        penjualan(state){
+            return state.laporan.penjualan
+        },
+
+        cash(state){
+            return state.laporan.cash
         }
     },
     mutations: {

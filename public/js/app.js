@@ -1865,6 +1865,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   mounted: function mounted() {
@@ -2922,6 +2924,28 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
@@ -2932,7 +2956,6 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      valueDate: [],
       lang: {
         days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
         pickers: ['next 7 days', 'next 30 days', 'previous 7 days', 'previous 30 days'],
@@ -2945,14 +2968,42 @@ __webpack_require__.r(__webpack_exports__);
   components: {
     DatePicker: vue2_datepicker__WEBPACK_IMPORTED_MODULE_0___default.a
   },
+  computed: {
+    penjualan: {
+      get: function get() {
+        return this.$store.getters.penjualan;
+      },
+      set: function set(value) {
+        this.$store.state.laporan.penjualan = value;
+      }
+    },
+    piutang: {
+      get: function get() {
+        return this.$store.getters.piutang;
+      },
+      set: function set(value) {
+        this.$store.state.laporan.piutang = value;
+      }
+    },
+    cash: {
+      get: function get() {
+        return this.$store.getters.cash;
+      },
+      set: function set(value) {
+        this.$store.state.laporan.cash = value;
+      }
+    }
+  },
   methods: {
-    eventDate: function eventDate() {
-      if (this.valueDate[0]) {
-        window.open("/api/piutang/".concat(this.valueDate, "/order"), '_blank');
+    printPiutang: function printPiutang() {
+      if (this.piutang[0]) {
+        window.open("/api/piutang/".concat(this.piutang, "/order"), '_blank');
       } else {
         console.log('empty');
       }
-    }
+    },
+    printPenjualan: function printPenjualan() {},
+    printCash: function printCash() {}
   }
 });
 
@@ -44054,58 +44105,60 @@ var render = function() {
   return _c(
     "div",
     [
-      _c("nav", { staticClass: "light-blue darken-1" }, [
-        _c("div", { staticClass: "nav-wrapper" }, [
-          _vm._m(0),
-          _vm._v(" "),
-          _c("h5", { staticClass: "brand-logo hide-on-med-and-down" }, [
-            _vm._v("CENTRO POINT OF SALE")
-          ]),
-          _vm._v(" "),
-          _c("h5", { staticClass: "brand-logo hide-on-med-and-up" }, [
-            _vm._v("CENTRO (POS)")
-          ]),
-          _vm._v(" "),
-          _c(
-            "ul",
-            {
-              staticClass: "right hide-on-med-and-down",
-              attrs: { id: "nav-mobile" }
-            },
-            [
-              _c(
-                "li",
-                [
-                  _c("router-link", { attrs: { to: { name: "Home" } } }, [
-                    _vm._v("Dashboard")
-                  ])
-                ],
-                1
-              ),
-              _vm._v(" "),
-              _c(
-                "li",
-                [
-                  _c("router-link", { attrs: { to: { name: "POS" } } }, [
-                    _vm._v("POS Management")
-                  ])
-                ],
-                1
-              ),
-              _vm._v(" "),
-              _c(
-                "li",
-                [
-                  _c(
-                    "router-link",
-                    { attrs: { exact: "", to: { name: "Login" } } },
-                    [_vm._v("Sign out")]
-                  )
-                ],
-                1
-              )
-            ]
-          )
+      _c("div", { staticClass: "navbar-fixed" }, [
+        _c("nav", { staticClass: "light-blue darken-1" }, [
+          _c("div", { staticClass: "nav-wrapper" }, [
+            _vm._m(0),
+            _vm._v(" "),
+            _c("h5", { staticClass: "brand-logo hide-on-med-and-down" }, [
+              _vm._v("CENTRO POINT OF SALE")
+            ]),
+            _vm._v(" "),
+            _c("h5", { staticClass: "brand-logo hide-on-med-and-up" }, [
+              _vm._v("CENTRO (POS)")
+            ]),
+            _vm._v(" "),
+            _c(
+              "ul",
+              {
+                staticClass: "right hide-on-med-and-down",
+                attrs: { id: "nav-mobile" }
+              },
+              [
+                _c(
+                  "li",
+                  [
+                    _c("router-link", { attrs: { to: { name: "Home" } } }, [
+                      _vm._v("Dashboard")
+                    ])
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "li",
+                  [
+                    _c("router-link", { attrs: { to: { name: "POS" } } }, [
+                      _vm._v("POS Management")
+                    ])
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "li",
+                  [
+                    _c(
+                      "router-link",
+                      { attrs: { exact: "", to: { name: "Login" } } },
+                      [_vm._v("Sign out")]
+                    )
+                  ],
+                  1
+                )
+              ]
+            )
+          ])
         ])
       ]),
       _vm._v(" "),
@@ -45874,38 +45927,123 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _vm.menu == "RM"
     ? _c("div", [
-        _c("div", { staticClass: "row" }, [
-          _vm._m(0),
-          _vm._v(" "),
-          _c(
-            "div",
-            {
-              staticClass: "input-field col s12 m12 l5",
-              staticStyle: { "margin-top": "-14px" }
-            },
-            [
-              _c("date-picker", {
-                attrs: {
-                  valueType: "format",
-                  range: "",
-                  confirm: "",
-                  lang: _vm.lang
-                },
-                on: { change: _vm.eventDate },
-                model: {
-                  value: _vm.valueDate,
-                  callback: function($$v) {
-                    _vm.valueDate = $$v
-                  },
-                  expression: "valueDate"
-                }
-              })
-            ],
-            1
-          )
-        ]),
+        _vm._m(0),
         _vm._v(" "),
-        _vm._m(1)
+        _c("div", { staticClass: "row" }, [
+          _c("div", { staticClass: "col s12 m6" }, [
+            _c("div", { staticClass: "card" }, [
+              _c("div", { staticClass: "card-content black-text" }, [
+                _c("span", { staticClass: "card-title" }, [
+                  _vm._v("Laporan penjualan")
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "row" }, [
+                  _vm._m(1),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    { staticClass: "input-field col s12" },
+                    [
+                      _c("date-picker", {
+                        attrs: {
+                          valueType: "format",
+                          range: "",
+                          confirm: "",
+                          lang: _vm.lang
+                        },
+                        on: { change: _vm.printPenjualan },
+                        model: {
+                          value: _vm.penjualan,
+                          callback: function($$v) {
+                            _vm.penjualan = $$v
+                          },
+                          expression: "penjualan"
+                        }
+                      })
+                    ],
+                    1
+                  )
+                ])
+              ])
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "col s12 m6" }, [
+            _c("div", { staticClass: "card" }, [
+              _c("div", { staticClass: "card-content black-text" }, [
+                _c("span", { staticClass: "card-title" }, [
+                  _vm._v("Laporan piutang")
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "row" }, [
+                  _vm._m(2),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    { staticClass: "input-field col s12" },
+                    [
+                      _c("date-picker", {
+                        attrs: {
+                          valueType: "format",
+                          range: "",
+                          confirm: "",
+                          lang: _vm.lang
+                        },
+                        on: { change: _vm.printPiutang },
+                        model: {
+                          value: _vm.piutang,
+                          callback: function($$v) {
+                            _vm.piutang = $$v
+                          },
+                          expression: "piutang"
+                        }
+                      })
+                    ],
+                    1
+                  )
+                ])
+              ])
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "col s12 m6 offset-m3" }, [
+            _c("div", { staticClass: "card" }, [
+              _c("div", { staticClass: "card-content black-text" }, [
+                _c("span", { staticClass: "card-title" }, [
+                  _vm._v("Laporan Cash")
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "row" }, [
+                  _vm._m(3),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    { staticClass: "input-field col s12" },
+                    [
+                      _c("date-picker", {
+                        attrs: {
+                          valueType: "format",
+                          range: "",
+                          confirm: "",
+                          lang: _vm.lang
+                        },
+                        on: { change: _vm.printCash },
+                        model: {
+                          value: _vm.cash,
+                          callback: function($$v) {
+                            _vm.cash = $$v
+                          },
+                          expression: "cash"
+                        }
+                      })
+                    ],
+                    1
+                  )
+                ])
+              ])
+            ])
+          ])
+        ])
       ])
     : _vm._e()
 }
@@ -45914,59 +46052,64 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      {
-        staticClass: "col s12 m12 l7",
-        staticStyle: { "margin-bottom": "20px" }
-      },
-      [_c("span", { staticClass: "card-title" }, [_vm._v("Report Management")])]
-    )
+    return _c("div", { staticClass: "row" }, [
+      _c(
+        "div",
+        {
+          staticClass: "col s12 m12 l7",
+          staticStyle: { "margin-bottom": "20px" }
+        },
+        [
+          _c("span", { staticClass: "card-title" }, [
+            _vm._v("Report Management")
+          ])
+        ]
+      )
+    ])
   },
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col s12 m6" }, [
-        _c("div", { staticClass: "card" }, [
-          _c("div", { staticClass: "card-content black-text" }, [
-            _c("span", { staticClass: "card-title" }, [_vm._v("Card Title")]),
-            _vm._v(" "),
-            _c("p", [
-              _vm._v(
-                "I am a very simple card. I am good at containing small bits of information.\n                    I am convenient because I require little markup to use effectively."
-              )
-            ])
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "card-action" }, [
-            _c("a", { attrs: { href: "#" } }, [_vm._v("This is a link")]),
-            _vm._v(" "),
-            _c("a", { attrs: { href: "#" } }, [_vm._v("This is a link")])
-          ])
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "col s12 m6" }, [
-        _c("div", { staticClass: "card" }, [
-          _c("div", { staticClass: "card-content black-text" }, [
-            _c("span", { staticClass: "card-title" }, [_vm._v("Card Title")]),
-            _vm._v(" "),
-            _c("p", [
-              _vm._v(
-                "I am a very simple card. I am good at containing small bits of information.\n                    I am convenient because I require little markup to use effectively."
-              )
-            ])
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "card-action" }, [
-            _c("a", { attrs: { href: "#" } }, [_vm._v("This is a link")]),
-            _vm._v(" "),
-            _c("a", { attrs: { href: "#" } }, [_vm._v("This is a link")])
-          ])
-        ])
-      ])
+    return _c("div", { staticClass: "input-field col s12" }, [
+      _c("input", {
+        staticClass: "validate",
+        attrs: {
+          id: "last_name",
+          type: "text",
+          placeholder: "Cari berdasarkan nama product"
+        }
+      })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "input-field col s12" }, [
+      _c("input", {
+        staticClass: "validate",
+        attrs: {
+          id: "last_name",
+          type: "text",
+          placeholder: "Cari berdasarkan nama product"
+        }
+      })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "input-field col s12" }, [
+      _c("input", {
+        staticClass: "validate",
+        attrs: {
+          id: "last_name",
+          type: "text",
+          placeholder: "Cari berdasarkan nama product"
+        }
+      })
     ])
   }
 ]
@@ -63662,14 +63805,15 @@ __webpack_require__.r(__webpack_exports__);
 /*!***************************************************************************!*\
   !*** ./resources/js/components/page/pos/sidenavmenu/ReportManagement.vue ***!
   \***************************************************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ReportManagement_vue_vue_type_template_id_c887fcca___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ReportManagement.vue?vue&type=template&id=c887fcca& */ "./resources/js/components/page/pos/sidenavmenu/ReportManagement.vue?vue&type=template&id=c887fcca&");
 /* harmony import */ var _ReportManagement_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ReportManagement.vue?vue&type=script&lang=js& */ "./resources/js/components/page/pos/sidenavmenu/ReportManagement.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _ReportManagement_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _ReportManagement_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -63699,7 +63843,7 @@ component.options.__file = "resources/js/components/page/pos/sidenavmenu/ReportM
 /*!****************************************************************************************************!*\
   !*** ./resources/js/components/page/pos/sidenavmenu/ReportManagement.vue?vue&type=script&lang=js& ***!
   \****************************************************************************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -63806,6 +63950,11 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
       loadingManage: false,
       items: [],
       attrPaginationManagement: []
+    },
+    laporan: {
+      piutang: [],
+      penjualan: [],
+      cash: []
     }
   },
   getters: {
@@ -63864,6 +64013,16 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
     },
     attrPaginationManagement: function attrPaginationManagement(state) {
       return state.management.attrPaginationManagement;
+    },
+    // laporan
+    piutang: function piutang(state) {
+      return state.laporan.piutang;
+    },
+    penjualan: function penjualan(state) {
+      return state.laporan.penjualan;
+    },
+    cash: function cash(state) {
+      return state.laporan.cash;
     }
   },
   mutations: {

@@ -5,7 +5,7 @@ return array(
 
     'pdf' => array(
         'enabled' => true,
-        'binary'  => '/usr/local/bin/wkhtmltopdf',
+        'binary'  => base_path('vendor\wemersonjanuario\wkhtmltopdf-windows\bin\32bit\wkhtmltopdf'),
         'timeout' => false,
         'options' => array(),
         'env'     => array(),
