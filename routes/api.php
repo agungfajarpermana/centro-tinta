@@ -31,6 +31,8 @@ Route::get('/order/{search}/customer', 'API\OrderController@index');
 Route::Resource('/piutang', 'API\PiutangController');
 Route::get('/piutang/{dates}/order', 'API\PiutangController@index');
 
+Route::get('/laporan/{dates}/penjualan', 'Laporan\LaporanPenjualanController@index');
+
 // Route::group(['prefix' => 'branch'], function(){
 //     Route::apiResource('/search/{branch}', 'API\BranchProductController@search');
 // });

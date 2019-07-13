@@ -93,7 +93,7 @@
 									</td>
 									<td class="tag-text">
 										<h4 style="text-align:right;margin-top:60px;margin-bottom:0px;">
-											PENERIMAAN UANG <br/>
+											LAPORAN PIUTANG <br/>
 											Tanggal : dfhdh	
 										</h4>
 									</td>

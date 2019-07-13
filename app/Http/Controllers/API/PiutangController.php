@@ -30,17 +30,16 @@ class PiutangController extends Controller
             $data = Piutangs::collection(Piutang::all());
         }
 
-        return $data;
-        // $pdf = PDF::loadView('print.laporan_piutang', compact('data'));
-        // return $pdf->setOption('page-size', 'A4')
-        //             ->setOrientation('landscape')
-        //             ->setOption('margin-bottom', '1cm')
-        //             ->setOption('margin-left', '2cm')
-        //             ->setOption('margin-right', '2cm')
-        //             ->setOption('margin-top', '1cm')
-        //             ->setOption('footer-right', 'Hal : [page] / [toPage]')
-        //             ->setOption('footer-font-size', 8)
-        //             ->stream();
+        $pdf = PDF::loadView('print.laporan_piutang', compact('data'));
+        return $pdf->setOption('page-size', 'A4')
+                    ->setOrientation('landscape')
+                    ->setOption('margin-bottom', '1cm')
+                    ->setOption('margin-left', '2cm')
+                    ->setOption('margin-right', '2cm')
+                    ->setOption('margin-top', '1cm')
+                    ->setOption('footer-right', 'Hal : [page] / [toPage]')
+                    ->setOption('footer-font-size', 8)
+                    ->stream();
     }
 
     /**

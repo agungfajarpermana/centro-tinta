@@ -129,7 +129,11 @@ export default {
         },
 
         printPenjualan(){
-
+            if(this.penjualan[0]){
+                window.open(`/api/laporan/${this.penjualan}/penjualan`, '_blank');
+            }else{
+                console.log('empty')
+            }
         },
 
         printCash(){
