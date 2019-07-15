@@ -152,7 +152,7 @@
                                     <td class="td-border py-2" style="text-align:center;">{{ Carbon::parse($value->tanggal)->format('d, M Y') }}</td>
                                     <td class="td-border py-2" style="text-align:center;">INV-{{ $value->no_order }}</td>
                                     <td class="td-border py-2" style="text-align:left;">{{ $value->customer->nama_customer }}</td>
-                                    <td class="td-border py-2" nowarp="nowrap" style="text-align:left;">{{ $value->product->nama_product }}</td>
+                                    <td class="td-border py-2" nowarp="nowrap" style="text-align:left;">{{ ($value->product ? $value->product->nama_product : $value->id) }}</td>
                                     <td class="td-border py-2" nowrap="nowrap" style="text-align:center;">{{ $value->qty }}</td>
                                     <td class="td-border py-2" nowrap="nowrap" style="text-align:right;">{{ number_format($value->product_detail->harga,0,'','.') }}</td>
                                     <td class="td-border py-2" nowrap="nowrap" style="text-align:right;">{{ number_format($value->total_pembelian,0,'','.') }}</td>

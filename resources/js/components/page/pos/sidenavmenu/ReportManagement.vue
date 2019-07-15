@@ -10,7 +10,7 @@
             <div class="col s12 m6">
                 <div class="card">
                     <div class="card-content black-text">
-                        <span class="card-title">Laporan penjualan</span>
+                        <span class="card-title">Laporan Cash</span>
 
                         <div class="row">
                             <div class="input-field col s12">
@@ -18,7 +18,7 @@
                             </div>
                             
                             <div class="input-field col s12">
-                                <date-picker v-model="penjualan" valueType="format" range confirm :lang="lang" @change="printPenjualan"></date-picker>
+                                <date-picker v-model="cashDate" valueType="format" range confirm :lang="lang" @change="printCash"></date-picker>
                             </div>
                         </div>
                     </div>
@@ -36,7 +36,7 @@
                             </div>
                             
                             <div class="input-field col s12">
-                                <date-picker v-model="piutang" valueType="format" range confirm :lang="lang" @change="printPiutang"></date-picker>
+                                <date-picker v-model="piutangDate" valueType="format" range confirm :lang="lang" @change="printPiutang"></date-picker>
                             </div>
                         </div>
                     </div>
@@ -46,15 +46,15 @@
             <div class="col s12 m6 offset-m3">
                 <div class="card">
                     <div class="card-content black-text">
-                        <span class="card-title">Laporan Cash</span>
+                        <span class="card-title">Laporan penjualan</span>
 
                         <div class="row">
                             <div class="input-field col s12">
-                                <input id="last_name" type="text" class="validate" placeholder="Cari berdasarkan nama product">
+                                <input id="last_name" v-model="penjualanSearch" type="text" class="validate" placeholder="Cari berdasarkan nama product">
                             </div>
                             
                             <div class="input-field col s12">
-                                <date-picker v-model="cash" valueType="format" range confirm :lang="lang" @change="printCash"></date-picker>
+                                <date-picker v-model="penjualanDate" valueType="format" range confirm :lang="lang" @change="printPenjualan"></date-picker>
                             </div>
                         </div>
                     </div>
@@ -82,55 +82,89 @@ export default {
                 placeholder: {
                     dateRange: 'Pilih tanggal cetak laporan penjualan'
                 }
-            }
+            },
+            options: [
+                'foo',
+                'bar'
+            ]
         }
     },
     components: {
-        DatePicker
+        DatePicker,
     },
     computed: {
-        penjualan: {
+        penjualanDate: {
             get(){
-                return this.$store.getters.penjualan
+                return this.$store.getters.penjualanDate
             },
 
             set(value){
-                this.$store.state.laporan.penjualan = value
+                this.$store.state.laporan.penjualan.date = value
             }
         },
 
-        piutang: {
+        penjualanSearch: {
             get(){
-                return this.$store.getters.piutang
+                return this.$store.getters.penjualanSearch
             },
 
             set(value){
-                this.$store.state.laporan.piutang = value
+                this.$store.state.laporan.penjualan.search = value
             }
         },
 
-        cash: {
+        piutangDate: {
             get(){
-                return this.$store.getters.cash
+                return this.$store.getters.piutangDate
             },
 
             set(value){
-                this.$store.state.laporan.cash = value
+                this.$store.state.laporan.piutang.date = value
+            }
+        },
+
+        piutangSearch: {
+            get(){
+                return this.$store.getters.piutangSearch
+            },
+
+            set(value){
+                this.$store.state.laporan.piutang.search = value
+            }
+        },
+
+        cashDate: {
+            get(){
+                return this.$store.getters.cashDate
+            },
+
+            set(value){
+                this.$store.state.laporan.cash.date = value
+            }
+        },
+
+        cashSearch:{
+            get(){
+                return this.$store.getters.cashSearch
+            },
+
+            set(value){
+                this.$store.state.laporan.cash.search = value
             }
         }
     },
     methods: {
         printPiutang(){
-            if(this.piutang[0]){
-                window.open(`/api/piutang/${this.piutang}/order`, '_blank');
+            if(this.piutangDate[0]){
+                window.open(`/api/piutang/${this.piutangDate}/order`, '_blank');
             }else{
                 console.log('empty')
             }
         },
 
         printPenjualan(){
-            if(this.penjualan[0]){
-                window.open(`/api/laporan/${this.penjualan}/penjualan`, '_blank');
+            if(this.penjualanDate[0]){
+                window.open(`/api/laporan/${this.penjualanDate}/${this.penjualanSearch || null}/penjualan`, '_blank');
             }else{
                 console.log('empty')
             }

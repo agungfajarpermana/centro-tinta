@@ -9,20 +9,27 @@ use App\Http\Controllers\Controller;
 
 class laporanPenjualanController extends Controller
 {
-    public function index($dates)
+    public function index($dates, $product = null)
     {
         $data = explode(",", $dates);
         $date = collect($data)->flatten();
         
         $data = Order::whereBetween('tanggal', [$date[0], $date[1]])
-                        ->orderBy('tanggal', 'ASC')->orderBy('no_order', 'ASC')->get();
+                        ->whereHas('product', function ($query) use ($product) {
+                            if($product !== 'null'){
+                                $query->where('nama_product', 'LIKE', '%'.$product.'%');
+                            }
+                        })
+                        ->orderBy('tanggal', 'ASC')
+                        ->orderBy('no_order', 'ASC')
+                        ->get();
         
         $laporan = collect($data);
         
         $penjualan = $laporan->groupBy(function($item, $key){
             return $item['tanggal'];
         });
-
+        
         $option = [
             'data' => $penjualan,
             'from' => $date[0],

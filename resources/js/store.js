@@ -34,9 +34,18 @@ export const store = new Vuex.Store({
             attrPaginationManagement: []
         },
         laporan: {
-            piutang: [],
-            penjualan: [],
-            cash: []
+            piutang: {
+                date: [],
+                search: ''
+            },
+            penjualan: {
+                date: [],
+                search: ''
+            },
+            cash: {
+                date: [],
+                search: ''
+            }
         }
     },
     getters: {
@@ -114,17 +123,29 @@ export const store = new Vuex.Store({
             return state.management.attrPaginationManagement
         },
 
-        // laporan
-        piutang(state){
-            return state.laporan.piutang
-        },
-        
-        penjualan(state){
-            return state.laporan.penjualan
+        // laporan CASH, PIUTANG, PENJUALAN
+        piutangDate(state){
+            return state.laporan.piutang.date
         },
 
-        cash(state){
-            return state.laporan.cash
+        piutangSearch(state){
+            return state.laporan.piutang.search
+        },
+        
+        penjualanDate(state){
+            return state.laporan.penjualan.date
+        },
+
+        penjualanSearch(state){
+            return state.laporan.penjualan.search
+        },
+
+        cashDate(state){
+            return state.laporan.cash.date
+        },
+
+        cashSearch(state){
+            return state.laporan.cash.search
         }
     },
     mutations: {

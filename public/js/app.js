@@ -2962,49 +2962,74 @@ __webpack_require__.r(__webpack_exports__);
         placeholder: {
           dateRange: 'Pilih tanggal cetak laporan penjualan'
         }
-      }
+      },
+      options: ['foo', 'bar']
     };
   },
   components: {
     DatePicker: vue2_datepicker__WEBPACK_IMPORTED_MODULE_0___default.a
   },
   computed: {
-    penjualan: {
+    penjualanDate: {
       get: function get() {
-        return this.$store.getters.penjualan;
+        return this.$store.getters.penjualanDate;
       },
       set: function set(value) {
-        this.$store.state.laporan.penjualan = value;
+        this.$store.state.laporan.penjualan.date = value;
       }
     },
-    piutang: {
+    penjualanSearch: {
       get: function get() {
-        return this.$store.getters.piutang;
+        return this.$store.getters.penjualanSearch;
       },
       set: function set(value) {
-        this.$store.state.laporan.piutang = value;
+        this.$store.state.laporan.penjualan.search = value;
       }
     },
-    cash: {
+    piutangDate: {
       get: function get() {
-        return this.$store.getters.cash;
+        return this.$store.getters.piutangDate;
       },
       set: function set(value) {
-        this.$store.state.laporan.cash = value;
+        this.$store.state.laporan.piutang.date = value;
+      }
+    },
+    piutangSearch: {
+      get: function get() {
+        return this.$store.getters.piutangSearch;
+      },
+      set: function set(value) {
+        this.$store.state.laporan.piutang.search = value;
+      }
+    },
+    cashDate: {
+      get: function get() {
+        return this.$store.getters.cashDate;
+      },
+      set: function set(value) {
+        this.$store.state.laporan.cash.date = value;
+      }
+    },
+    cashSearch: {
+      get: function get() {
+        return this.$store.getters.cashSearch;
+      },
+      set: function set(value) {
+        this.$store.state.laporan.cash.search = value;
       }
     }
   },
   methods: {
     printPiutang: function printPiutang() {
-      if (this.piutang[0]) {
-        window.open("/api/piutang/".concat(this.piutang, "/order"), '_blank');
+      if (this.piutangDate[0]) {
+        window.open("/api/piutang/".concat(this.piutangDate, "/order"), '_blank');
       } else {
         console.log('empty');
       }
     },
     printPenjualan: function printPenjualan() {
-      if (this.penjualan[0]) {
-        window.open("/api/laporan/".concat(this.penjualan, "/penjualan"), '_blank');
+      if (this.penjualanDate[0]) {
+        window.open("/api/laporan/".concat(this.penjualanDate, "/").concat(this.penjualanSearch || null, "/penjualan"), '_blank');
       } else {
         console.log('empty');
       }
@@ -45940,7 +45965,7 @@ var render = function() {
             _c("div", { staticClass: "card" }, [
               _c("div", { staticClass: "card-content black-text" }, [
                 _c("span", { staticClass: "card-title" }, [
-                  _vm._v("Laporan penjualan")
+                  _vm._v("Laporan Cash")
                 ]),
                 _vm._v(" "),
                 _c("div", { staticClass: "row" }, [
@@ -45957,13 +45982,13 @@ var render = function() {
                           confirm: "",
                           lang: _vm.lang
                         },
-                        on: { change: _vm.printPenjualan },
+                        on: { change: _vm.printCash },
                         model: {
-                          value: _vm.penjualan,
+                          value: _vm.cashDate,
                           callback: function($$v) {
-                            _vm.penjualan = $$v
+                            _vm.cashDate = $$v
                           },
-                          expression: "penjualan"
+                          expression: "cashDate"
                         }
                       })
                     ],
@@ -45997,11 +46022,11 @@ var render = function() {
                         },
                         on: { change: _vm.printPiutang },
                         model: {
-                          value: _vm.piutang,
+                          value: _vm.piutangDate,
                           callback: function($$v) {
-                            _vm.piutang = $$v
+                            _vm.piutangDate = $$v
                           },
-                          expression: "piutang"
+                          expression: "piutangDate"
                         }
                       })
                     ],
@@ -46016,11 +46041,37 @@ var render = function() {
             _c("div", { staticClass: "card" }, [
               _c("div", { staticClass: "card-content black-text" }, [
                 _c("span", { staticClass: "card-title" }, [
-                  _vm._v("Laporan Cash")
+                  _vm._v("Laporan penjualan")
                 ]),
                 _vm._v(" "),
                 _c("div", { staticClass: "row" }, [
-                  _vm._m(3),
+                  _c("div", { staticClass: "input-field col s12" }, [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.penjualanSearch,
+                          expression: "penjualanSearch"
+                        }
+                      ],
+                      staticClass: "validate",
+                      attrs: {
+                        id: "last_name",
+                        type: "text",
+                        placeholder: "Cari berdasarkan nama product"
+                      },
+                      domProps: { value: _vm.penjualanSearch },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.penjualanSearch = $event.target.value
+                        }
+                      }
+                    })
+                  ]),
                   _vm._v(" "),
                   _c(
                     "div",
@@ -46033,13 +46084,13 @@ var render = function() {
                           confirm: "",
                           lang: _vm.lang
                         },
-                        on: { change: _vm.printCash },
+                        on: { change: _vm.printPenjualan },
                         model: {
-                          value: _vm.cash,
+                          value: _vm.penjualanDate,
                           callback: function($$v) {
-                            _vm.cash = $$v
+                            _vm.penjualanDate = $$v
                           },
-                          expression: "cash"
+                          expression: "penjualanDate"
                         }
                       })
                     ],
@@ -46071,21 +46122,6 @@ var staticRenderFns = [
           ])
         ]
       )
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "input-field col s12" }, [
-      _c("input", {
-        staticClass: "validate",
-        attrs: {
-          id: "last_name",
-          type: "text",
-          placeholder: "Cari berdasarkan nama product"
-        }
-      })
     ])
   },
   function() {
@@ -63957,9 +63993,18 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
       attrPaginationManagement: []
     },
     laporan: {
-      piutang: [],
-      penjualan: [],
-      cash: []
+      piutang: {
+        date: [],
+        search: ''
+      },
+      penjualan: {
+        date: [],
+        search: ''
+      },
+      cash: {
+        date: [],
+        search: ''
+      }
     }
   },
   getters: {
@@ -64019,15 +64064,24 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
     attrPaginationManagement: function attrPaginationManagement(state) {
       return state.management.attrPaginationManagement;
     },
-    // laporan
-    piutang: function piutang(state) {
-      return state.laporan.piutang;
+    // laporan CASH, PIUTANG, PENJUALAN
+    piutangDate: function piutangDate(state) {
+      return state.laporan.piutang.date;
     },
-    penjualan: function penjualan(state) {
-      return state.laporan.penjualan;
+    piutangSearch: function piutangSearch(state) {
+      return state.laporan.piutang.search;
     },
-    cash: function cash(state) {
-      return state.laporan.cash;
+    penjualanDate: function penjualanDate(state) {
+      return state.laporan.penjualan.date;
+    },
+    penjualanSearch: function penjualanSearch(state) {
+      return state.laporan.penjualan.search;
+    },
+    cashDate: function cashDate(state) {
+      return state.laporan.cash.date;
+    },
+    cashSearch: function cashSearch(state) {
+      return state.laporan.cash.search;
     }
   },
   mutations: {
