@@ -14,7 +14,7 @@
 
                         <div class="row">
                             <div class="input-field col s12">
-                                <input id="last_name" type="text" class="validate" placeholder="Cari berdasarkan nama product">
+                                <input id="last_name" v-model="cashSearch" type="text" class="validate" placeholder="Cari berdasarkan nama product">
                             </div>
                             
                             <div class="input-field col s12">
@@ -32,7 +32,7 @@
 
                         <div class="row">
                             <div class="input-field col s12">
-                                <input id="last_name" type="text" class="validate" placeholder="Cari berdasarkan nama product">
+                                <input id="last_name" v-model="piutangSearch" type="text" class="validate" placeholder="Cari berdasarkan nama product">
                             </div>
                             
                             <div class="input-field col s12">
@@ -156,7 +156,7 @@ export default {
     methods: {
         printPiutang(){
             if(this.piutangDate[0]){
-                window.open(`/api/piutang/${this.piutangDate}/order`, '_blank');
+                window.open(`/api/laporan/${this.piutangDate}/${this.piutangSearch || null}/piutang`, '_blank');
             }else{
                 console.log('empty')
             }

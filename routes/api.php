@@ -28,10 +28,12 @@ Route::match(['GET'], '/branch/{search}/search', 'API\BranchProductController@se
 Route::Resource('/order', 'API\OrderController');
 Route::get('/order/{search}/customer', 'API\OrderController@index');
 
-Route::Resource('/piutang', 'API\PiutangController');
-Route::get('/piutang/{dates}/order', 'API\PiutangController@index');
+// Route::Resource('/piutang', 'API\PiutangController');
+// Route::get('/piutang/{dates}/order', 'API\PiutangController@index');
 
-Route::get('/laporan/{dates}/{product?}/penjualan', 'Laporan\LaporanPenjualanController@index');
+// Route Laporan
+Route::get('/laporan/{dates}/{product?}/penjualan', 'Laporan\laporanPenjualanController@index');
+Route::get('/laporan/{dates}/{customer?}/piutang', 'Laporan\laporanPiutangController@index');
 
 // Route::group(['prefix' => 'branch'], function(){
 //     Route::apiResource('/search/{branch}', 'API\BranchProductController@search');

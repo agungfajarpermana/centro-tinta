@@ -3022,7 +3022,7 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     printPiutang: function printPiutang() {
       if (this.piutangDate[0]) {
-        window.open("/api/piutang/".concat(this.piutangDate, "/order"), '_blank');
+        window.open("/api/laporan/".concat(this.piutangDate, "/").concat(this.piutangSearch || null, "/piutang"), '_blank');
       } else {
         console.log('empty');
       }
@@ -45969,7 +45969,33 @@ var render = function() {
                 ]),
                 _vm._v(" "),
                 _c("div", { staticClass: "row" }, [
-                  _vm._m(1),
+                  _c("div", { staticClass: "input-field col s12" }, [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.cashSearch,
+                          expression: "cashSearch"
+                        }
+                      ],
+                      staticClass: "validate",
+                      attrs: {
+                        id: "last_name",
+                        type: "text",
+                        placeholder: "Cari berdasarkan nama product"
+                      },
+                      domProps: { value: _vm.cashSearch },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.cashSearch = $event.target.value
+                        }
+                      }
+                    })
+                  ]),
                   _vm._v(" "),
                   _c(
                     "div",
@@ -46007,7 +46033,33 @@ var render = function() {
                 ]),
                 _vm._v(" "),
                 _c("div", { staticClass: "row" }, [
-                  _vm._m(2),
+                  _c("div", { staticClass: "input-field col s12" }, [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.piutangSearch,
+                          expression: "piutangSearch"
+                        }
+                      ],
+                      staticClass: "validate",
+                      attrs: {
+                        id: "last_name",
+                        type: "text",
+                        placeholder: "Cari berdasarkan nama product"
+                      },
+                      domProps: { value: _vm.piutangSearch },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.piutangSearch = $event.target.value
+                        }
+                      }
+                    })
+                  ]),
                   _vm._v(" "),
                   _c(
                     "div",
@@ -46122,36 +46174,6 @@ var staticRenderFns = [
           ])
         ]
       )
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "input-field col s12" }, [
-      _c("input", {
-        staticClass: "validate",
-        attrs: {
-          id: "last_name",
-          type: "text",
-          placeholder: "Cari berdasarkan nama product"
-        }
-      })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "input-field col s12" }, [
-      _c("input", {
-        staticClass: "validate",
-        attrs: {
-          id: "last_name",
-          type: "text",
-          placeholder: "Cari berdasarkan nama product"
-        }
-      })
     ])
   }
 ]
