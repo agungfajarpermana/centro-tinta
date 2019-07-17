@@ -46,6 +46,13 @@ export const store = new Vuex.Store({
                 date: [],
                 search: ''
             }
+        },
+
+        customers: {
+            valueCust: null,
+            disabled: false,
+            loadingCust: false,
+            customerName: []
         }
     },
     getters: {
@@ -146,7 +153,24 @@ export const store = new Vuex.Store({
 
         cashSearch(state){
             return state.laporan.cash.search
-        }
+        },
+
+        // data customer
+        valueCust(state){
+            return state.customers.valueCust
+        },
+
+        disabled(state){
+           return state.customers.disabled
+        },
+
+        loadingCust(state){
+            return state.customers.loadingCust
+        },
+        
+        customerName(state){
+            return state.customers.customerName
+        },
     },
     mutations: {
         SET_DATA_PRODUCT_ITEMS(state, payloadProduct){
@@ -346,6 +370,16 @@ export const store = new Vuex.Store({
 
             state.management.loadingManage = false
             store.dispatch('getItemManagement', url)
+        },
+
+        SET_DATA_CUSTOMER_SALES(state, payloadCustomer){
+            let customers = []
+            payloadCustomer.data.map(val => {
+                customers.push(val.customer)
+            })
+
+            state.customers.customerName = customers
+            state.customers.loadingCust = false
         }
     },
     actions: {
@@ -404,6 +438,16 @@ export const store = new Vuex.Store({
 
         searchDataItemManagement({commit}, value){
             commit('SET_DATA_SEARCH_ITEM_MANAGEMENT', value)
+        },
+
+        // data customer
+        getDataCustomer({commit}, url){
+            axios.get(url)
+                .then(res => {
+                    commit('SET_DATA_CUSTOMER_SALES', res.data)
+                }).catch(err => {
+                    console.log(err)
+                })
         }
     }
 });

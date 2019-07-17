@@ -54,6 +54,6 @@ class laporanPiutangController extends Controller
                     ->setOption('margin-top', '1cm')
                     ->setOption('footer-right', 'Hal : [page] / [toPage]')
                     ->setOption('footer-font-size', 8)
-                    ->stream();
+                    ->stream(); 
     }
 }

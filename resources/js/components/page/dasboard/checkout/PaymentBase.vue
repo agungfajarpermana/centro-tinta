@@ -1,38 +1,14 @@
 <template>
     <div class="container" v-if="show">
-        <h6 class="center-align title">Metode Pembayaran</h6>
-
         <div class="row animated fadeIn">
-            <div class="col s10 offset-s2">
-                <div class="col s5">
-                    <label>
-                        <input class="with-gap" name="group3" type="radio" 
-                            checked
-                            @change="modeChange('cash')"
-                            value="cash" />
-                        <span>Piutang</span>
-                    </label>
-                </div>
-                <div class="col s5">
-                    <label>
-                        <input class="with-gap" name="group3" type="radio"
-                            @change="modeChange('card')" 
-                            value="credit" 
-                        />
-                        <span>Bayar Cash</span>
-                    </label>
-                </div>
-            </div>
-
-            <PaymentCash :mode="mode"/>
-            <paymentCard :mode="mode"/>
+            <h5 class="center-align title">Form Penjualan</h5>
+            <FormPenjualan :mode="mode"/>
         </div>
     </div>
 </template>
 
 <script>
-import PaymentCash from './PaymentCash';
-import PaymentCard from './PaymentCard';
+import FormPenjualan from './PaymentPenjualan';
 
 export default {
     props: {
@@ -42,8 +18,7 @@ export default {
         }
     },
     components: {
-        PaymentCash,
-        PaymentCard
+        FormPenjualan,
     },
     computed: {
         mode(){
