@@ -2302,6 +2302,20 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue_multiselect__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue-multiselect */ "./node_modules/vue-multiselect/dist/vue-multiselect.min.js");
 /* harmony import */ var vue_multiselect__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue_multiselect__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _app__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../../app */ "./resources/js/app.js");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_2__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -2333,6 +2347,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 
+
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     mode: {
@@ -2355,19 +2371,37 @@ __webpack_require__.r(__webpack_exports__);
     disabled: function disabled() {
       return this.$store.getters.disabled;
     },
-    loadingCust: function loadingCust() {
-      return this.$store.getters.loadingCust;
-    },
     customerName: function customerName() {
       return this.$store.getters.customerName;
+    },
+    customerDetail: function customerDetail() {
+      return this.$store.getters.customerDetail;
+    },
+    loadingDisplay: function loadingDisplay() {
+      return this.$store.getters.loadingDisplay;
     }
   },
-  watch: {},
-  mounted: function mounted() {},
+  created: function created() {
+    var _this = this;
+
+    _app__WEBPACK_IMPORTED_MODULE_1__["Bus"].$on('searchCustomer', function (data) {
+      if (data) {
+        _this.$store.dispatch('detailDataCustomer', "/api/customers/".concat(data.uniqid));
+      } else {
+        _this.$store.state.customers.customerDetail = [];
+      }
+    });
+    this.$store.dispatch('getDataCustomer', '/api/customers');
+  },
+  watch: {
+    valueCust: lodash__WEBPACK_IMPORTED_MODULE_2___default.a.debounce(function (event) {
+      _app__WEBPACK_IMPORTED_MODULE_1__["Bus"].$emit('searchCustomer', event);
+    }, 800)
+  },
   methods: {
-    searchCustomer: function searchCustomer(val) {
-      this.$store.state.customers.loadingCust = true;
-      this.$store.dispatch('getDataCustomer', '/api/customers');
+    nameWithLang: function nameWithLang(_ref) {
+      var customer = _ref.customer;
+      return "".concat(customer);
     }
   }
 });
@@ -3204,7 +3238,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../../node_module
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n/* .cash{\r\n    margin-top: 20px;\r\n} */\r\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n/* .cash{\r\n    margin-top: 20px;\r\n} */\r\n", ""]);
 
 // exports
 
@@ -45024,11 +45058,26 @@ var render = function() {
                         limit: 3,
                         "max-height": 150,
                         disabled: _vm.disabled,
-                        "track-by": "key",
-                        loading: _vm.loadingCust,
+                        "custom-label": _vm.nameWithLang,
+                        "track-by": "customer",
                         placeholder: "pilih customer"
                       },
-                      on: { "search-change": _vm.searchCustomer },
+                      scopedSlots: _vm._u(
+                        [
+                          {
+                            key: "singleLabel",
+                            fn: function(ref) {
+                              var option = ref.option
+                              return [
+                                _c("strong", [_vm._v(_vm._s(option.customer))])
+                              ]
+                            }
+                          }
+                        ],
+                        null,
+                        false,
+                        3086289288
+                      ),
                       model: {
                         value: _vm.valueCust,
                         callback: function($$v) {
@@ -45038,6 +45087,7 @@ var render = function() {
                       }
                     },
                     [
+                      _vm._v(" "),
                       _c(
                         "span",
                         { attrs: { slot: "noResult" }, slot: "noResult" },
@@ -45050,7 +45100,19 @@ var render = function() {
               )
             ]),
             _vm._v(" "),
-            _vm._m(0)
+            _c("div", { staticClass: "row" }, [
+              _c("div", { staticClass: "col s12 m6" }, [
+                _c("h6", [_vm._v(_vm._s(_vm.customerDetail.nama_customer))])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col s12 m6" }, [
+                _c("h6", [_vm._v(_vm._s(_vm.customerDetail.perusahaan))])
+              ])
+            ]),
+            _vm._v(" "),
+            _vm.customerDetail.length != 0
+              ? _c("div", { staticClass: "row" }, [_vm._m(0)])
+              : _vm._e()
           ])
         ])
       : _vm._e()
@@ -45061,17 +45123,24 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "input-field col s6" }, [
-        _c(
-          "button",
-          {
-            staticClass: "btn btn-flat amber darken-4 white-text",
-            attrs: { type: "submit" }
-          },
-          [_vm._v("Simpan")]
-        )
-      ])
+    return _c("div", { staticClass: "input-field col s6" }, [
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-flat amber darken-4 white-text",
+          attrs: { type: "submit" }
+        },
+        [_vm._v("Simpan")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-flat amber darken-4 white-text",
+          attrs: { type: "submit" }
+        },
+        [_vm._v("Batalkan")]
+      )
     ])
   }
 ]
@@ -64151,8 +64220,9 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
     customers: {
       valueCust: null,
       disabled: false,
-      loadingCust: false,
-      customerName: []
+      loadingDisplay: false,
+      customerName: [],
+      customerDetail: []
     }
   },
   getters: {
@@ -64238,11 +64308,14 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
     disabled: function disabled(state) {
       return state.customers.disabled;
     },
-    loadingCust: function loadingCust(state) {
-      return state.customers.loadingCust;
-    },
     customerName: function customerName(state) {
       return state.customers.customerName;
+    },
+    customerDetail: function customerDetail(state) {
+      return state.customers.customerDetail;
+    },
+    loadingDisplay: function loadingDisplay(state) {
+      return state.customers.loadingDisplay;
     }
   },
   mutations: {
@@ -64436,10 +64509,12 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
     SET_DATA_CUSTOMER_SALES: function SET_DATA_CUSTOMER_SALES(state, payloadCustomer) {
       var customers = [];
       payloadCustomer.data.map(function (val) {
-        customers.push(val.customer);
+        customers.push(val);
       });
       state.customers.customerName = customers;
-      state.customers.loadingCust = false;
+    },
+    SET_DATA_CUSTOMER_AFTER_SEARCH: function SET_DATA_CUSTOMER_AFTER_SEARCH(state, payloadCustomer) {
+      state.customers.customerDetail = payloadCustomer;
     }
   },
   actions: {
@@ -64503,7 +64578,15 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
       axios__WEBPACK_IMPORTED_MODULE_2___default.a.get(url).then(function (res) {
         commit('SET_DATA_CUSTOMER_SALES', res.data);
       })["catch"](function (err) {
-        console.log(err);
+        console.log(err.response);
+      });
+    },
+    detailDataCustomer: function detailDataCustomer(_ref13, data) {
+      var commit = _ref13.commit;
+      axios__WEBPACK_IMPORTED_MODULE_2___default.a.post(data).then(function (res) {
+        commit('SET_DATA_CUSTOMER_AFTER_SEARCH', res.data);
+      })["catch"](function (err) {
+        console.log(err.response);
       });
     }
   }

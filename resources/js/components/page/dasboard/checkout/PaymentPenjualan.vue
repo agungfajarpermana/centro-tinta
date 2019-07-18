@@ -9,18 +9,29 @@
                             :options-limit="30" :limit="3"
                             :max-height="150"
                             :disabled="disabled"
-                            track-by="key"
-                            :loading="loadingCust"
-                            @search-change="searchCustomer"
+                            :custom-label="nameWithLang"
+                            track-by="customer"
                             placeholder="pilih customer">
+                                <template slot="singleLabel" slot-scope="{ option }"><strong>{{ option.customer }}</strong></template>
                                 <span slot="noResult">Oops! Nama Customer Belum Terdaftar.</span>
                             </multiselect>
                     </div>
                 </div>
                 
                 <div class="row">
+                    <div class="col s12 m6">
+                        <h6>{{ customerDetail.nama_customer }}</h6>
+                    </div>
+
+                    <div class="col s12 m6">
+                        <h6>{{ customerDetail.perusahaan }}</h6>
+                    </div>
+                </div>
+
+                <div class="row" v-if="customerDetail.length != 0">
                     <div class="input-field col s6">
                         <button type="submit" class="btn btn-flat amber darken-4 white-text">Simpan</button>
+                        <button type="submit" class="btn btn-flat amber darken-4 white-text">Batalkan</button>
                     </div>
                 </div>
             </form>
@@ -30,6 +41,8 @@
 
 <script>
 import Multiselect from 'vue-multiselect'
+import { Bus } from '../../../../app';
+import _ from 'lodash'
 
 export default {
     props: {
@@ -56,24 +69,37 @@ export default {
             return this.$store.getters.disabled
         },
 
-        loadingCust(){
-            return this.$store.getters.loadingCust
-        },
-
         customerName(){
             return this.$store.getters.customerName
+        },
+
+        customerDetail(){
+            return this.$store.getters.customerDetail
+        },
+
+        loadingDisplay(){
+            return this.$store.getters.loadingDisplay
         }
     },
-    watch: {
+    created(){
+        Bus.$on('searchCustomer', (data) => {
+            if(data){
+                this.$store.dispatch('detailDataCustomer', `/api/customers/${data.uniqid}`)
+            }else{
+                this.$store.state.customers.customerDetail = []
+            }
+        })
 
+        this.$store.dispatch('getDataCustomer', '/api/customers')
     },
-    mounted(){
-        
+    watch: {
+        valueCust: _.debounce((event) => {
+            Bus.$emit('searchCustomer', event)
+        }, 800)
     },
     methods: {
-        searchCustomer(val){
-            this.$store.state.customers.loadingCust = true
-            this.$store.dispatch('getDataCustomer', '/api/customers')
+        nameWithLang ({ customer }) {
+            return `${customer}`
         }
     }
 }

@@ -51,8 +51,9 @@ export const store = new Vuex.Store({
         customers: {
             valueCust: null,
             disabled: false,
-            loadingCust: false,
-            customerName: []
+            loadingDisplay: false,
+            customerName: [],
+            customerDetail: []
         }
     },
     getters: {
@@ -163,14 +164,18 @@ export const store = new Vuex.Store({
         disabled(state){
            return state.customers.disabled
         },
-
-        loadingCust(state){
-            return state.customers.loadingCust
-        },
         
         customerName(state){
             return state.customers.customerName
         },
+
+        customerDetail(state){
+            return state.customers.customerDetail
+        },
+
+        loadingDisplay(state){
+            return state.customers.loadingDisplay
+        }
     },
     mutations: {
         SET_DATA_PRODUCT_ITEMS(state, payloadProduct){
@@ -375,11 +380,14 @@ export const store = new Vuex.Store({
         SET_DATA_CUSTOMER_SALES(state, payloadCustomer){
             let customers = []
             payloadCustomer.data.map(val => {
-                customers.push(val.customer)
+                customers.push(val)
             })
 
             state.customers.customerName = customers
-            state.customers.loadingCust = false
+        },
+
+        SET_DATA_CUSTOMER_AFTER_SEARCH(state, payloadCustomer){
+            state.customers.customerDetail = payloadCustomer
         }
     },
     actions: {
@@ -446,7 +454,16 @@ export const store = new Vuex.Store({
                 .then(res => {
                     commit('SET_DATA_CUSTOMER_SALES', res.data)
                 }).catch(err => {
-                    console.log(err)
+                    console.log(err.response)
+                })
+        },
+
+        detailDataCustomer({commit}, data){
+            axios.post(data)
+                .then(res => {
+                    commit('SET_DATA_CUSTOMER_AFTER_SEARCH', res.data)
+                }).catch(err => {
+                    console.log(err.response)
                 })
         }
     }

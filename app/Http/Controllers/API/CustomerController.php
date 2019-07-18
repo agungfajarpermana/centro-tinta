@@ -15,8 +15,13 @@ class CustomerController extends Controller
         return Customers::collection(Customer::paginate(8));
     }
 
+    public function detailCustomer($customer)
+    {
+        return Customer::where('id', $customer)->first();
+    }
+
     public function getDataCustomer()
     {
-        return Customer_::collection(Customer::paginate(30));
+        return Customer_::collection(Customer::get());
     }
 }

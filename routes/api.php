@@ -22,6 +22,7 @@ Route::get('/products/{search}/items', 'API\ProductController@index');
 
 Route::Resource('/customer', 'API\CustomerController');
 Route::get('/customers', 'API\CustomerController@getDataCustomer');
+Route::post('/customers/{customer}', 'API\CustomerController@detailCustomer');
 
 Route::Resource('/branch', 'API\BranchProductController');
 Route::match(['GET'], '/branch/{search}/search', 'API\BranchProductController@searchData');
