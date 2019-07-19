@@ -45102,11 +45102,11 @@ var render = function() {
             _vm._v(" "),
             _c("div", { staticClass: "row" }, [
               _c("div", { staticClass: "col s12 m6" }, [
-                _c("h6", [_vm._v(_vm._s(_vm.customerDetail.nama_customer))])
+                _c("h6", [_vm._v(_vm._s(_vm.customerDetail.customer))])
               ]),
               _vm._v(" "),
               _c("div", { staticClass: "col s12 m6" }, [
-                _c("h6", [_vm._v(_vm._s(_vm.customerDetail.perusahaan))])
+                _c("h6", [_vm._v(_vm._s(_vm.customerDetail.company))])
               ])
             ]),
             _vm._v(" "),
@@ -45127,7 +45127,7 @@ var staticRenderFns = [
       _c(
         "button",
         {
-          staticClass: "btn btn-flat amber darken-4 white-text",
+          staticClass: "btn disabled amber darken-4 white-text",
           attrs: { type: "submit" }
         },
         [_vm._v("Simpan")]
@@ -45136,7 +45136,7 @@ var staticRenderFns = [
       _c(
         "button",
         {
-          staticClass: "btn btn-flat amber darken-4 white-text",
+          staticClass: "btn amber darken-4 white-text",
           attrs: { type: "submit" }
         },
         [_vm._v("Batalkan")]
@@ -64514,7 +64514,7 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
       state.customers.customerName = customers;
     },
     SET_DATA_CUSTOMER_AFTER_SEARCH: function SET_DATA_CUSTOMER_AFTER_SEARCH(state, payloadCustomer) {
-      state.customers.customerDetail = payloadCustomer;
+      state.customers.customerDetail = payloadCustomer.data;
     }
   },
   actions: {

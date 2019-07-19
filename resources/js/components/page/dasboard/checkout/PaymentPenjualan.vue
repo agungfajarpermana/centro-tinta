@@ -20,18 +20,18 @@
                 
                 <div class="row">
                     <div class="col s12 m6">
-                        <h6>{{ customerDetail.nama_customer }}</h6>
+                        <h6>{{ customerDetail.customer }}</h6>
                     </div>
 
                     <div class="col s12 m6">
-                        <h6>{{ customerDetail.perusahaan }}</h6>
+                        <h6>{{ customerDetail.company }}</h6>
                     </div>
                 </div>
 
                 <div class="row" v-if="customerDetail.length != 0">
                     <div class="input-field col s6">
-                        <button type="submit" class="btn btn-flat amber darken-4 white-text">Simpan</button>
-                        <button type="submit" class="btn btn-flat amber darken-4 white-text">Batalkan</button>
+                        <button type="submit" class="btn disabled amber darken-4 white-text">Simpan</button>
+                        <button type="submit" class="btn amber darken-4 white-text">Batalkan</button>
                     </div>
                 </div>
             </form>

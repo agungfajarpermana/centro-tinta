@@ -16,11 +16,12 @@ class CustomersCollection extends Resource
     {
         // return parent::toArray($request);
         return [
-            'uniqid'    => $this->id,
-            'customer'  => $this->nama_customer,
-            'address'   => $this->alamat,
-            'telphone'  => $this->telpon,
-            'company'   => $this->perusahaan
+            'uniqid'      => $this->id,
+            'no_customer' => $this->kode_customer,
+            'customer'    => $this->nama_customer,
+            'address'     => $this->alamat,
+            'telphone'    => $this->telpon,
+            'company'     => $this->perusahaan
         ];
     }
 }

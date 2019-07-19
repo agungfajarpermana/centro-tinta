@@ -14,14 +14,20 @@ class CustomerResource extends JsonResource
      */
     public function toArray($request)
     {
-        // dd($this->nama_customer);
-        return parent::toArray($request);
+        dd($this->order);
+        // return parent::toArray($request);
         return [
-            'id'      => $this->id,
-            'name'    => $this->nama_customer,
+            'uniqid'  => $this->id,
+            'no_cust' => $this->kode_customer,
+            'customer'=> $this->nama_customer,
             'address' => $this->alamat,
             'telphone'=> $this->telpon,
-            'company' => $this->perusahaan
+            'company' => $this->perusahaan,
+            'debt'    => [
+                'branch' => $this->branch->nama_cabang ?? '',
+                'desc'   => $this->piutang->ket ?? '',
+                'saldo'  => $this->piutang->saldo ?? null,
+            ]
         ];
     }
 }

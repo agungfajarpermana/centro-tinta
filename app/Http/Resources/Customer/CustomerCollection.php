@@ -26,6 +26,7 @@ class CustomerCollection extends Resource
                 'total_sales'=> $this->order->total_pembelian ?? null
             ],
             "customer_detail"=> [
+                'no_customer'=> $this->kode_customer,
                 'address'    => $this->alamat,
                 'telphone'   => $this->telpon,
                 'company'    => $this->perusahaan

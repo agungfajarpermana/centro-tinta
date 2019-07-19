@@ -387,7 +387,7 @@ export const store = new Vuex.Store({
         },
 
         SET_DATA_CUSTOMER_AFTER_SEARCH(state, payloadCustomer){
-            state.customers.customerDetail = payloadCustomer
+            state.customers.customerDetail = payloadCustomer.data
         }
     },
     actions: {
