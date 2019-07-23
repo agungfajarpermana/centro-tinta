@@ -18,17 +18,43 @@
                     </div>
                 </div>
                 
-                <div class="row">
-                    <div class="col s12 m6">
-                        <h6>{{ customerDetail.customer }}</h6>
-                    </div>
+                <div v-if="!loadingDisplay" class="row" style="margin-top: 80px;">
+                    <preLoad/>
+                </div>
 
-                    <div class="col s12 m6">
-                        <h6>{{ customerDetail.company }}</h6>
+                <div v-if="customerDetail.length != 0 && loadingDisplay" class="row">
+                    <div class="col s12">
+                        <div class="card">
+                            <div class="card-title">
+                                <span style="padding:5px;">PT. {{ customerDetail.company }}</span>
+                            </div>
+                            
+                            <div class="card-content">
+                                <p>
+                                    Telphone :
+                                </p>
+                                <p>
+                                    {{ customerDetail.telephone }}
+                                </p>
+
+                                <br>
+
+                                <p>
+                                    Alamat :
+                                </p>
+                                <p>
+                                    {{ customerDetail.address }}
+                                </p>
+                            </div>
+
+                            <div class="card-action">
+                                <a href="#" class="btn btn-default">Test</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="row" v-if="customerDetail.length != 0">
+                <div class="row" v-if="customerDetail.length != 0 && loadingDisplay">
                     <div class="input-field col s6">
                         <button type="submit" class="btn disabled amber darken-4 white-text">Simpan</button>
                         <button type="submit" class="btn amber darken-4 white-text">Batalkan</button>
@@ -41,6 +67,7 @@
 
 <script>
 import Multiselect from 'vue-multiselect'
+import PreLoad from '../items/PreLoad';
 import { Bus } from '../../../../app';
 import _ from 'lodash'
 
@@ -52,7 +79,8 @@ export default {
         }
     },
     components: {
-        Multiselect
+        Multiselect,
+        PreLoad
     },
     computed: {
         valueCust: {

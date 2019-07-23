@@ -37,15 +37,21 @@
                     </td>
                 </tr>
 
-                <tr v-else class="animated" :class="{'fadeIn':loadingOrder}" v-for="order in orders" :key="order.customer_order.uniqid">
+                <tr v-else class="animated" :class="{'fadeIn':loadingOrder}" v-for="(order, index) in orders" :key="order.customer_order.uniqid">
                     <td>INV-{{ order.customer_order.order }}</td>
                     <td colspan="5">{{ order.customer_order.branches }}</td>
                     <td colspan="5">{{ order.customer_order.customer }}</td>
                     <td colspan="2" class="center-align">{{ order.customer_order.qty }}</td>
                     <td colspan="2">Rp. {{ parseInt(order.customer_order.total_sales).toLocaleString('id') }}</td>
                     <td>
-                        <i class="tiny material-icons teal-text">remove_red_eye</i> &nbsp;
-                        <i class="tiny material-icons blue-text">edit</i> &nbsp;
+                        <a href="#modal1" class="modal-trigger"
+                            @click.prevent="customerOrderModal(index, order.customer_order.uniqid)"    
+                        >
+                            <i class="tiny material-icons teal-text">remove_red_eye</i>
+                        </a> &nbsp;
+                        <a href="#">
+                            <i class="tiny material-icons blue-text">edit</i>
+                        </a> &nbsp;
                         <i class="tiny material-icons red-text">delete</i>
                     </td>
                 </tr>
@@ -53,6 +59,37 @@
         </table>
 
         <FooterOrder v-if="loadingOrder && orders.length > 0" />
+
+        <!-- Modal Structure -->
+        <div id="modal1" class="modal modal-fixed-footer">
+            <div class="modal-content">
+                <h5>{{ customerModal.customer }}</h5>
+                <p>No.order</p>
+                <p>INV-{{ customerModal.order }}</p>
+                <br>
+                <div class="row">
+                    <div class="container-fluid">
+                        <div class="col xs4 sm4 md4 lg4">
+                            <p>Cabang</p>
+                            <p>{{ customerModal.branches }}</p>
+                        </div>
+
+                        <div class="col xs4 sm4 md4 lg4">
+                            <p class="right-align">Total Item</p>
+                            <p class="center-align">{{ customerModal.qty }}</p>
+                        </div>
+
+                        <div class="col xs4 sm4 md4 lg4">
+                            <p class="right-align">Total Harga</p>
+                            <p class="right-align">Rp. {{ parseInt(customerModal.total_sales).toLocaleString('id') }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="#!" class="modal-close waves-effect waves-green btn-flat">Surat Jalan</a>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -83,15 +120,28 @@ export default {
 
         orders(){
             return this.$store.getters.orders
+        },
+
+        customerModal(){
+            return this.$store.getters.customerModal
         }
     },
     mounted(){
+        document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('.modal');
+            var instances = M.Modal.init(elems);
+        });
         this.$store.dispatch('getOrder', 'api/order')
     },
     watch: {
         searchOrder: _.debounce((event) => {
             Bus.$emit('searchCustomerOrder', event.trim())
         }, 800)
+    },
+    methods: {
+        customerOrderModal(index, id){
+            this.$store.dispatch('customerOrderModal', id)
+        }
     }
 }
 </script>

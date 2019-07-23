@@ -22,13 +22,14 @@ Route::get('/products/{search}/items', 'API\ProductController@index');
 
 Route::Resource('/customer', 'API\CustomerController');
 Route::get('/customers', 'API\CustomerController@getDataCustomer');
-Route::get('/customers/{customer}', 'API\CustomerController@detailCustomer');
+Route::post('/customers/{customer}', 'API\CustomerController@detailCustomer');
 
 Route::Resource('/branch', 'API\BranchProductController');
 Route::match(['GET'], '/branch/{search}/search', 'API\BranchProductController@searchData');
 
 Route::Resource('/order', 'API\OrderController');
 Route::get('/order/{search}/customer', 'API\OrderController@index');
+Route::get('/order/{orders}/customers', 'API\OrderController@customerSales');
 
 // Route::Resource('/piutang', 'API\PiutangController');
 // Route::get('/piutang/{dates}/order', 'API\PiutangController@index');

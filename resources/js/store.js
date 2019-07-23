@@ -51,9 +51,13 @@ export const store = new Vuex.Store({
         customers: {
             valueCust: null,
             disabled: false,
-            loadingDisplay: false,
+            loadingDisplay: true,
             customerName: [],
             customerDetail: []
+        },
+
+        modal: {
+            customerModal: []
         }
     },
     getters: {
@@ -175,6 +179,10 @@ export const store = new Vuex.Store({
 
         loadingDisplay(state){
             return state.customers.loadingDisplay
+        },
+
+        customerModal(state){
+            return state.modal.customerModal
         }
     },
     mutations: {
@@ -387,8 +395,16 @@ export const store = new Vuex.Store({
         },
 
         SET_DATA_CUSTOMER_AFTER_SEARCH(state, payloadCustomer){
+            state.customers.loadingDisplay = !state.customers.loadingDisplay
             state.customers.customerDetail = payloadCustomer.data
-        }
+        },
+
+        SET_DATA_CUSTOMER_MODAL(state, id){
+            let order = state.customer.orders.find(x => x.customer_order.uniqid == id);
+            state.modal.customerModal = order.customer_order
+
+            store.dispatch('getDetailSalesCustomer', `/order/${order.customer_order.order}/customer`)
+        }  
     },
     actions: {
         getProducts({commit}, url){
@@ -459,11 +475,26 @@ export const store = new Vuex.Store({
         },
 
         detailDataCustomer({commit}, data){
+            store.state.customers.loadingDisplay = false
+
             axios.post(data)
                 .then(res => {
                     commit('SET_DATA_CUSTOMER_AFTER_SEARCH', res.data)
                 }).catch(err => {
                     console.log(err.response)
+                })
+        },
+
+        customerOrderModal({commit}, id){
+            commit('SET_DATA_CUSTOMER_MODAL', id)
+        },
+
+        getDetailSalesCustomer({commit}, url){
+            axios.get(url)
+                .then(res => {
+                    console.log(res)
+                }).catch(err => {
+                    console.log(err)
                 })
         }
     }

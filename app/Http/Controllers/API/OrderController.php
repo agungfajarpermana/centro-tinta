@@ -6,6 +6,7 @@ use App\Model\Order;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Order\OrderCollection as Orders;
+use App\Http\Resources\Order\OrderCustomerCollection as OrderCustomer;
 
 class OrderController extends Controller
 {
@@ -20,7 +21,18 @@ class OrderController extends Controller
             return Orders::collection(Order::orderBy('id', 'DESC')->paginate(8));
         }
         
-        return Orders::collection(Order::where('no_order', 'LIKE', '%'.$search.'%')->orderBy('id', 'DESC')->paginate(8));
+        return Orders::collection(Order::where('no_order', 'LIKE', '%'.$search.'%')
+                        ->orderBy('id', 'DESC')->paginate(8));
+    }
+
+    public function customerSales($orders)
+    {
+        $itemCust = OrderCustomer::collection(collect(Order::where('no_order', $orders)->get()));
+        $order    = $itemCust->groupBy(function ($item, $key) {
+            return $item['product_id'];
+        });
+        die($order);
+        return response()->json($order);
     }
 
     /**

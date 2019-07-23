@@ -21,9 +21,14 @@ class OrderCollection extends Resource
                 'order'    => $this->no_order,
                 'branches' => $this->branch->nama_cabang,
                 'customer' => $this->customer->nama_customer,
-                'type'     => $this->jenis_product,
                 'qty'      => $this->qty,
-                'total_sales' => $this->total_pembelian
+                'total_sales' => $this->total_pembelian,
+                'detail_item' => [
+                    'product'  => $this->product->nama_product ?? null,
+                    'type'     => $this->product->jenis_product,
+                    'category' => $this->product->kategori_product,
+                    'price'    => $this->product_detail->harga
+                ]
             ]
         ];
     }
