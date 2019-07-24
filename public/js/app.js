@@ -2373,6 +2373,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 
 
@@ -2383,6 +2385,12 @@ __webpack_require__.r(__webpack_exports__);
       type: String,
       required: true
     }
+  },
+  data: function data() {
+    return {
+      btnSales: 'Simpan',
+      btnDisabled: false
+    };
   },
   components: {
     Multiselect: vue_multiselect__WEBPACK_IMPORTED_MODULE_0___default.a,
@@ -2408,6 +2416,9 @@ __webpack_require__.r(__webpack_exports__);
     },
     loadingDisplay: function loadingDisplay() {
       return this.$store.getters.loadingDisplay;
+    },
+    itemsCheckout: function itemsCheckout() {
+      return this.$store.getters.itemsCheckout;
     }
   },
   created: function created() {
@@ -2431,6 +2442,22 @@ __webpack_require__.r(__webpack_exports__);
     nameWithLang: function nameWithLang(_ref) {
       var customer = _ref.customer;
       return "".concat(customer);
+    },
+    saveDataCustomerSales: function saveDataCustomerSales() {
+      var _this2 = this;
+
+      this.btnDisabled = true;
+      this.btnSales = 'Loading';
+      this.$store.dispatch('saveDataCustomerSales', 'api/customer').then(function (res) {
+        _this2.btnDisabled = false;
+        _this2.btnSales = 'Simpan';
+        _this2.$store.state.customers.valueCust = '';
+        _this2.$store.state.customers.customerDetail = [];
+        alert(res.data.msg);
+      })["catch"](function (err) {
+        _this2.btnDisabled = false;
+        console.log(err.response.data.msg);
+      });
     }
   }
 });
@@ -2767,6 +2794,37 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -2794,13 +2852,16 @@ __webpack_require__.r(__webpack_exports__);
     },
     customerModal: function customerModal() {
       return this.$store.getters.customerModal;
+    },
+    ordersModal: function ordersModal() {
+      return this.$store.getters.ordersModal;
+    },
+    loadingModal: function loadingModal() {
+      return this.$store.getters.loadingModal;
     }
   },
   mounted: function mounted() {
-    document.addEventListener('DOMContentLoaded', function () {
-      var elems = document.querySelectorAll('.modal');
-      var instances = M.Modal.init(elems);
-    });
+    M.AutoInit();
     this.$store.dispatch('getOrder', 'api/order');
   },
   watch: {
@@ -2810,7 +2871,11 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     customerOrderModal: function customerOrderModal(index, id) {
+      this.$store.state.modal.loadingModal = true;
       this.$store.dispatch('customerOrderModal', id);
+    },
+    printSuratJalan: function printSuratJalan() {
+      window.open('api/laporan/customer/orders', '_blank');
     }
   }
 });
@@ -3316,7 +3381,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../../node_module
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n/* .cash{\r\n    margin-top: 20px;\r\n} */\r\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n/* .cash{\r\n    margin-top: 20px;\r\n} */\r\n", ""]);
 
 // exports
 
@@ -45229,56 +45294,42 @@ var render = function() {
                         ])
                       ]),
                       _vm._v(" "),
-                      _vm._m(0)
+                      _c("div", { staticClass: "card-action" })
                     ])
                   ])
                 ])
               : _vm._e(),
             _vm._v(" "),
             _vm.customerDetail.length != 0 && _vm.loadingDisplay
-              ? _c("div", { staticClass: "row" }, [_vm._m(1)])
+              ? _c("div", { staticClass: "row" }, [
+                  _c("div", { staticClass: "input-field col s6" }, [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn amber darken-4 white-text",
+                        class: {
+                          disabled:
+                            _vm.itemsCheckout.length == 0 || _vm.btnDisabled
+                        },
+                        attrs: { type: "submit" },
+                        on: {
+                          click: function($event) {
+                            $event.preventDefault()
+                            return _vm.saveDataCustomerSales($event)
+                          }
+                        }
+                      },
+                      [_vm._v(_vm._s(_vm.btnSales))]
+                    )
+                  ])
+                ])
               : _vm._e()
           ])
         ])
       : _vm._e()
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card-action" }, [
-      _c("a", { staticClass: "btn btn-default", attrs: { href: "#" } }, [
-        _vm._v("Test")
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "input-field col s6" }, [
-      _c(
-        "button",
-        {
-          staticClass: "btn disabled amber darken-4 white-text",
-          attrs: { type: "submit" }
-        },
-        [_vm._v("Simpan")]
-      ),
-      _vm._v(" "),
-      _c(
-        "button",
-        {
-          staticClass: "btn amber darken-4 white-text",
-          attrs: { type: "submit" }
-        },
-        [_vm._v("Batalkan")]
-      )
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -45863,14 +45914,14 @@ var render = function() {
                 _vm._v(" "),
                 _c("div", { staticClass: "row" }, [
                   _c("div", { staticClass: "container-fluid" }, [
-                    _c("div", { staticClass: "col xs4 sm4 md4 lg4" }, [
+                    _c("div", { staticClass: "col s4 m4 l4" }, [
                       _c("p", [_vm._v("Cabang")]),
                       _vm._v(" "),
                       _c("p", [_vm._v(_vm._s(_vm.customerModal.branches))])
                     ]),
                     _vm._v(" "),
-                    _c("div", { staticClass: "col xs4 sm4 md4 lg4" }, [
-                      _c("p", { staticClass: "right-align" }, [
+                    _c("div", { staticClass: "col s4 m4 l4" }, [
+                      _c("p", { staticClass: "center-align" }, [
                         _vm._v("Total Item")
                       ]),
                       _vm._v(" "),
@@ -45879,7 +45930,7 @@ var render = function() {
                       ])
                     ]),
                     _vm._v(" "),
-                    _c("div", { staticClass: "col xs4 sm4 md4 lg4" }, [
+                    _c("div", { staticClass: "col s4 m4 l4" }, [
                       _c("p", { staticClass: "right-align" }, [
                         _vm._v("Total Harga")
                       ]),
@@ -45896,10 +45947,74 @@ var render = function() {
                       ])
                     ])
                   ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "row" }, [
+                  _c("div", { staticClass: "container-fluid" }, [
+                    _c("div", { staticClass: "col s12 m12 l12" }, [
+                      _c("table", { attrs: { width: "100%" } }, [
+                        _vm._m(5),
+                        _vm._v(" "),
+                        _c(
+                          "tbody",
+                          [
+                            _vm.loadingModal
+                              ? _c("tr", [
+                                  _c(
+                                    "td",
+                                    {
+                                      staticClass: "center-align",
+                                      attrs: { colspan: "3" }
+                                    },
+                                    [
+                                      _vm._v(
+                                        "\n                                        Loading..\n                                    "
+                                      )
+                                    ]
+                                  )
+                                ])
+                              : _vm._l(_vm.ordersModal, function(order, index) {
+                                  return _c("tr", { key: index }, [
+                                    _c("td", { staticClass: "left-align" }, [
+                                      _vm._v(_vm._s(order.product))
+                                    ]),
+                                    _vm._v(" "),
+                                    _c("td", { staticClass: "center-align" }, [
+                                      _vm._v(_vm._s(order.qty))
+                                    ]),
+                                    _vm._v(" "),
+                                    _c("td", { staticClass: "right-align" }, [
+                                      _vm._v(
+                                        "Rp. " +
+                                          _vm._s(
+                                            parseInt(
+                                              order.total
+                                            ).toLocaleString("id")
+                                          )
+                                      )
+                                    ])
+                                  ])
+                                })
+                          ],
+                          2
+                        )
+                      ])
+                    ])
+                  ])
                 ])
               ]),
               _vm._v(" "),
-              _vm._m(5)
+              _c("div", { staticClass: "modal-footer" }, [
+                _c(
+                  "a",
+                  {
+                    staticClass: "waves-effect waves-green btn-flat",
+                    attrs: { href: "#!" },
+                    on: { click: _vm.printSuratJalan }
+                  },
+                  [_vm._v("Surat Jalan")]
+                )
+              ])
             ]
           )
         ],
@@ -45972,15 +46087,14 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "modal-footer" }, [
-      _c(
-        "a",
-        {
-          staticClass: "modal-close waves-effect waves-green btn-flat",
-          attrs: { href: "#!" }
-        },
-        [_vm._v("Surat Jalan")]
-      )
+    return _c("thead", [
+      _c("tr", [
+        _c("th", { staticClass: "left-align" }, [_vm._v("Product")]),
+        _vm._v(" "),
+        _c("th", { staticClass: "center-align" }, [_vm._v("Qty")]),
+        _vm._v(" "),
+        _c("th", { staticClass: "right-align" }, [_vm._v("Price")])
+      ])
     ])
   }
 ]
@@ -64459,7 +64573,9 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
       customerDetail: []
     },
     modal: {
-      customerModal: []
+      customerModal: [],
+      ordersModal: [],
+      loadingModal: false
     }
   },
   getters: {
@@ -64556,6 +64672,12 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
     },
     customerModal: function customerModal(state) {
       return state.modal.customerModal;
+    },
+    ordersModal: function ordersModal(state) {
+      return state.modal.ordersModal;
+    },
+    loadingModal: function loadingModal(state) {
+      return state.modal.loadingModal;
     }
   },
   mutations: {
@@ -64754,7 +64876,7 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
       state.customers.customerName = customers;
     },
     SET_DATA_CUSTOMER_AFTER_SEARCH: function SET_DATA_CUSTOMER_AFTER_SEARCH(state, payloadCustomer) {
-      state.customers.loadingDisplay = !state.customers.loadingDisplay;
+      state.customers.loadingDisplay = true;
       state.customers.customerDetail = payloadCustomer.data;
     },
     SET_DATA_CUSTOMER_MODAL: function SET_DATA_CUSTOMER_MODAL(state, id) {
@@ -64762,7 +64884,11 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
         return x.customer_order.uniqid == id;
       });
       state.modal.customerModal = order.customer_order;
-      store.dispatch('getDetailSalesCustomer', "/order/".concat(order.customer_order.order, "/customer"));
+      store.dispatch('getDetailSalesCustomer', "api/order/".concat(order.customer_order.order, "/customers"));
+    },
+    SET_DATA_CUSTOMER_ORDERS: function SET_DATA_CUSTOMER_ORDERS(state, data) {
+      state.modal.loadingModal = false;
+      state.modal.ordersModal = data;
     }
   },
   actions: {
@@ -64845,9 +64971,24 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
     getDetailSalesCustomer: function getDetailSalesCustomer(_ref15, url) {
       var commit = _ref15.commit;
       axios__WEBPACK_IMPORTED_MODULE_2___default.a.get(url).then(function (res) {
-        console.log(res);
+        commit('SET_DATA_CUSTOMER_ORDERS', res.data.data);
       })["catch"](function (err) {
         console.log(err);
+      });
+    },
+    saveDataCustomerSales: function saveDataCustomerSales(_ref16, url) {
+      var commit = _ref16.commit;
+      return new Promise(function (resolve, reject) {
+        axios__WEBPACK_IMPORTED_MODULE_2___default.a.post(url, {
+          order: store.state.checkout.order,
+          customerId: store.state.customers.customerDetail.uniqid,
+          products: store.state.checkout.items
+        }).then(function (res) {
+          commit('CLEAR_ITEM_PRODUCT_TO_CHECKOUT');
+          resolve(res);
+        })["catch"](function (err) {
+          reject(err);
+        });
       });
     }
   }

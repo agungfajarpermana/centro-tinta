@@ -17,7 +17,10 @@ class OrderCustomerCollection extends Resource
         // return parent::toArray($request);
         return [
             'product' => $this->product->nama_product,
-            'type'    => $this->product->jenis_product
+            'type'    => $this->product->jenis_product,
+            'qty'     => $this->qty,
+            'total'   => $this->total_pembelian
+            // $this->groupItems($this->product)
         ];
     }
 

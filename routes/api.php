@@ -37,6 +37,7 @@ Route::get('/order/{orders}/customers', 'API\OrderController@customerSales');
 // Route Laporan
 Route::get('/laporan/{dates}/{product?}/penjualan', 'Laporan\laporanPenjualanController@index');
 Route::get('/laporan/{dates}/{customer?}/piutang', 'Laporan\laporanPiutangController@index');
+Route::get('/laporan/customer/orders', 'Laporan\laporanOrdersController@index');
 
 // Route::group(['prefix' => 'branch'], function(){
 //     Route::apiResource('/search/{branch}', 'API\BranchProductController@search');

@@ -1,7 +1,10 @@
 <?php
 
 namespace App\Http\Controllers\API;
+use Carbon\Carbon;
 
+use DB;
+use App\Model\Order;
 use App\Model\Piutang;
 use App\Model\Customer;
 use Illuminate\Http\Request;
@@ -37,5 +40,49 @@ class CustomerController extends Controller
     public function getDataCustomer()
     {
         return Customer_::collection(Customer::get());
+    }
+
+    public function store(Request $request)
+    {
+        try {
+            DB::connection()->getPdo();
+            DB::beginTransaction();
+
+            try {
+                $order = collect($request->products);
+
+                $data = $order->map(function($item, $key) use ($request) {
+                    Order::create([
+                        'tanggal'        => Carbon::now()->format('Y-m-d'),
+                        'no_order'       => $request->order,
+                        'branch_id'      => 1,
+                        'customer_id'    => $request->customerId,
+                        'product_id'     => $item['detail_product']['uniqid'],
+                        'qty'            => $item['numberOfPurchases'],
+                        'total_pembelian'=> $item['detail_product']['price'] * $item['numberOfPurchases']
+                    ]);
+                });
+
+                DB::commit();
+
+                return response()->json([
+                    'status' => true,
+                    'msg'    => 'Data berhasil disimpan!'
+                ]);
+            } catch (\Exception $e) {
+                DB::rollback();
+                return response()->json([
+                    'status' => false,
+                    'msg'    => 'Ada masalah saat memasukan data customer sales!',
+                    'error'  => $e->getMessage()
+                ]);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'msg'    => 'Koneksi ke database terputus!',
+                'error'  => $e->getMessage()
+            ]);
+        }
     }
 }

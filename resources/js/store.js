@@ -57,7 +57,9 @@ export const store = new Vuex.Store({
         },
 
         modal: {
-            customerModal: []
+            customerModal: [],
+            ordersModal: [],
+            loadingModal: false
         }
     },
     getters: {
@@ -183,6 +185,14 @@ export const store = new Vuex.Store({
 
         customerModal(state){
             return state.modal.customerModal
+        },
+
+        ordersModal(state){
+            return state.modal.ordersModal
+        },
+
+        loadingModal(state){
+            return state.modal.loadingModal
         }
     },
     mutations: {
@@ -395,7 +405,7 @@ export const store = new Vuex.Store({
         },
 
         SET_DATA_CUSTOMER_AFTER_SEARCH(state, payloadCustomer){
-            state.customers.loadingDisplay = !state.customers.loadingDisplay
+            state.customers.loadingDisplay = true
             state.customers.customerDetail = payloadCustomer.data
         },
 
@@ -403,8 +413,13 @@ export const store = new Vuex.Store({
             let order = state.customer.orders.find(x => x.customer_order.uniqid == id);
             state.modal.customerModal = order.customer_order
 
-            store.dispatch('getDetailSalesCustomer', `/order/${order.customer_order.order}/customer`)
-        }  
+            store.dispatch('getDetailSalesCustomer', `api/order/${order.customer_order.order}/customers`)
+        },
+
+        SET_DATA_CUSTOMER_ORDERS(state, data){
+            state.modal.loadingModal = false
+            state.modal.ordersModal = data
+        }
     },
     actions: {
         getProducts({commit}, url){
@@ -492,10 +507,33 @@ export const store = new Vuex.Store({
         getDetailSalesCustomer({commit}, url){
             axios.get(url)
                 .then(res => {
-                    console.log(res)
+                    
+                    commit('SET_DATA_CUSTOMER_ORDERS', res.data.data)
+
                 }).catch(err => {
+
                     console.log(err)
+
                 })
+        },
+
+        saveDataCustomerSales({commit}, url){
+            return new Promise((resolve, reject) => {
+                axios.post(url, {
+                    order: store.state.checkout.order,
+                    customerId: store.state.customers.customerDetail.uniqid,
+                    products: store.state.checkout.items
+                }).then(res => {
+                    
+                    commit('CLEAR_ITEM_PRODUCT_TO_CHECKOUT')
+                    resolve(res)
+    
+                }).catch(err => {
+                    
+                    reject(err)
+
+                })
+            })
         }
     }
 });

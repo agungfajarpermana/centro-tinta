@@ -69,25 +69,56 @@
                 <br>
                 <div class="row">
                     <div class="container-fluid">
-                        <div class="col xs4 sm4 md4 lg4">
+                        <div class="col s4 m4 l4">
                             <p>Cabang</p>
                             <p>{{ customerModal.branches }}</p>
                         </div>
 
-                        <div class="col xs4 sm4 md4 lg4">
-                            <p class="right-align">Total Item</p>
+                        <div class="col s4 m4 l4">
+                            <p class="center-align">Total Item</p>
                             <p class="center-align">{{ customerModal.qty }}</p>
                         </div>
 
-                        <div class="col xs4 sm4 md4 lg4">
+                        <div class="col s4 m4 l4">
                             <p class="right-align">Total Harga</p>
                             <p class="right-align">Rp. {{ parseInt(customerModal.total_sales).toLocaleString('id') }}</p>
                         </div>
                     </div>
                 </div>
+
+                <div class="row">
+                    <div class="container-fluid">
+                        <div class="col s12 m12 l12">
+                            <table width="100%">
+                                <thead>
+                                    <tr>
+                                        <th class="left-align">Product</th>
+                                        <th class="center-align">Qty</th>
+                                        <th class="right-align">Price</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr v-if="loadingModal">
+                                        <td colspan="3" class="center-align">
+                                            Loading..
+                                        </td>
+                                    </tr>
+
+                                    <tr v-else v-for="(order, index) in ordersModal" :key="index">
+                                        <td class="left-align">{{ order.product }}</td>
+                                        <td class="center-align">{{ order.qty }}</td>
+                                        <td class="right-align">Rp. {{ parseInt(order.total).toLocaleString('id') }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
-                <a href="#!" class="modal-close waves-effect waves-green btn-flat">Surat Jalan</a>
+                <a href="#!" class="waves-effect waves-green btn-flat"
+                    @click="printSuratJalan">Surat Jalan</a>
             </div>
         </div>
     </div>
@@ -111,7 +142,7 @@ export default {
         }
     },
     components: {
-        FooterOrder
+        FooterOrder,
     },
     computed: {
         loadingOrder(){
@@ -124,13 +155,18 @@ export default {
 
         customerModal(){
             return this.$store.getters.customerModal
+        },
+
+        ordersModal(){
+            return this.$store.getters.ordersModal
+        },
+
+        loadingModal(){
+            return this.$store.getters.loadingModal
         }
     },
     mounted(){
-        document.addEventListener('DOMContentLoaded', function() {
-            var elems = document.querySelectorAll('.modal');
-            var instances = M.Modal.init(elems);
-        });
+        M.AutoInit();
         this.$store.dispatch('getOrder', 'api/order')
     },
     watch: {
@@ -140,7 +176,12 @@ export default {
     },
     methods: {
         customerOrderModal(index, id){
+            this.$store.state.modal.loadingModal = true
             this.$store.dispatch('customerOrderModal', id)
+        },
+
+        printSuratJalan(){
+            window.open('api/laporan/customer/orders', '_blank')
         }
     }
 }

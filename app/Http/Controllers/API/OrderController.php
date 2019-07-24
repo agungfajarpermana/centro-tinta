@@ -25,14 +25,17 @@ class OrderController extends Controller
                         ->orderBy('id', 'DESC')->paginate(8));
     }
 
-    public function customerSales($orders)
+    public function customerSales($orders = null)
     {
         $itemCust = OrderCustomer::collection(collect(Order::where('no_order', $orders)->get()));
         $order    = $itemCust->groupBy(function ($item, $key) {
-            return $item['product_id'];
+            return $item['no_order'];
         });
-        die($order);
-        return response()->json($order);
+        
+        return response()->json([
+            'status' => true,
+            'data' => $itemCust
+        ]);
     }
 
     /**

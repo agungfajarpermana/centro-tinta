@@ -48,7 +48,7 @@
                             </div>
 
                             <div class="card-action">
-                                <a href="#" class="btn btn-default">Test</a>
+                                
                             </div>
                         </div>
                     </div>
@@ -56,8 +56,10 @@
 
                 <div class="row" v-if="customerDetail.length != 0 && loadingDisplay">
                     <div class="input-field col s6">
-                        <button type="submit" class="btn disabled amber darken-4 white-text">Simpan</button>
-                        <button type="submit" class="btn amber darken-4 white-text">Batalkan</button>
+                        <button type="submit" class="btn amber darken-4 white-text"
+                        :class="{'disabled':itemsCheckout.length == 0 || btnDisabled}" 
+                        @click.prevent="saveDataCustomerSales">{{ btnSales }}</button>
+                        <!-- <button type="submit" class="btn amber darken-4 white-text">Batalkan</button> -->
                     </div>
                 </div>
             </form>
@@ -76,6 +78,12 @@ export default {
         mode: {
             type: String,
             required: true
+        }
+    },
+    data(){
+        return {
+            btnSales: 'Simpan',
+            btnDisabled: false
         }
     },
     components: {
@@ -107,6 +115,10 @@ export default {
 
         loadingDisplay(){
             return this.$store.getters.loadingDisplay
+        },
+
+        itemsCheckout(){
+            return this.$store.getters.itemsCheckout
         }
     },
     created(){
@@ -128,6 +140,24 @@ export default {
     methods: {
         nameWithLang ({ customer }) {
             return `${customer}`
+        },
+
+        saveDataCustomerSales(){
+            this.btnDisabled = true
+            this.btnSales = 'Loading'
+
+            this.$store.dispatch('saveDataCustomerSales', 'api/customer')
+                .then(res => {
+                    this.btnDisabled = false
+                    this.btnSales = 'Simpan'
+                    this.$store.state.customers.valueCust = ''
+                    this.$store.state.customers.customerDetail = []
+
+                    alert(res.data.msg)
+                }).catch(err => {
+                    this.btnDisabled = false
+                    console.log(err.response.data.msg)
+                })
         }
     }
 }
