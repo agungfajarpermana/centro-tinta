@@ -27,9 +27,21 @@ class OrderCollection extends Resource
                     'product'  => $this->product->nama_product ?? null,
                     'type'     => $this->product->jenis_product,
                     'category' => $this->product->kategori_product,
-                    'price'    => $this->product_detail->harga
+                    'price'    => $this->product_detail->harga,
                 ]
             ]
         ];
+    }
+
+    protected function filtered($customer)
+    {
+        $cv = array_count_values($customer->pluck('no_order')->toArray());
+       
+        return collect($cv)->map(function ($v, $k) use ($customer) {
+            return [
+                'no_order'   => $k,
+                'count_item' => $v
+            ];
+        })->values();
     }
 }

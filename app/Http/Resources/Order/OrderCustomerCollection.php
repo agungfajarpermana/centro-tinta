@@ -16,20 +16,23 @@ class OrderCustomerCollection extends Resource
     {
         // return parent::toArray($request);
         return [
-            'product' => $this->product->nama_product,
-            'type'    => $this->product->jenis_product,
-            'qty'     => $this->qty,
-            'total'   => $this->total_pembelian
-            // $this->groupItems($this->product)
+            // 'product' => $this->product->nama_product,
+            // 'type'    => $this->product->jenis_product,
+            // 'qty'     => $this->qty,
+            'total'   => $this->total_pembelian,
+            $this->groupItems($this)
         ];
     }
 
     protected function groupItems($products)
     {
-        $cv = array_count_values($products->pluck('nama_product')->toArray());
+        $cv = array_count_values($products->pluck('product_id')->toArray());
+        $ct = array_count_values($products->pluck('total_pembelian')->toArray());
        
-        return collect($cv)->map(function ($v, $k) {
-            return ['product' => $k, 'quantity' => $v];
-        })->values();
+        return collect($cv)->map(function ($v, $k) use ($ct) {
+            return collect($ct)->map(function ($t, $i) use ($v, $k) {
+                return ['product' => $k, 'qty' => $v, 'total' => ($i + $k)];
+            })->values()->first();
+        })->values()->first();
     }
 }

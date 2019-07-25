@@ -64809,7 +64809,21 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
       }
     },
     SET_DATA_ORDER_CUSTOMER: function SET_DATA_ORDER_CUSTOMER(state, payloadOrder) {
-      state.customer.loadingOrder = true;
+      var data = [];
+      state.customer.loadingOrder = true; // payloadOrder.data.map((item, key) => {
+      //     if(data.length < 1){
+      //         data.push(item)
+      //     }else{
+      //         data.map(items => {
+      //             if(items.customer_order.order !== data.customer_order.order){
+      //                 console.log('hai')
+      //                 data.push(item)
+      //             }
+      //         })
+      //     }
+      //     console.log(state.customer.orders)
+      // });
+
       state.customer.orders = payloadOrder.data;
       var pagination = {
         current_page: payloadOrder.meta.current_page,
