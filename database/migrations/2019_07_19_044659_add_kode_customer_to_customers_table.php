@@ -14,7 +14,7 @@ class AddKodeCustomerToCustomersTable extends Migration
     public function up()
     {
         Schema::table('customers', function (Blueprint $table) {
-            $table->string('kode_customer', 50);
+            $table->string('kode_customer', 50)->default(0);
         });
     }
 

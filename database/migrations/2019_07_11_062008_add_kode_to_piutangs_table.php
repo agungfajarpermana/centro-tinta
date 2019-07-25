@@ -14,7 +14,7 @@ class AddKodeToPiutangsTable extends Migration
     public function up()
     {
         Schema::table('piutangs', function (Blueprint $table) {
-            $table->string('kode');
+            $table->string('kode')->default(0);
         });
     }
 

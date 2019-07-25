@@ -14,7 +14,7 @@ class AddCustomerIdToPiutangsTable extends Migration
     public function up()
     {
         Schema::table('piutangs', function (Blueprint $table) {
-            $table->BigInteger('customer_id')->unsigned();
+            $table->BigInteger('customer_id')->default(1)->unsigned();
         });
     }
 

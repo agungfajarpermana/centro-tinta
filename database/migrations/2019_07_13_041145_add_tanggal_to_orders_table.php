@@ -14,7 +14,7 @@ class AddTanggalToOrdersTable extends Migration
     public function up()
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->date('tanggal');
+            $table->date('tanggal')->default('2019-07-25');
         });
     }
 
