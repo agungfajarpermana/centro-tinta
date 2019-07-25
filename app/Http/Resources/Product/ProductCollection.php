@@ -35,10 +35,10 @@ class ProductCollection extends Resource
                 'sales'         => $this->productDetail->penjualan ?? null
             ],
             'detail_stock'  => [
-                'first_stock'   => $this->branchProduct->stok_awal,
-                'income_stock'  => $this->branchProduct->stok_masuk,
-                'stock_out'     => $this->branchProduct->stok_keluar,
-                'last_stock'    => $this->branchProduct->stok_akhir,
+                'first_stock'   => $this->branchProduct->stok_awal ?? null,
+                'income_stock'  => $this->branchProduct->stok_masuk ?? null,
+                'stock_out'     => $this->branchProduct->stok_keluar ?? null,
+                'last_stock'    => $this->branchProduct->stok_akhir ?? null,
             ]
         ];
     }

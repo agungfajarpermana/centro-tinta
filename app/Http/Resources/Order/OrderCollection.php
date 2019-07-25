@@ -25,23 +25,24 @@ class OrderCollection extends Resource
                 'total_sales' => $this->total_pembelian,
                 'detail_item' => [
                     'product'  => $this->product->nama_product ?? null,
-                    'type'     => $this->product->jenis_product,
-                    'category' => $this->product->kategori_product,
-                    'price'    => $this->product_detail->harga,
+                    'type'     => $this->product->jenis_product ?? null,
+                    'category' => $this->product->kategori_product ?? null,
+                    'price'    => $this->product_detail->harga ?? null,
                 ]
+                // $this->filtered($this)
             ]
         ];
     }
 
     protected function filtered($customer)
     {
-        $cv = array_count_values($customer->pluck('no_order')->toArray());
-       
-        return collect($cv)->map(function ($v, $k) use ($customer) {
-            return [
-                'no_order'   => $k,
-                'count_item' => $v
-            ];
-        })->values();
+        $collect = collect(['order' => $customer->no_order]);
+        $filtered = $collect->filter(function ($value, $key) {
+            return $value == 21394;
+        });
+
+        $tc = collect([$filtered]);
+
+        dd($tc);
     }
 }

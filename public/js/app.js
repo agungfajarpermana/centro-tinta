@@ -64809,28 +64809,29 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
       }
     },
     SET_DATA_ORDER_CUSTOMER: function SET_DATA_ORDER_CUSTOMER(state, payloadOrder) {
-      var data = [];
-      state.customer.loadingOrder = true; // payloadOrder.data.map((item, key) => {
-      //     if(data.length < 1){
-      //         data.push(item)
-      //     }else{
-      //         data.map(items => {
-      //             if(items.customer_order.order !== data.customer_order.order){
-      //                 console.log('hai')
-      //                 data.push(item)
-      //             }
-      //         })
-      //     }
-      //     console.log(state.customer.orders)
-      // });
+      state.customer.loadingOrder = true;
+      state.customer.orders = payloadOrder.data; // remove twice data
 
-      state.customer.orders = payloadOrder.data;
+      function getUnique(arr, comp) {
+        var unique = arr.map(function (e) {
+          return e.customer_order[comp];
+        }).map(function (e, i, _final) {
+          return _final.indexOf(e) === i && i;
+        }).filter(function (e) {
+          return arr[e];
+        }).map(function (e) {
+          return arr[e];
+        });
+        return unique;
+      }
+
       var pagination = {
         current_page: payloadOrder.meta.current_page,
         last_page: payloadOrder.meta.last_page,
         next_page_url: payloadOrder.links.next,
         prev_page_url: payloadOrder.links.prev
       };
+      state.customer.orders = getUnique(state.customer.orders, 'order');
       state.customer.attrPaginationOrder = pagination;
     },
     SET_DATA_ORDER_PAGINATION: function SET_DATA_ORDER_PAGINATION(state, payloadUrlOrder) {
