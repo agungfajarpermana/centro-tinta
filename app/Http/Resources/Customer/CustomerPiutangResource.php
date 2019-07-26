@@ -14,8 +14,8 @@ class CustomerPiutangResource extends JsonResource
      */
     public function toArray($request)
     {
-        // dd($this->orders);
-        // return parent::toArray($request);
+        // dd($this->orders->product);
+
         return [
             'uniqid'   => $this->id,
             'no_cust'  => $this->customer->kode_customer,
@@ -24,14 +24,14 @@ class CustomerPiutangResource extends JsonResource
             'telephone'=> $this->customer->telpon,
             'company'  => $this->customer->perusahaan,
             'debt'  => [
-                'branch'=> $this->branch->nama_cabang,
+                'branch'=> $this->orders->branch->nama_cabang,
                 'desc'  => $this->ket,
                 'saldo' => $this->saldo
             ],
             'product' => [
-                'item' => $this->orders->product->nama_product,
-                'type' => $this->orders->product->jenis_product,
-                'harga'=> $this->orders->product->productDetail->harga
+                'item' => $this->orders->product->nama_product ?? null,
+                'type' => $this->orders->product->jenis_product ?? null,
+                'harga'=> $this->orders->product->productDetail->harga ?? null
             ]
         ];
     }

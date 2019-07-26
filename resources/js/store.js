@@ -426,10 +426,11 @@ export const store = new Vuex.Store({
             let order = state.customer.orders.find(x => x.customer_order.uniqid == id);
             state.modal.customerModal = order.customer_order
 
-            store.dispatch('getDetailSalesCustomer', `api/order/${order.customer_order.order}/customers`)
+            store.dispatch('getDetailSalesCustomer', `api/order/${order.customer_order.uniqid}/customers`)
         },
 
         SET_DATA_CUSTOMER_ORDERS(state, data){
+            console.log(data)
             state.modal.loadingModal = false
             state.modal.ordersModal = data
         }
@@ -535,7 +536,8 @@ export const store = new Vuex.Store({
                 axios.post(url, {
                     order: store.state.checkout.order,
                     customerId: store.state.customers.customerDetail.uniqid,
-                    products: store.state.checkout.items
+                    products: store.state.checkout.items,
+                    branch: store.state.checkout.items
                 }).then(res => {
                     
                     commit('CLEAR_ITEM_PRODUCT_TO_CHECKOUT')

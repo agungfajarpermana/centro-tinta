@@ -5,9 +5,11 @@ use Carbon\Carbon;
 
 use DB;
 use App\Model\Order;
+use App\Model\Branch;
 use App\Model\Piutang;
 use App\Model\Customer;
 use Illuminate\Http\Request;
+use App\Model\ProductDetails;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Customer\CustomerResource;
 use App\Http\Resources\Customer\CustomerPiutangResource;
@@ -49,18 +51,47 @@ class CustomerController extends Controller
             DB::beginTransaction();
 
             try {
-                $order = collect($request->products);
+                $product = collect($request->products);
+                $branchProduct = Branch::findOrFail(1);
+                
+                // create data customer order in table order
+                $order = Order::create([
+                    'tanggal'        => Carbon::now()->format('Y-m-d'),
+                    'no_order'       => $request->order,
+                    'branch_id'      => 1,
+                    'customer_id'    => $request->customerId,
+                ]);
 
-                $data = $order->map(function($item, $key) use ($request) {
-                    Order::create([
-                        'tanggal'        => Carbon::now()->format('Y-m-d'),
-                        'no_order'       => $request->order,
-                        'branch_id'      => 1,
-                        'customer_id'    => $request->customerId,
+                $data = $product->map(function($item, $key) use ($order, $branchProduct) {
+                    
+                    // create data order detail
+                    $order->order_detail()->create([
                         'product_id'     => $item['detail_product']['uniqid'],
                         'qty'            => $item['numberOfPurchases'],
                         'total_pembelian'=> $item['detail_product']['price'] * $item['numberOfPurchases']
                     ]);
+                    
+                    // get stock branch product
+                    $stock = $branchProduct->branch_product()->where('branch_id', $item['detail_branch']['uniqid'])
+                                           ->where('product_id', $item['detail_product']['uniqid'])
+                                           ->first();
+
+                    // get data penjualan product detail
+                    $productDetail = ProductDetails::where('product_id', $item['detail_product']['uniqid'])->first();
+                    
+                    // update stock branch product
+                    $branchProduct->branch_product()->where('branch_id', $item['detail_branch']['uniqid'])
+                          ->where('product_id', $item['detail_product']['uniqid'])
+                          ->update([
+                                'stok_keluar' => ($stock->stok_keluar + $item['numberOfPurchases']),
+                                'stok_akhir'  => ($stock->stok_akhir - $item['numberOfPurchases'])
+                          ]);
+
+                    // update data penjualan product detail
+                    $updateProductDetail = $productDetail->update([
+                        'penjualan' => ($productDetail->penjualan + $item['numberOfPurchases'])
+                    ]);
+                          
                 });
 
                 DB::commit();

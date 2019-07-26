@@ -2,13 +2,17 @@
 
 namespace App\Model;
 
-use App\Model\Branch;
+use App\Model\BranchProduct;
+use App\Model\productDetail;
 use Illuminate\Database\Eloquent\Model;
 
 class Branch extends Model
 {
-    public function index()
+    protected $guarded = ['created_at', 'updated_at'];
+    protected $hidden = ['created_at', 'updated_at'];
+
+    public function branch_product()
     {
-        return Branch::all();
+        return $this->hasOne(BranchProduct::class);
     }
 }

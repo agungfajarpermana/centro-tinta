@@ -15,6 +15,10 @@ class CreateProductsTable extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->bigIncrements('id');
+
+            $table->bigInteger('branch_id')->unsigned()->index();
+            $table->foreign('branch_id')->references('id')->on('branches')->onDelete('no action');
+
             $table->string('nama_product', 150);
             $table->string('jenis_product', 150);
             $table->string('kategori_product', 150);

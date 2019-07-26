@@ -38,6 +38,9 @@ export default {
     created(){
         Bus.$on('showItems', (hide) => {
             this.show = hide
+            if(!hide){
+                this.$store.dispatch('getProducts', '/api/products')
+            }
         })
     },
     components: {

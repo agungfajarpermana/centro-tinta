@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddProductIdToOrdersTable extends Migration
+class AddBranchIdToCustomersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddProductIdToOrdersTable extends Migration
      */
     public function up()
     {
-        Schema::table('orders', function (Blueprint $table) {
-            $table->BigInteger('product_id')->default(0);
+        Schema::table('customers', function (Blueprint $table) {
+            $table->bigInteger('branch_id')->default(null);
         });
     }
 
@@ -25,8 +25,8 @@ class AddProductIdToOrdersTable extends Migration
      */
     public function down()
     {
-        Schema::table('orders', function (Blueprint $table) {
-            $table->dropColumn();
+        Schema::table('customers', function (Blueprint $table) {
+            $table->dropColumn('branch_id');
         });
     }
 }

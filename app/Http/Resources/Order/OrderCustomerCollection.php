@@ -14,24 +14,13 @@ class OrderCustomerCollection extends Resource
      */
     public function toArray($request)
     {
+        // dd($this->product);
         // return parent::toArray($request);
         return [
-            'product' => $this->product->nama_product,
-            'type'    => $this->product->jenis_product,
+            'product' => $this->product->nama_product ?? null,
+            'type'    => $this->product->jenis_product ?? null,
             'qty'     => $this->qty,
             'total'   => $this->total_pembelian,
         ];
-    }
-
-    protected function groupItems($products)
-    {
-        $cv = array_count_values($products->pluck('product_id')->toArray());
-        $ct = array_count_values($products->pluck('total_pembelian')->toArray());
-       
-        return collect($cv)->map(function ($v, $k) use ($ct) {
-            return collect($ct)->map(function ($t, $i) use ($v, $k) {
-                return ['product' => $k, 'qty' => $v, 'total' => ($i + $k)];
-            })->values()->first();
-        })->values()->first();
     }
 }

@@ -5,6 +5,7 @@ namespace App\Model;
 use App\Model\Branch;
 use App\Model\Product;
 use App\Model\Customer;
+use App\Model\OrderDetail;
 use App\Model\ProductDetails;
 use Illuminate\Database\Eloquent\Model;
 
@@ -31,5 +32,10 @@ class Order extends Model
     public function product_detail()
     {
         return $this->belongsTo(ProductDetails::class, 'product_id', 'id');
+    }
+
+    public function order_detail()
+    {
+        return $this->hasMany(OrderDetail::class);
     }
 }

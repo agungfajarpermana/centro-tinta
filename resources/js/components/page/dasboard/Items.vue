@@ -7,7 +7,7 @@
         <!-- component text empty product -->
         <TextEmptyProduct v-if="products.length < 1 && loadingFirst"/>
 
-        <div v-else class="col s12 m4 l3 animated" :class="{'fadeIn':loading}" v-for="(product, index) in products" :key="product.detail_branch.uniqid">
+        <div v-else class="col s12 m4 l3 animated" :class="{'fadeIn':loading}" v-for="(product, index) in products" :key="product.detail_product.uniqid">
             <div class="clearfix"></div>
 
             <div class="ph-item" v-if="!loading">
@@ -39,7 +39,7 @@
                 </div>
                 <div class="card-action">
                     <a class="waves-block waves-effect btn-small amber darken-4"
-                        :disabled="product.button"
+                        :disabled="product.button || product.detail_stock.last_stock < 1"
                         @click.prevent="buyProducts(index, product.detail_product.uniqid)">
                         {{ product.btnTextProduct }}
                     </a>
@@ -64,7 +64,7 @@ export default {
         PreLoad,
         TextEmptyProduct
     },
-    created(){
+    beforeCreate(){
         this.$store.dispatch('getProducts', '/api/products')
     },
     computed: {

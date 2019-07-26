@@ -14,10 +14,11 @@ class ProductCollection extends Resource
      */
     public function toArray($request)
     {
-        // dd($this->details);
+        // dd($this->branch);
         // return parent::toArray($request);
         return [
             'detail_branch' => [
+                'uniqid'    => $this->branch->id,
                 'branch'    => $this->branch->nama_cabang,
                 'address'   => $this->branch->alamat,
                 'telphone'  => $this->branch->telpon,

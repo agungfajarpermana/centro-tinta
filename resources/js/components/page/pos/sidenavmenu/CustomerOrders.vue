@@ -12,11 +12,10 @@
         <table class="striped responsive-table">
             <thead>
                 <tr>
+                    <th>Date</th>
                     <th>No.Order</th>
                     <th colspan="5">Branches</th>
                     <th colspan="5">Customer</th>
-                    <th colspan="2" class="center-align">Total Items</th>
-                    <th colspan="2">Total Price</th>
                 </tr>
             </thead>
 
@@ -38,11 +37,10 @@
                 </tr>
 
                 <tr v-else class="animated" :class="{'fadeIn':loadingOrder}" v-for="(order, index) in orders" :key="order.customer_order.uniqid">
+                    <td>{{ order.customer_order.date | dateformat }}</td>
                     <td>INV-{{ order.customer_order.order }}</td>
                     <td colspan="5">{{ order.customer_order.branches }}</td>
                     <td colspan="5">{{ order.customer_order.customer }}</td>
-                    <td colspan="2" class="center-align">{{ order.customer_order.qty }}</td>
-                    <td colspan="2">Rp. {{ parseInt(order.customer_order.total_sales).toLocaleString('id') }}</td>
                     <td>
                         <a href="#modal1" class="modal-trigger"
                             @click.prevent="customerOrderModal(index, order.customer_order.uniqid)"    
@@ -64,24 +62,17 @@
         <div id="modal1" class="modal modal-fixed-footer">
             <div class="modal-content">
                 <h5>{{ customerModal.customer }}</h5>
-                <p>No.order</p>
-                <p>INV-{{ customerModal.order }}</p>
                 <br>
                 <div class="row">
                     <div class="container-fluid">
-                        <div class="col s4 m4 l4">
+                        <div class="col s2 m2 l2">
+                            <p>No. Order</p>
+                            <p>INV-{{ customerModal.order }}</p>
+                        </div>
+
+                        <div class="col s10 m10 l10">
                             <p>Cabang</p>
                             <p>{{ customerModal.branches }}</p>
-                        </div>
-
-                        <div class="col s4 m4 l4">
-                            <p class="center-align">Total Item</p>
-                            <p class="center-align">{{ customerModal.qty }}</p>
-                        </div>
-
-                        <div class="col s4 m4 l4">
-                            <p class="right-align">Total Harga</p>
-                            <p class="right-align">Rp. {{ parseInt(customerModal.total_sales).toLocaleString('id') }}</p>
                         </div>
                     </div>
                 </div>

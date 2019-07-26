@@ -16,7 +16,7 @@ class Product extends Model
 
     public function branch()
     {
-        return $this->hasOne(Branch::class, 'id');
+        return $this->hasOne(Branch::class, 'id', 'branch_id');
     }
 
     public function branchProduct()

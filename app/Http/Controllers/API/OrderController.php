@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use DB;
 use App\Model\Order;
+use App\Model\OrderDetail;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Order\OrderCollection as Orders;
@@ -32,11 +33,8 @@ class OrderController extends Controller
 
     public function customerSales($orders = null)
     {
-        $itemCust = OrderCustomer::collection(collect(Order::where('no_order', $orders)->get()));
-        $order    = $itemCust->groupBy(function ($item, $key) {
-            return $item['no_order'];
-        });
-        
+        $itemCust = OrderCustomer::collection(collect(OrderDetail::where('order_id', $orders)->get()));
+
         return response()->json([
             'status' => true,
             'data' => $itemCust

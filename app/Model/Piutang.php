@@ -11,11 +11,8 @@ class Piutang extends Model
     public function orders()
     {
         return $this->belongsTo(Order::class, 'order_id')
-                    ->with(['product' => function ($query) {
-                        $query->select('id', 'nama_product', 'jenis_product')
-                              ->with(['productDetail' => function ($query) {
-                                  $query->select('id', 'product_id', 'harga', 'penjualan');
-                              }]);
+                    ->with(['branch' => function ($query) {
+                        $query->select('id', 'nama_cabang');
                     }]);
     }
 
