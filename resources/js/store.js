@@ -331,17 +331,18 @@ export const store = new Vuex.Store({
 
             state.customer.loadingOrder = true
             state.customer.orders = payloadOrder.data
-
-            // remove twice data
-            function getUnique(arr, comp) {
-
-                let unique = arr.map(e => e.customer_order[comp])
-                                .map((e, i, final) => final.indexOf(e) === i && i)
-                                .filter(e => arr[e]).map(e => arr[e]);
             
-                return unique;
+            // remove twice data
+            // function getUnique(arr, comp) {
 
-            }
+            //     let unique = arr.map(e => e.customer_order[comp])
+            //                     .map((e, i, final) => final.indexOf(e) === i && i)
+            //                     .filter(e => arr[e]).map(e => arr[e]);
+            
+            //     return unique;
+
+            // }
+            // state.customer.orders = getUnique(state.customer.orders,'order')
 
             const pagination = {
                 current_page : payloadOrder.meta.current_page,
@@ -350,7 +351,6 @@ export const store = new Vuex.Store({
                 prev_page_url: payloadOrder.links.prev
             }
 
-            state.customer.orders = getUnique(state.customer.orders,'order')
             state.customer.attrPaginationOrder = pagination
         },
 

@@ -24,10 +24,6 @@ class CreateOrdersTable extends Migration
             $table->bigInteger('customer_id')->unsigned()->index();
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
 
-            $table->text('jenis_product');
-            $table->text('qty');
-            $table->integer('total_pembelian');
-
             $table->timestamps();
         });
     }

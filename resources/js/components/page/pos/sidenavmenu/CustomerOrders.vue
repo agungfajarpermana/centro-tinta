@@ -117,8 +117,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <a href="#!" class="waves-effect waves-green btn-flat"
-                    @click="printSuratJalan">Surat Jalan</a>
+                <a href="#!" :disabled="loadingModal" class="waves-effect waves-green btn"
+                    @click="printSuratJalan(customerModal.order)">Surat Jalan</a>
             </div>
         </div>
     </div>
@@ -180,8 +180,8 @@ export default {
             this.$store.dispatch('customerOrderModal', id)
         },
 
-        printSuratJalan(){
-            window.open('api/laporan/customer/orders', '_blank')
+        printSuratJalan(order){
+            window.open(`api/laporan/${order}/customer`, '_blank')
         }
     }
 }

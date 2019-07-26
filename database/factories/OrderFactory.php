@@ -16,8 +16,5 @@ $factory->define(Order::class, function (Faker $faker) {
         'customer_id'    => function() {
             return Customer::all()->random();
         },
-        'jenis_product'  => $faker->word,
-        'qty'            => $faker->numberBetween(0,100),
-        'total_pembelian'=> $faker->numberBetween(10000,80000)
     ];
 });

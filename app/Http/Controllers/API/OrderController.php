@@ -19,7 +19,11 @@ class OrderController extends Controller
     public function index($search = null)
     {
         if(!$search){
-            return Orders::collection(Order::orderBy('id', 'ASC')->paginate(8));
+            $data = Order::orderBy('id', 'ASC')->get();
+            $group = collect($data)->groupBy('no_order')->paginate(8);
+
+            // return response()->json(['data' => $group]);
+            return Orders::collection(Order::orderBy('id','DESC')->paginate(8));
         }
         
         return Orders::collection(Order::where('no_order', 'LIKE', '%'.$search.'%')

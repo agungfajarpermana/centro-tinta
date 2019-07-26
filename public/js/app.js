@@ -2874,8 +2874,8 @@ __webpack_require__.r(__webpack_exports__);
       this.$store.state.modal.loadingModal = true;
       this.$store.dispatch('customerOrderModal', id);
     },
-    printSuratJalan: function printSuratJalan() {
-      window.open('api/laporan/customer/orders', '_blank');
+    printSuratJalan: function printSuratJalan(order) {
+      window.open("api/laporan/".concat(order, "/customer"), '_blank');
     }
   }
 });
@@ -46008,9 +46008,13 @@ var render = function() {
                 _c(
                   "a",
                   {
-                    staticClass: "waves-effect waves-green btn-flat",
-                    attrs: { href: "#!" },
-                    on: { click: _vm.printSuratJalan }
+                    staticClass: "waves-effect waves-green btn",
+                    attrs: { href: "#!", disabled: _vm.loadingModal },
+                    on: {
+                      click: function($event) {
+                        return _vm.printSuratJalan(_vm.customerModal.order)
+                      }
+                    }
                   },
                   [_vm._v("Surat Jalan")]
                 )
@@ -64811,19 +64815,13 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
     SET_DATA_ORDER_CUSTOMER: function SET_DATA_ORDER_CUSTOMER(state, payloadOrder) {
       state.customer.loadingOrder = true;
       state.customer.orders = payloadOrder.data; // remove twice data
-
-      function getUnique(arr, comp) {
-        var unique = arr.map(function (e) {
-          return e.customer_order[comp];
-        }).map(function (e, i, _final) {
-          return _final.indexOf(e) === i && i;
-        }).filter(function (e) {
-          return arr[e];
-        }).map(function (e) {
-          return arr[e];
-        });
-        return unique;
-      }
+      // function getUnique(arr, comp) {
+      //     let unique = arr.map(e => e.customer_order[comp])
+      //                     .map((e, i, final) => final.indexOf(e) === i && i)
+      //                     .filter(e => arr[e]).map(e => arr[e]);
+      //     return unique;
+      // }
+      // state.customer.orders = getUnique(state.customer.orders,'order')
 
       var pagination = {
         current_page: payloadOrder.meta.current_page,
@@ -64831,7 +64829,6 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
         next_page_url: payloadOrder.links.next,
         prev_page_url: payloadOrder.links.prev
       };
-      state.customer.orders = getUnique(state.customer.orders, 'order');
       state.customer.attrPaginationOrder = pagination;
     },
     SET_DATA_ORDER_PAGINATION: function SET_DATA_ORDER_PAGINATION(state, payloadUrlOrder) {
