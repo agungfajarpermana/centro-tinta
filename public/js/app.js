@@ -2699,10 +2699,12 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _FooterOrder__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./FooterOrder */ "./resources/js/components/page/pos/sidenavmenu/FooterOrder.vue");
-/* harmony import */ var _app__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../../app */ "./resources/js/app.js");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var vue_multiselect__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue-multiselect */ "./node_modules/vue-multiselect/dist/vue-multiselect.min.js");
+/* harmony import */ var vue_multiselect__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue_multiselect__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _FooterOrder__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./FooterOrder */ "./resources/js/components/page/pos/sidenavmenu/FooterOrder.vue");
+/* harmony import */ var _app__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../app */ "./resources/js/app.js");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_3__);
 //
 //
 //
@@ -2820,6 +2822,22 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 
 
 
@@ -2832,11 +2850,17 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      searchOrder: ''
+      searchOrder: '',
+      valueProduct: null,
+      productQty: 0,
+      qty: null,
+      id: 0,
+      isLoading: false
     };
   },
   components: {
-    FooterOrder: _FooterOrder__WEBPACK_IMPORTED_MODULE_0__["default"]
+    FooterOrder: _FooterOrder__WEBPACK_IMPORTED_MODULE_1__["default"],
+    Multiselect: vue_multiselect__WEBPACK_IMPORTED_MODULE_0___default.a
   },
   computed: {
     loadingOrder: function loadingOrder() {
@@ -2853,24 +2877,140 @@ __webpack_require__.r(__webpack_exports__);
     },
     loadingModal: function loadingModal() {
       return this.$store.getters.loadingModal;
+    },
+    productEdit: function productEdit() {
+      return this.$store.getters.productEdit;
     }
   },
   mounted: function mounted() {
     M.AutoInit();
     this.$store.dispatch('getOrder', 'api/order');
+    this.$store.dispatch('productEdit', "api/orders");
   },
   watch: {
-    searchOrder: lodash__WEBPACK_IMPORTED_MODULE_2___default.a.debounce(function (event) {
-      _app__WEBPACK_IMPORTED_MODULE_1__["Bus"].$emit('searchCustomerOrder', event.trim());
-    }, 800)
+    searchOrder: lodash__WEBPACK_IMPORTED_MODULE_3___default.a.debounce(function (event) {
+      _app__WEBPACK_IMPORTED_MODULE_2__["Bus"].$emit('searchCustomerOrder', event.trim());
+    }, 800),
+    productQty: function productQty(value) {
+      if (value >= this.qty + 1) {
+        this.productQty = 0;
+      } else if (isNaN(this.productQty)) {
+        this.productQty = 0;
+      } else {
+        this.productQty = parseInt(value).toString();
+      }
+    }
   },
   methods: {
+    nameWithLang: function nameWithLang(_ref) {
+      var product = _ref.product;
+      return "".concat(product);
+    },
     customerOrderModal: function customerOrderModal(index, id) {
+      this.productQty = 0;
       this.$store.state.modal.loadingModal = true;
       this.$store.dispatch('customerOrderModal', id);
     },
     printSuratJalan: function printSuratJalan(order) {
       window.open("api/laporan/".concat(order, "/customer"), '_blank');
+    },
+    changeEdit: function changeEdit(id, mode) {
+      var btnProduct = this.ordersModal.find(function (btn) {
+        return btn.editProduct;
+      });
+      var btnQty = this.ordersModal.find(function (btn) {
+        return btn.editQty;
+      });
+      var dataEdit = this.ordersModal.find(function (edit) {
+        return edit.uniqid == id;
+      });
+      var dataQty = this.productEdit.find(function (data) {
+        return data.uniqid == dataEdit.prod_id;
+      });
+
+      if (mode == 'product') {
+        dataEdit.editProduct = true;
+      } else if (mode == 'qty') {
+        dataEdit.editQty = true;
+      }
+
+      if (btnProduct) btnProduct.editProduct = false;
+      this.valueProduct = null;
+      btnQty ? btnQty.editQty = false : '';
+      this.qty = dataQty.qty;
+      this.id = id;
+    },
+    cancelEdit: function cancelEdit(id, mode) {
+      var cancel = this.ordersModal.find(function (edit) {
+        return edit.uniqid == id;
+      });
+
+      if (mode == 'product') {
+        cancel.editProduct = false;
+        this.id = 0;
+      } else {
+        cancel.editQty = false;
+        this.productQty = this.id = 0;
+      }
+    },
+    editDataProduct: function editDataProduct(value) {
+      var _this = this;
+
+      var btnProduct = this.ordersModal.find(function (btn) {
+        return btn.editProduct;
+      });
+      var btnQty = this.ordersModal.find(function (btn) {
+        return btn.editQty;
+      });
+      this.isLoading = !this.isLoading;
+      this.$store.dispatch('editOrderCustomer', {
+        url: "api/order/".concat(this.id),
+        product: value.uniqid,
+        price: value.price,
+        branch: value.branch,
+        qty: null
+      }).then(function (res) {
+        if (btnProduct) btnProduct.editProduct = false;
+        _this.valueProduct = null;
+        btnProduct.product = value.product;
+        btnProduct.total = value.price;
+        btnQty ? btnQty.editQty = false : '';
+        _this.isLoading = !_this.isLoading;
+      })["catch"](function (err) {
+        console.log(err);
+      });
+    },
+    editDataQty: function editDataQty(id) {
+      var _this2 = this;
+
+      var btnQty = this.ordersModal.find(function (btn) {
+        return btn.editQty;
+      });
+      var dataEdit = this.ordersModal.find(function (edit) {
+        return edit.uniqid == id;
+      });
+      var data = this.productEdit.find(function (edit) {
+        return edit.uniqid == dataEdit.prod_id;
+      }); // console.log(data);
+
+      if (this.productQty == 0) {
+        alert('Tidak boleh kosong');
+      } else {
+        this.$store.dispatch('editOrderCustomer', {
+          url: "api/order/".concat(this.id),
+          product: data.uniqid,
+          price: data.price,
+          branch: data.branch,
+          qty: this.productQty
+        }).then(function (res) {
+          if (btnQty) btnQty.editQty = false;
+          btnQty.qty = _this2.productQty;
+          btnQty.total = _this2.productQty * data.price;
+          _this2.productQty = 0;
+        })["catch"](function (err) {
+          console.log(err);
+        });
+      }
     }
   }
 });
@@ -63468,13 +63608,7 @@ var render = function() {
                               ]
                             ),
                             _vm._v("  \n                    "),
-                            _vm._m(4, true),
-                            _vm._v("  \n                    "),
-                            _c(
-                              "i",
-                              { staticClass: "tiny material-icons red-text" },
-                              [_vm._v("delete")]
-                            )
+                            _vm._m(4, true)
                           ])
                         ]
                       )
@@ -63545,11 +63679,142 @@ var render = function() {
                               : _vm._l(_vm.ordersModal, function(order, index) {
                                   return _c("tr", { key: index }, [
                                     _c("td", { staticClass: "left-align" }, [
-                                      _vm._v(_vm._s(order.product))
+                                      !order.editProduct
+                                        ? _c(
+                                            "span",
+                                            {
+                                              on: {
+                                                dblclick: function($event) {
+                                                  return _vm.changeEdit(
+                                                    order.uniqid,
+                                                    "product"
+                                                  )
+                                                }
+                                              }
+                                            },
+                                            [_vm._v(_vm._s(order.product))]
+                                          )
+                                        : _c(
+                                            "div",
+                                            {
+                                              staticClass: "col s12 m8 lg8",
+                                              staticStyle: {
+                                                "margin-left": "-15px"
+                                              },
+                                              on: {
+                                                dblclick: function($event) {
+                                                  return _vm.cancelEdit(
+                                                    order.uniqid,
+                                                    "product"
+                                                  )
+                                                }
+                                              }
+                                            },
+                                            [
+                                              _c("multiselect", {
+                                                attrs: {
+                                                  options: _vm.productEdit,
+                                                  loading:
+                                                    _vm.productEdit.length <
+                                                      1 || _vm.isLoading,
+                                                  "max-height": 150,
+                                                  "custom-label":
+                                                    _vm.nameWithLang,
+                                                  "track-by": "product",
+                                                  placeholder: "pilih product"
+                                                },
+                                                on: {
+                                                  select: _vm.editDataProduct
+                                                },
+                                                model: {
+                                                  value: _vm.valueProduct,
+                                                  callback: function($$v) {
+                                                    _vm.valueProduct = $$v
+                                                  },
+                                                  expression: "valueProduct"
+                                                }
+                                              })
+                                            ],
+                                            1
+                                          )
                                     ]),
                                     _vm._v(" "),
                                     _c("td", { staticClass: "center-align" }, [
-                                      _vm._v(_vm._s(order.qty))
+                                      !order.editQty
+                                        ? _c(
+                                            "span",
+                                            {
+                                              on: {
+                                                dblclick: function($event) {
+                                                  return _vm.changeEdit(
+                                                    order.uniqid,
+                                                    "qty"
+                                                  )
+                                                }
+                                              }
+                                            },
+                                            [_vm._v(_vm._s(order.qty))]
+                                          )
+                                        : _c(
+                                            "div",
+                                            {
+                                              staticClass: "col s2 offset-s5",
+                                              on: {
+                                                dblclick: function($event) {
+                                                  return _vm.cancelEdit(
+                                                    order.uniqid,
+                                                    "qty"
+                                                  )
+                                                }
+                                              }
+                                            },
+                                            [
+                                              _c("input", {
+                                                directives: [
+                                                  {
+                                                    name: "model",
+                                                    rawName: "v-model",
+                                                    value: _vm.productQty,
+                                                    expression: "productQty"
+                                                  }
+                                                ],
+                                                attrs: { type: "text" },
+                                                domProps: {
+                                                  value: _vm.productQty
+                                                },
+                                                on: {
+                                                  keyup: function($event) {
+                                                    if (
+                                                      !$event.type.indexOf(
+                                                        "key"
+                                                      ) &&
+                                                      _vm._k(
+                                                        $event.keyCode,
+                                                        "enter",
+                                                        13,
+                                                        $event.key,
+                                                        "Enter"
+                                                      )
+                                                    ) {
+                                                      return null
+                                                    }
+                                                    return _vm.editDataQty(
+                                                      order.uniqid
+                                                    )
+                                                  },
+                                                  input: function($event) {
+                                                    if (
+                                                      $event.target.composing
+                                                    ) {
+                                                      return
+                                                    }
+                                                    _vm.productQty =
+                                                      $event.target.value
+                                                  }
+                                                }
+                                              })
+                                            ]
+                                          )
                                     ]),
                                     _vm._v(" "),
                                     _c("td", { staticClass: "right-align" }, [
@@ -63627,7 +63892,7 @@ var staticRenderFns = [
     return _c("td", { attrs: { colspan: "14" } }, [
       _c("div", { staticClass: "center-align animated flash loader" }, [
         _vm._v(
-          "\n                        No.order yang dicari tidak ditemukan!\n                    "
+          "\n                        Data Belum Tersedia!\n                    "
         )
       ])
     ])
@@ -63647,8 +63912,8 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("a", { attrs: { href: "#" } }, [
-      _c("i", { staticClass: "tiny material-icons blue-text" }, [
-        _vm._v("edit")
+      _c("i", { staticClass: "tiny material-icons red-text" }, [
+        _vm._v("delete")
       ])
     ])
   },
@@ -82150,6 +82415,7 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
     modal: {
       customerModal: [],
       ordersModal: [],
+      productEdit: [],
       loadingModal: false
     }
   },
@@ -82253,6 +82519,9 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
     },
     loadingModal: function loadingModal(state) {
       return state.modal.loadingModal;
+    },
+    productEdit: function productEdit(state) {
+      return state.modal.productEdit;
     }
   },
   mutations: {
@@ -82302,6 +82571,17 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
     SET_DATA_PRODUCT_PAGINATION: function SET_DATA_PRODUCT_PAGINATION(state, payloadUrlProduct) {
       state.product.loading = !state.product.loading;
       store.dispatch('getProducts', payloadUrlProduct);
+    },
+    SET_DATA_PRODUCT_ORDER_EDIT: function SET_DATA_PRODUCT_ORDER_EDIT(state, product) {
+      var products = [];
+      product.data.map(function (item) {
+        products.push(Object.assign({}, item.detail_product, {
+          branch: item.detail_branch.uniqid
+        }, {
+          qty: item.detail_stock.last_stock
+        }));
+      });
+      state.modal.productEdit = products;
     },
     PUSH_ITEM_PRODUCT_TO_CHECK_OUT: function PUSH_ITEM_PRODUCT_TO_CHECK_OUT(state, items) {
       var productCheckout = store.getters.itemsCheckout.find(function (products) {
@@ -82470,9 +82750,16 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
       store.dispatch('getDetailSalesCustomer', "api/order/".concat(order.customer_order.uniqid, "/customers"));
     },
     SET_DATA_CUSTOMER_ORDERS: function SET_DATA_CUSTOMER_ORDERS(state, data) {
-      console.log(data);
+      var order = [];
+      data.map(function (item) {
+        order.push(Object.assign({}, item, {
+          editProduct: false
+        }, {
+          editQty: false
+        }));
+      });
       state.modal.loadingModal = false;
-      state.modal.ordersModal = data;
+      state.modal.ordersModal = order;
     }
   },
   actions: {
@@ -82486,61 +82773,84 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
       var commit = _ref2.commit;
       commit("SET_DATA_PRODUCT_PAGINATION", url);
     },
-    pushItemToCheckOut: function pushItemToCheckOut(_ref3, items) {
+    productEdit: function productEdit(_ref3, url) {
       var commit = _ref3.commit;
+      axios__WEBPACK_IMPORTED_MODULE_2___default.a.get(url).then(function (res) {
+        commit("SET_DATA_PRODUCT_ORDER_EDIT", res.data);
+      })["catch"](function (err) {
+        console.log(err);
+      });
+    },
+    editOrderCustomer: function editOrderCustomer(_ref4, data) {
+      var commit = _ref4.commit;
+      return new Promise(function (resolve, reject) {
+        axios__WEBPACK_IMPORTED_MODULE_2___default.a.put(data.url, {
+          price: data.price,
+          product: data.product,
+          branch: data.branch,
+          qty: data.qty
+        }).then(function (res) {
+          resolve(res);
+        })["catch"](function (err) {
+          reject(err);
+        });
+      });
+    },
+    pushItemToCheckOut: function pushItemToCheckOut(_ref5, items) {
+      var commit = _ref5.commit;
       commit('PUSH_ITEM_PRODUCT_TO_CHECK_OUT', items);
     },
-    cancelItems: function cancelItems(_ref4, items) {
-      var commit = _ref4.commit;
+    cancelItems: function cancelItems(_ref6, items) {
+      var commit = _ref6.commit;
       commit('DELETE_ITEM_PRODUCT_TO_CHECK_OUT', items);
     },
-    clearItemCheckout: function clearItemCheckout(_ref5) {
-      var commit = _ref5.commit;
+    clearItemCheckout: function clearItemCheckout(_ref7) {
+      var commit = _ref7.commit;
       commit('CLEAR_ITEM_PRODUCT_TO_CHECKOUT');
     },
-    getOrder: function getOrder(_ref6, url) {
-      var commit = _ref6.commit;
+    getOrder: function getOrder(_ref8, url) {
+      var commit = _ref8.commit;
       axios__WEBPACK_IMPORTED_MODULE_2___default.a.get(url).then(function (res) {
         commit('SET_DATA_ORDER_CUSTOMER', res.data);
       })["catch"](function (err) {
         console.log(err);
       });
     },
-    getdataOrderPagination: function getdataOrderPagination(_ref7, url) {
-      var commit = _ref7.commit;
+    getdataOrderPagination: function getdataOrderPagination(_ref9, url) {
+      var commit = _ref9.commit;
       commit('SET_DATA_ORDER_PAGINATION', url);
     },
-    searchDataCustomerOrder: function searchDataCustomerOrder(_ref8, data) {
-      var commit = _ref8.commit;
+    searchDataCustomerOrder: function searchDataCustomerOrder(_ref10, data) {
+      var commit = _ref10.commit;
       commit("SET_DATA_SEARCH_ORDER", data);
     },
-    getItemManagement: function getItemManagement(_ref9, url) {
-      var commit = _ref9.commit;
+    getItemManagement: function getItemManagement(_ref11, url) {
+      var commit = _ref11.commit;
       axios__WEBPACK_IMPORTED_MODULE_2___default.a.get(url).then(function (res) {
         commit('SET_DATA_ITEM_MANAGEMENT', res.data);
       })["catch"](function (err) {
         console.log(err);
       });
     },
-    getDataPaginationManage: function getDataPaginationManage(_ref10, url) {
-      var commit = _ref10.commit;
+    getDataPaginationManage: function getDataPaginationManage(_ref12, url) {
+      var commit = _ref12.commit;
       commit('SET_DATA_MANAGEMENT_PAGINATION', url);
     },
-    searchDataItemManagement: function searchDataItemManagement(_ref11, value) {
-      var commit = _ref11.commit;
+    searchDataItemManagement: function searchDataItemManagement(_ref13, value) {
+      var commit = _ref13.commit;
       commit('SET_DATA_SEARCH_ITEM_MANAGEMENT', value);
     },
     // data customer
-    getDataCustomer: function getDataCustomer(_ref12, url) {
-      var commit = _ref12.commit;
+    getDataCustomer: function getDataCustomer(_ref14, url) {
+      var commit = _ref14.commit;
       axios__WEBPACK_IMPORTED_MODULE_2___default.a.get(url).then(function (res) {
         commit('SET_DATA_CUSTOMER_SALES', res.data);
       })["catch"](function (err) {
         console.log(err.response);
       });
     },
-    detailDataCustomer: function detailDataCustomer(_ref13, data) {
-      var commit = _ref13.commit;
+    detailDataCustomer: function detailDataCustomer(_ref15, data) {
+      var commit = _ref15.commit;
       store.state.customers.loadingDisplay = false;
       axios__WEBPACK_IMPORTED_MODULE_2___default.a.post(data).then(function (res) {
         commit('SET_DATA_CUSTOMER_AFTER_SEARCH', res.data);
@@ -82548,20 +82858,20 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
         console.log(err.response);
       });
     },
-    customerOrderModal: function customerOrderModal(_ref14, id) {
-      var commit = _ref14.commit;
+    customerOrderModal: function customerOrderModal(_ref16, id) {
+      var commit = _ref16.commit;
       commit('SET_DATA_CUSTOMER_MODAL', id);
     },
-    getDetailSalesCustomer: function getDetailSalesCustomer(_ref15, url) {
-      var commit = _ref15.commit;
+    getDetailSalesCustomer: function getDetailSalesCustomer(_ref17, url) {
+      var commit = _ref17.commit;
       axios__WEBPACK_IMPORTED_MODULE_2___default.a.get(url).then(function (res) {
         commit('SET_DATA_CUSTOMER_ORDERS', res.data.data);
       })["catch"](function (err) {
         console.log(err);
       });
     },
-    saveDataCustomerSales: function saveDataCustomerSales(_ref16, url) {
-      var commit = _ref16.commit;
+    saveDataCustomerSales: function saveDataCustomerSales(_ref18, url) {
+      var commit = _ref18.commit;
       return new Promise(function (resolve, reject) {
         axios__WEBPACK_IMPORTED_MODULE_2___default.a.post(url, {
           order: store.state.checkout.order,

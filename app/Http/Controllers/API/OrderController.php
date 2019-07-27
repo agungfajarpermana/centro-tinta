@@ -4,10 +4,12 @@ namespace App\Http\Controllers\API;
 
 use DB;
 use App\Model\Order;
+use App\Model\Product;
 use App\Model\OrderDetail;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Order\OrderCollection as Orders;
+use App\Http\Resources\Product\ProductCollection as Products;
 use App\Http\Resources\Order\OrderCustomerCollection as OrderCustomer;
 
 class OrderController extends Controller
@@ -20,14 +22,14 @@ class OrderController extends Controller
     public function index($search = null)
     {
         if(!$search){
-            $data = Order::orderBy('id', 'ASC')->get();
+            $data = Order::where('branch_id', 1)->orderBy('id', 'ASC')->get();
             $group = collect($data)->groupBy('no_order')->paginate(8);
 
             // return response()->json(['data' => $group]);
-            return Orders::collection(Order::orderBy('id','DESC')->paginate(8));
+            return Orders::collection(Order::where('branch_id', 1)->orderBy('id','DESC')->paginate(8));
         }
         
-        return Orders::collection(Order::where('no_order', 'LIKE', '%'.$search.'%')
+        return Orders::collection(Order::where('branch_id', 1)->where('no_order', 'LIKE', '%'.$search.'%')
                         ->orderBy('id', 'DESC')->paginate(8));
     }
 
@@ -38,6 +40,16 @@ class OrderController extends Controller
         return response()->json([
             'status' => true,
             'data' => $itemCust
+        ]);
+    }
+
+    public function orderEdit()
+    {
+        $product = Products::collection(Product::where('branch_id', 1)->orderBy('nama_product', 'ASC')->get());
+
+        return response()->json([
+            'status' => true,
+            'data' => $product
         ]);
     }
 
@@ -93,7 +105,22 @@ class OrderController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        if($request->qty == ''){
+            $data = OrderDetail::where('id', $id)->update([
+                'product_id' => $request->product,
+                'total_pembelian' => $request->price
+            ]);
+        }else{
+            $data = OrderDetail::where('id', $id)->update([
+                'qty' => $request->qty,
+                'total_pembelian' => ($request->qty * $request->price)
+            ]);
+        }
+
+        return response()->json([
+            'status' => true,
+            'data' => $data
+        ]);
     }
 
     /**

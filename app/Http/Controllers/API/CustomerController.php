@@ -20,7 +20,7 @@ class CustomerController extends Controller
 {
     public function index()
     {
-        return Customers::collection(Customer::paginate(8));
+        return Customers::collection(Customer::where('branch_id', 1)->paginate(8));
     }
 
     public function detailCustomer($customer)
@@ -35,13 +35,13 @@ class CustomerController extends Controller
             );
         }
         
-        return new CustomerResource(Customer::where('id', $customer)->first());
+        return new CustomerResource(Customer::where('branch_id', 1)->where('id', $customer)->first());
         
     }
 
     public function getDataCustomer()
     {
-        return Customer_::collection(Customer::get());
+        return Customer_::collection(Customer::where('branch_id', 1)->get());
     }
 
     public function store(Request $request)

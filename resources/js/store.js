@@ -59,6 +59,7 @@ export const store = new Vuex.Store({
         modal: {
             customerModal: [],
             ordersModal: [],
+            productEdit: [],
             loadingModal: false
         }
     },
@@ -193,6 +194,10 @@ export const store = new Vuex.Store({
 
         loadingModal(state){
             return state.modal.loadingModal
+        },
+
+        productEdit(state){
+            return state.modal.productEdit
         }
     },
     mutations: {
@@ -245,6 +250,15 @@ export const store = new Vuex.Store({
         SET_DATA_PRODUCT_PAGINATION(state, payloadUrlProduct){
             state.product.loading = !state.product.loading
             store.dispatch('getProducts', payloadUrlProduct)
+        },
+
+        SET_DATA_PRODUCT_ORDER_EDIT(state, product){
+            let products = []
+
+            product.data.map(item => {
+                products.push(Object.assign({}, item.detail_product, {branch:item.detail_branch.uniqid},{qty: item.detail_stock.last_stock}))
+            })
+            state.modal.productEdit = products
         },
 
         PUSH_ITEM_PRODUCT_TO_CHECK_OUT(state, items){
@@ -430,9 +444,13 @@ export const store = new Vuex.Store({
         },
 
         SET_DATA_CUSTOMER_ORDERS(state, data){
-            console.log(data)
+            let order = []
+            data.map(item => {
+                order.push(Object.assign({}, item, {editProduct:false},{editQty: false}))
+            })
+
             state.modal.loadingModal = false
-            state.modal.ordersModal = data
+            state.modal.ordersModal = order
         }
     },
     actions: {
@@ -445,6 +463,34 @@ export const store = new Vuex.Store({
 
         getDataProductPagination({commit}, url){
             commit("SET_DATA_PRODUCT_PAGINATION", url)
+        },
+
+        productEdit({commit}, url){
+            axios.get(url)
+                .then(res => {
+                    commit("SET_DATA_PRODUCT_ORDER_EDIT", res.data)
+                }).catch(err => {
+                    console.log(err)
+                })
+        },
+
+        editOrderCustomer({commit}, data){
+            return new Promise((resolve, reject) => {
+                axios.put(data.url, {
+                    price: data.price,
+                    product: data.product,
+                    branch: data.branch,
+                    qty: data.qty
+                }).then(res => {
+
+                    resolve(res)
+
+                }).catch(err => {
+
+                    reject(err)
+
+                })
+            })
         },
 
         pushItemToCheckOut({commit}, items){

@@ -20,7 +20,7 @@ class OrderCollection extends Resource
                 'uniqid'   => $this->id,
                 'date'     => $this->tanggal,
                 'order'    => $this->no_order,
-                'branches' => $this->branch->nama_cabang,
+                'branches' => $this->branch->nama_cabang ?? null,
                 'customer' => $this->customer->nama_customer,
             ]
         ];

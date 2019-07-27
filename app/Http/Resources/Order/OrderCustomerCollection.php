@@ -17,6 +17,9 @@ class OrderCustomerCollection extends Resource
         // dd($this->product);
         // return parent::toArray($request);
         return [
+            'uniqid'  => $this->id,
+            'prod_id' => $this->product->id ?? null,
+            'branch_id' => $this->product->branch_id,
             'product' => $this->product->nama_product ?? null,
             'type'    => $this->product->jenis_product ?? null,
             'qty'     => $this->qty,

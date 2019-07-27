@@ -23,7 +23,7 @@
                 <tr v-if="loadingOrder && orders.length < 1">
                     <td colspan="14">
                         <div class="center-align animated flash loader">
-                            No.order yang dicari tidak ditemukan!
+                            Data Belum Tersedia!
                         </div>
                     </td>
                 </tr>
@@ -48,9 +48,8 @@
                             <i class="tiny material-icons teal-text">remove_red_eye</i>
                         </a> &nbsp;
                         <a href="#">
-                            <i class="tiny material-icons blue-text">edit</i>
-                        </a> &nbsp;
-                        <i class="tiny material-icons red-text">delete</i>
+                            <i class="tiny material-icons red-text">delete</i>
+                        </a>
                     </td>
                 </tr>
             </tbody>
@@ -97,8 +96,24 @@
                                     </tr>
 
                                     <tr v-else v-for="(order, index) in ordersModal" :key="index">
-                                        <td class="left-align">{{ order.product }}</td>
-                                        <td class="center-align">{{ order.qty }}</td>
+                                        <td class="left-align">
+                                            <span v-if="!order.editProduct" @dblclick="changeEdit(order.uniqid, 'product')">{{ order.product }}</span>
+                                            <div v-else @dblclick="cancelEdit(order.uniqid, 'product')" class="col s12 m8 lg8" style="margin-left:-15px;">
+                                                <multiselect v-model="valueProduct" :options="productEdit"
+                                                    :loading="productEdit.length < 1 || isLoading"
+                                                    :max-height="150"
+                                                    :custom-label="nameWithLang"
+                                                    track-by="product"
+                                                    @select="editDataProduct"
+                                                    placeholder="pilih product"></multiselect>
+                                            </div>
+                                        </td>
+                                        <td class="center-align">
+                                            <span v-if="!order.editQty" @dblclick="changeEdit(order.uniqid, 'qty')">{{ order.qty }}</span>
+                                            <div v-else @dblclick="cancelEdit(order.uniqid, 'qty')" class="col s2 offset-s5">
+                                                <input type="text" v-model="productQty" @keyup.enter="editDataQty(order.uniqid)">
+                                            </div>
+                                        </td>
                                         <td class="right-align">Rp. {{ parseInt(order.total).toLocaleString('id') }}</td>
                                     </tr>
                                 </tbody>
@@ -116,6 +131,7 @@
 </template>
 
 <script>
+import Multiselect from 'vue-multiselect';
 import FooterOrder from './FooterOrder';
 import { Bus } from '../../../../app';
 import _ from 'lodash';
@@ -129,11 +145,17 @@ export default {
     },
     data(){
         return {
-            searchOrder: ''
+            searchOrder: '',
+            valueProduct: null,
+            productQty: 0,
+            qty: null,
+            id: 0,
+            isLoading: false
         }
     },
     components: {
         FooterOrder,
+        Multiselect 
     },
     computed: {
         loadingOrder(){
@@ -154,25 +176,123 @@ export default {
 
         loadingModal(){
             return this.$store.getters.loadingModal
+        },
+
+        productEdit(){
+            return this.$store.getters.productEdit
         }
     },
     mounted(){
         M.AutoInit();
         this.$store.dispatch('getOrder', 'api/order')
+        this.$store.dispatch('productEdit', `api/orders`)
     },
     watch: {
         searchOrder: _.debounce((event) => {
             Bus.$emit('searchCustomerOrder', event.trim())
-        }, 800)
+        }, 800),
+
+        productQty(value){
+            if(value >= (this.qty + 1)){
+                this.productQty = 0
+            }else if(isNaN(this.productQty)){
+                this.productQty = 0
+            }else{
+                this.productQty = parseInt(value).toString()
+            }
+        }
     },
     methods: {
+        nameWithLang ({ product }) {
+            return `${product}`
+        },
+        
         customerOrderModal(index, id){
+            this.productQty = 0;
             this.$store.state.modal.loadingModal = true
             this.$store.dispatch('customerOrderModal', id)
         },
 
         printSuratJalan(order){
             window.open(`api/laporan/${order}/customer`, '_blank')
+        },
+
+        changeEdit(id, mode){
+            const btnProduct = this.ordersModal.find(btn => btn.editProduct);
+            const btnQty = this.ordersModal.find(btn => btn.editQty);
+            const dataEdit = this.ordersModal.find(edit => edit.uniqid == id)
+            const dataQty = this.productEdit.find(data => data.uniqid == dataEdit.prod_id)
+            
+            if(mode == 'product'){
+
+                dataEdit.editProduct = true
+
+            }else if(mode == 'qty'){
+
+                dataEdit.editQty = true
+
+            }
+
+            if(btnProduct) btnProduct.editProduct = false; this.valueProduct = null;
+            btnQty ? btnQty.editQty = false : ''
+            this.qty = dataQty.qty
+            this.id = id
+        },
+
+        cancelEdit(id, mode){
+            const cancel = this.ordersModal.find(edit => edit.uniqid == id)
+            
+            if(mode == 'product'){
+                cancel.editProduct = false
+                this.id = 0
+            }else{
+                cancel.editQty = false
+                this.productQty = this.id = 0
+            }
+        },
+
+        editDataProduct(value){
+            const btnProduct = this.ordersModal.find(btn => btn.editProduct);
+            const btnQty = this.ordersModal.find(btn => btn.editQty);
+            this.isLoading = !this.isLoading
+
+            this.$store.dispatch('editOrderCustomer', {
+                url: `api/order/${this.id}`,
+                product: value.uniqid,
+                price: value.price,
+                branch: value.branch,
+                qty: null
+            }).then(res => {
+
+                if(btnProduct) btnProduct.editProduct = false; this.valueProduct = null; btnProduct.product = value.product; btnProduct.total = value.price;
+                btnQty ? btnQty.editQty = false : ''
+                this.isLoading = !this.isLoading
+
+            }).catch(err => {
+                console.log(err)
+            })
+        },
+
+        editDataQty(id){
+            const btnQty = this.ordersModal.find(btn => btn.editQty);
+            const dataEdit = this.ordersModal.find(edit => edit.uniqid == id)
+            const data = this.productEdit.find(edit => edit.uniqid == dataEdit.prod_id)
+            // console.log(data);
+            if(this.productQty == 0){
+                alert('Tidak boleh kosong')
+            }else{
+                this.$store.dispatch('editOrderCustomer', {
+                    url: `api/order/${this.id}`,
+                    product: data.uniqid,
+                    price: data.price,
+                    branch: data.branch,
+                    qty: this.productQty
+                }).then(res => {
+                    if(btnQty) btnQty.editQty = false; btnQty.qty = this.productQty; btnQty.total = (this.productQty * data.price); this.productQty = 0; 
+                }).catch(err => {
+                    console.log(err)
+                })
+            }
         }
     }
 }

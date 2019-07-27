@@ -28,6 +28,7 @@ Route::Resource('/branch', 'API\BranchProductController');
 Route::match(['GET'], '/branch/{search}/search', 'API\BranchProductController@searchData');
 
 Route::Resource('/order', 'API\OrderController');
+Route::get('/orders', 'API\OrderController@orderEdit');
 Route::get('/order/{search}/customer', 'API\OrderController@index');
 Route::get('/order/{orders}/customers', 'API\OrderController@customerSales');
 

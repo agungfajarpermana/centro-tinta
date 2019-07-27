@@ -14,7 +14,7 @@
                             placeholder="pilih customer">
                                 <template slot="singleLabel" slot-scope="{ option }"><strong>{{ option.customer }}</strong></template>
                                 <span slot="noResult">Oops! Nama Customer Belum Terdaftar.</span>
-                            </multiselect>
+                        </multiselect>
                     </div>
                 </div>
                 
