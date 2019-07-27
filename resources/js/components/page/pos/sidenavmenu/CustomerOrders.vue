@@ -47,7 +47,7 @@
                         >
                             <i class="tiny material-icons teal-text">remove_red_eye</i>
                         </a> &nbsp;
-                        <a href="#">
+                        <a href="#" @click.prevent="deleteOrder(order.customer_order.uniqid, index)">
                             <i class="tiny material-icons red-text">delete</i>
                         </a>
                     </td>
@@ -58,7 +58,7 @@
         <FooterOrder v-if="loadingOrder && orders.length > 0" />
 
         <!-- Modal Structure -->
-        <div id="modal1" class="modal modal-fixed-footer">
+        <div id="modal1" class="modal modal-fixed-footer" v-if="true">
             <div class="modal-content">
                 <h5>{{ customerModal.customer }}</h5>
                 <br>
@@ -85,6 +85,7 @@
                                         <th class="left-align">Product</th>
                                         <th class="center-align">Qty</th>
                                         <th class="right-align">Price</th>
+                                        <th class="right-align"></th>
                                     </tr>
                                 </thead>
 
@@ -114,7 +115,15 @@
                                                 <input type="text" v-model="productQty" @keyup.enter="editDataQty(order.uniqid)">
                                             </div>
                                         </td>
-                                        <td class="right-align">Rp. {{ parseInt(order.total).toLocaleString('id') }}</td>
+                                        <td class="right-align">
+                                            Rp. {{ parseInt(order.total).toLocaleString('id') }}
+                                        </td>
+                                        <td class="right-align">
+                                            <span><i class="tiny material-icons red-text" 
+                                                @click.prevent="deleteOrderModal(order.uniqid, index)"
+                                            >delete</i>
+                                            </span>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -183,7 +192,6 @@ export default {
         }
     },
     mounted(){
-        M.AutoInit();
         this.$store.dispatch('getOrder', 'api/order')
         this.$store.dispatch('productEdit', `api/orders`)
     },
@@ -208,6 +216,7 @@ export default {
         },
         
         customerOrderModal(index, id){
+            M.AutoInit()
             this.productQty = 0;
             this.$store.state.modal.loadingModal = true
             this.$store.dispatch('customerOrderModal', id)
@@ -293,6 +302,34 @@ export default {
                     console.log(err)
                 })
             }
+        },
+
+        deleteOrder(id, key){
+            this.$store.dispatch('deleteOrder', `api/order/${id}`)
+                .then(res => {
+
+                    if(res.status == true){
+                        this.orders.splice(key, 1)
+                    }
+
+                }).catch(err => {
+                    console.log(err)
+                })
+        },
+
+        deleteOrderModal(id, key){
+            this.$store.dispatch('deleteOrderModal', {
+                id: id,
+                url: 'api/orders'
+            }).then(res => {
+
+                if(res.status == true){
+                    this.ordersModal.splice(key, 1)
+                }
+
+            }).catch(err => {
+                console.log(err)
+            })
         }
     }
 }

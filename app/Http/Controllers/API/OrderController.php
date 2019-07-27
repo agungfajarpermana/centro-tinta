@@ -131,6 +131,23 @@ class OrderController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $data = Order::findOrFail($id);
+        $delete = $data->delete();
+
+        return response()->json([
+            'status' => true,
+            'msg' => 'Data berhasil di hapus!'
+        ]);
+    }
+
+    public function orderDelete(Request $request)
+    {
+        $data = OrderDetail::findOrFail($request->id);
+        $delete =  $data->delete();
+
+        return response()->json([
+            'status' => true,
+            'msg'  => 'Data berhasil di hapus!'
+        ]);
     }
 }

@@ -50,6 +50,7 @@ export default {
         ReportManagement
     },
     created(){
+        M.AutoInit()
         Bus.$on('changeMenu', (data) => {
             this.menu = data
         })

@@ -61,6 +61,12 @@ export const store = new Vuex.Store({
             ordersModal: [],
             productEdit: [],
             loadingModal: false
+        },
+
+        items: {
+            product: '',
+            price: '',
+            stock: ''
         }
     },
     getters: {
@@ -198,6 +204,19 @@ export const store = new Vuex.Store({
 
         productEdit(state){
             return state.modal.productEdit
+        },
+
+        // state items
+        product(state){
+            return state.items.product
+        },
+
+        price(state){
+            return state.items.price
+        },
+
+        stock(state){
+            return state.items.stock
         }
     },
     mutations: {
@@ -389,7 +408,7 @@ export const store = new Vuex.Store({
         SET_DATA_ITEM_MANAGEMENT(state, payloadItemManagement){
             const item = []
             payloadItemManagement.data.map(val => {
-                item.push(Object.assign({}, val.detail_product, {stock:val.detail_stock.last_stock}))
+                item.push(Object.assign({}, val.detail_product, {stock:val.detail_stock.last_stock},{branch: val.detail_branch.branch}))
             })
 
             const pagination = {
@@ -493,6 +512,37 @@ export const store = new Vuex.Store({
             })
         },
 
+        deleteOrder({commit}, url){
+            return new Promise((resolve, reject) => {
+                axios.delete(url)
+                    .then(res => {
+                        
+                        resolve(res.data)
+
+                    }).catch(err => {
+
+                        reject(err)
+
+                    })
+            })
+        },
+
+        deleteOrderModal({commit}, data){
+            return new Promise((resolve, reject) => {
+                axios.post(data.url, {
+                    id:data.id
+                }).then(res => {
+                    
+                    resolve(res.data);
+
+                }).catch(err => {
+                    
+                    reject(err)
+
+                })
+            })
+        },
+
         pushItemToCheckOut({commit}, items){
             commit('PUSH_ITEM_PRODUCT_TO_CHECK_OUT', items)
         },
@@ -525,6 +575,7 @@ export const store = new Vuex.Store({
         getItemManagement({commit}, url){
             axios.get(url)
                 .then(res => {
+                    console.log(res.data)
                     commit('SET_DATA_ITEM_MANAGEMENT', res.data)
                 }).catch(err => {
                     console.log(err)

@@ -25,6 +25,9 @@
 import {Bus} from '../../../app';
 
 export default {
+    mounted(){
+        M.AutoInit()
+    },
     methods: {
         selectMenu(menu){
             Bus.$emit('changeMenu', menu)
