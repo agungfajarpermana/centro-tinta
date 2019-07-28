@@ -116,4 +116,45 @@ class CustomerController extends Controller
             ]);
         }
     }
+
+    public function createNewCustomer(Request $request)
+    {
+        if(!$request->ajax()) dd('Woow, Hayo mau ngapain!');
+
+        try {
+            DB::connection()->getPdo();
+            DB::beginTransaction();
+
+            try {
+                $customer = Customer::create([
+                    'branch_id'     => 1,
+                    'nama_customer' => $request->customer,
+                    'alamat'        => $request->alamat,
+                    'telpon'        => $request->telpon,
+                    'perusahaan'    => $request->company
+                ]);
+
+                DB::commit();
+
+                return response()->json([
+                    'status' => true,
+                    'msg'    => 'Data berhasil disimpan!'
+                ]);
+
+            } catch (\Exception $e) {
+                DB::rollback();
+                return response()->json([
+                    'status' => false,
+                    'msg'    => 'Ada masalah saat memasukan data!',
+                    'error'  => $e->getMessage()
+                ]);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'msg'    => 'Koneksi ke database terputus!',
+                'error'  => $e->getMessage()
+            ]);
+        }
+    }
 }

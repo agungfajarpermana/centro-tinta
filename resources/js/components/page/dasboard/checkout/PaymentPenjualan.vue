@@ -3,7 +3,7 @@
         <div class="col s12 cash animated fadeInLeft" v-if="mode == 'cash'">
             <form action="#" class="col s12">
                 <div class="row">
-                    <div class="col s12">
+                    <div class="col s8">
                         <label class="typo__label">Nama Customer</label>
                         <multiselect v-model="valueCust" :options="customerName"
                             :options-limit="30" :limit="3"
@@ -15,6 +15,10 @@
                                 <template slot="singleLabel" slot-scope="{ option }"><strong>{{ option.customer }}</strong></template>
                                 <span slot="noResult">Oops! Nama Customer Belum Terdaftar.</span>
                         </multiselect>
+                    </div>
+
+                    <div class="col s4">
+                        <a href="#modal1" class="waves-effect waves-light btn modal-trigger" style="margin-top: 25px;">Add Customer</a>
                     </div>
                 </div>
                 
@@ -132,6 +136,9 @@ export default {
 
         this.$store.dispatch('getDataCustomer', '/api/customers')
     },
+    mounted(){
+        M.AutoInit()
+    },
     watch: {
         valueCust: _.debounce((event) => {
             Bus.$emit('searchCustomer', event)
@@ -153,7 +160,11 @@ export default {
                     this.$store.state.customers.valueCust = ''
                     this.$store.state.customers.customerDetail = []
 
-                    alert(res.data.msg)
+                    this.$swal({
+                        title: 'Success',
+                        text: res.data.msg,
+                        type: 'success',
+                    });
                 }).catch(err => {
                     this.btnDisabled = false
                     console.log(err.response.data.msg)

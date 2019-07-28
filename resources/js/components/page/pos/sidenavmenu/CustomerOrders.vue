@@ -82,16 +82,23 @@
                             <table width="100%">
                                 <thead>
                                     <tr>
-                                        <th class="left-align">Product</th>
-                                        <th class="center-align">Qty</th>
+                                        <th class="left-align">Product <span><i class="tiny material-icons red-text">edit</i></span></th>
+                                        <th class="center-align">Qty <span><i class="tiny material-icons red-text">edit</i></span></th>
                                         <th class="right-align">Price</th>
                                         <th class="right-align"></th>
                                     </tr>
                                 </thead>
 
                                 <tbody>
+
+                                    <tr v-if="!loadingModal && ordersModal.length < 1">
+                                        <td colspan="4" class="center-align">
+                                            Data belum tersedia
+                                        </td>
+                                    </tr>
+
                                     <tr v-if="loadingModal">
-                                        <td colspan="3" class="center-align">
+                                        <td colspan="4" class="center-align">
                                             Loading..
                                         </td>
                                     </tr>
@@ -132,7 +139,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <a href="#!" :disabled="loadingModal" class="waves-effect waves-green btn"
+                <a href="#!" :disabled="loadingModal || ordersModal.length < 1" class="waves-effect waves-green btn"
                     @click="printSuratJalan(customerModal.order)">Surat Jalan</a>
             </div>
         </div>
@@ -305,30 +312,66 @@ export default {
         },
 
         deleteOrder(id, key){
-            this.$store.dispatch('deleteOrder', `api/order/${id}`)
-                .then(res => {
+            this.$swal({
+                title: 'Anda Yakin?',
+                text: 'Ingin menghapus data ini!',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Jangan, nanti saja!',
+                showCloseButton: true,
+                showLoaderOnConfirm: true
+            }).then((result) => {
+                if(result.value) {
 
-                    if(res.status == true){
-                        this.orders.splice(key, 1)
-                    }
+                    this.$store.dispatch('deleteOrder', `api/order/${id}`)
+                    .then(res => {
 
-                }).catch(err => {
-                    console.log(err)
-                })
+                        if(res.status == true){
+                            this.orders.splice(key, 1)
+                            this.$swal('Deleted', res.msg, 'success')
+                        }
+
+                    }).catch(err => {
+                        console.log(err)
+                    })
+
+                } else {
+                    this.$swal('Cancelled', 'Your file is still intact', 'info')
+                }
+            })
         },
 
         deleteOrderModal(id, key){
-            this.$store.dispatch('deleteOrderModal', {
-                id: id,
-                url: 'api/orders'
-            }).then(res => {
+            this.$swal({
+                title: 'Anda Yakin?',
+                text: 'Ingin menghapus data ini!',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Jangan, nanti saja!',
+                showCloseButton: true,
+                showLoaderOnConfirm: true
+            }).then((result) => {
+                if(result.value) {
 
-                if(res.status == true){
-                    this.ordersModal.splice(key, 1)
+                    this.$store.dispatch('deleteOrderModal', {
+                        id: id,
+                        url: 'api/orders'
+                    }).then(res => {
+
+                        if(res.status == true){
+                            this.ordersModal.splice(key, 1)
+                            this.$swal('Deleted', res.msg, 'success')
+                        }
+
+                    }).catch(err => {
+                        console.log(err)
+                    })
+
+                } else {
+                    this.$swal('Cancelled', 'Your file is still intact', 'info')
                 }
-
-            }).catch(err => {
-                console.log(err)
             })
         }
     }

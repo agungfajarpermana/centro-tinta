@@ -16,7 +16,7 @@ class Order extends Model
 
     public function branch()
     {
-        return $this->belongsTo(Branch::class, 'id');
+        return $this->belongsTo(Branch::class, 'branch_id');
     }
 
     public function customer()

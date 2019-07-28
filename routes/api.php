@@ -19,10 +19,13 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::Resource('/products', 'API\ProductController');
 Route::get('/products/{search}/items', 'API\ProductController@index');
+Route::get('/products/file/downloadFile', 'API\ProductController@exportFileItems');
+Route::post('/products/file/importFile', 'API\ProductController@importFileItems');
 
 Route::Resource('/customer', 'API\CustomerController');
 Route::get('/customers', 'API\CustomerController@getDataCustomer');
 Route::post('/customers/{customer}', 'API\CustomerController@detailCustomer');
+Route::post('/customer/create', 'API\CustomerController@createNewCustomer');
 
 Route::Resource('/branch', 'API\BranchProductController');
 Route::match(['GET'], '/branch/{search}/search', 'API\BranchProductController@searchData');
@@ -33,8 +36,8 @@ Route::post('/orders', 'API\OrderController@orderDelete');
 Route::get('/order/{search}/customer', 'API\OrderController@index');
 Route::get('/order/{orders}/customers', 'API\OrderController@customerSales');
 
-// Route::Resource('/piutang', 'API\PiutangController');
-// Route::get('/piutang/{dates}/order', 'API\PiutangController@index');
+Route::Resource('/piutang', 'API\PiutangController');
+Route::get('/piutang/{dates}/order', 'API\PiutangController@index');
 
 // Route Laporan
 Route::get('/laporan/{dates}/{product?}/penjualan', 'Laporan\laporanPenjualanController@index');

@@ -146,17 +146,21 @@
 								</tr>
                             </thead>
                             <tbody>
-                               @foreach($print as $key => $value)
-                                <tr class="tr">
-                                    <td class="td-border py-2" style="text-align:center;">{{ $key+1 }}</td>
-                                    <td class="td-border py-2" style="text-align:center;">{{ Carbon::parse($value->tanggal)->format('d, M Y') }}</td>
-                                    <td class="td-border py-2" style="text-align:center;">INV-{{ $value->no_order }}</td>
-                                    <td class="td-border py-2" style="text-align:left;">{{ $value->customer->nama_customer }}</td>
-                                    <td class="td-border py-2" nowarp="nowrap" style="text-align:left;">{{ ($value->product ? $value->product->nama_product : $value->id) }}</td>
-                                    <td class="td-border py-2" nowrap="nowrap" style="text-align:center;">{{ $value->qty }}</td>
-                                    <td class="td-border py-2" nowrap="nowrap" style="text-align:right;">{{ number_format($value->product_detail->harga,0,'','.') }}</td>
-                                    <td class="td-border py-2" nowrap="nowrap" style="text-align:right;">{{ number_format($value->total_pembelian,0,'','.') }}</td>
-                                </tr>
+							   @foreach($print as $key => $value)
+									@foreach($value->order_detail as $key => $deep)
+										<tr class="tr">
+											<td class="td-border py-2" style="text-align:center;">{{ $key+1 }}</td>
+											<td class="td-border py-2" style="text-align:center;">{{ Carbon::parse($value->tanggal)->format('d, M Y') }}</td>
+											<td class="td-border py-2" style="text-align:center;">INV-{{ $value->no_order }}</td>
+											<td class="td-border py-2" style="text-align:left;">{{ $value->customer->nama_customer }}</td>
+											<td class="td-border py-2" nowarp="nowrap" style="text-align:left;">{{ $deep->product->nama_product }}</td> 
+											<td class="td-border py-2" nowrap="nowrap" style="text-align:center;">{{ $deep->qty }}</td>
+											<td class="td-border py-2" nowrap="nowrap" style="text-align:right;">{{ number_format($deep->product->productDetail->harga,0,'','.') }}</td>
+											<td class="td-border py-2" nowrap="nowrap" style="text-align:right;">{{ number_format($deep->total_pembelian,0,'','.') }}</td>
+										</tr>
+									@endforeach
+								{{-- {{ ($value->order_detail->product ? $value->order_detail->product->nama_product : $value->id) }} --}}
+								{{-- {{ number_format($value->product_detail->harga,0,'','.') }} --}}
                                @endforeach
 							</tbody>
                             <footer>

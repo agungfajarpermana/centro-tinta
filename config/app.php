@@ -180,6 +180,7 @@ return [
          */
 
         Barryvdh\Snappy\ServiceProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
     ],
 
     /*
@@ -236,6 +237,7 @@ return [
          */
 
         'PDF' => Barryvdh\Snappy\Facades\SnappyPdf::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
     ],
 
 ];

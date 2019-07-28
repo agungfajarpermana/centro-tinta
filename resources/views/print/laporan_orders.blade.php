@@ -146,8 +146,8 @@
                             @foreach($data as $key => $order)
                                 <tr class="tr">
                                     <td class="td-border py-2" style="text-align:center;width:20px">{{ $key + 1}}</td>
-                                    <td class="td-border py-2" style="text-align:center;width:20px">{{ $order->qty }}</td>
-                                    <td class="td-border py-2" style="text-align:center;width:500px;">{{ $order->product->nama_product }}</td>
+                                    <td class="td-border py-2" style="text-align:center;width:20px">{{ $qty[$key] }}</td>
+                                    <td class="td-border py-2" style="text-align:center;width:500px;">{{ $order->nama_product }}</td>
                                 </tr>
                             @endforeach
 							</tbody>

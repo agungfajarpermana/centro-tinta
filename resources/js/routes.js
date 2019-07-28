@@ -1,6 +1,7 @@
 import Login from './components/Login.vue';
 import Home from './components/page/Home.vue';
 import Cash from './components/page/kas/Cash';
+import AddItems from './components/page/dasboard/items/AddItems';
 import PosManagement from './components/page/pos/PosManagement.vue';
 
 export const routes = [
@@ -23,5 +24,10 @@ export const routes = [
         path: '/management',
         name: 'POS',
         component: PosManagement
+    },
+    {
+        path: '/addItems',
+        name: 'ADD',
+        component: AddItems
     }
 ];

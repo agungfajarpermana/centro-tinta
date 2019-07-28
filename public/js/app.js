@@ -86,6 +86,18 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./node_modules/@babel/runtime/regenerator/index.js":
+/*!**********************************************************!*\
+  !*** ./node_modules/@babel/runtime/regenerator/index.js ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(/*! regenerator-runtime */ "./node_modules/regenerator-runtime/runtime.js");
+
+
+/***/ }),
+
 /***/ "./node_modules/axios/index.js":
 /*!*************************************!*\
   !*** ./node_modules/axios/index.js ***!
@@ -2261,6 +2273,54 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _PaymentPenjualan__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./PaymentPenjualan */ "./resources/js/components/page/dasboard/checkout/PaymentPenjualan.vue");
+/* harmony import */ var vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuelidate/lib/validators */ "./node_modules/vuelidate/lib/validators/index.js");
+/* harmony import */ var vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_1__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -2271,12 +2331,25 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     show: {
       type: Boolean,
       required: true
     }
+  },
+  data: function data() {
+    return {
+      disabled: false,
+      close: false,
+      customer: null,
+      company: null,
+      telpon: null,
+      alamat: null,
+      btn: 'Simpan',
+      errTelpon: 'Tidak boleh kosong!'
+    };
   },
   components: {
     FormPenjualan: _PaymentPenjualan__WEBPACK_IMPORTED_MODULE_0__["default"]
@@ -2286,10 +2359,74 @@ __webpack_require__.r(__webpack_exports__);
       return this.$store.getters.mode;
     }
   },
+  watch: {
+    telpon: function telpon(valueTelpon) {
+      var result = this.telpon = valueTelpon.replace(/\D/g, "");
+      if (result == '') this.errTelpon = 'Harus berupa angka!';else this.errTelpon = 'Tidak boleh kosong!';
+    }
+  },
   methods: {
     modeChange: function modeChange(modes) {
       this.$store.state.checkout.mode = modes;
+    },
+    saveDataCustomer: function saveDataCustomer() {
+      var _this = this;
+
+      this.disabled = true;
+      this.btn = 'Loading..';
+      this.$store.dispatch('saveDataNewCustomer', {
+        url: 'api/customer/create',
+        customer: this.customer,
+        company: this.company,
+        telpon: this.telpon,
+        alamat: this.alamat
+      }).then(function (res) {
+        if (res.data.status == true) {
+          _this.$swal({
+            title: 'Success',
+            text: res.data.msg,
+            type: 'success'
+          });
+
+          _this.disabled = false;
+          _this.btn = 'Simpan';
+          _this.customer = _this.company = _this.telpon = _this.alamat = null;
+
+          _this.$store.dispatch('getDataCustomer', '/api/customers');
+        } else {
+          _this.$swal({
+            title: 'Success',
+            text: res.data.msg,
+            type: 'error'
+          });
+
+          _this.disabled = false;
+          _this.btn = 'Simpan';
+        }
+      })["catch"](function (err) {
+        console.log(err);
+      });
     }
+  },
+  validations: {
+    customer: {
+      required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_1__["required"],
+      minLength: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_1__["minLength"])(5)
+    },
+    company: {
+      required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_1__["required"],
+      minLength: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_1__["minLength"])(5)
+    },
+    telpon: {
+      required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_1__["required"],
+      minLength: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_1__["minLength"])(8),
+      maxLength: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_1__["maxLength"])(12)
+    },
+    alamat: {
+      required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_1__["required"],
+      minLength: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_1__["minLength"])(5)
+    },
+    validationGroup: ['customer', 'company', 'telpon', 'alamat']
   }
 });
 
@@ -2310,6 +2447,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _app__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../app */ "./resources/js/app.js");
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_3__);
+//
+//
+//
+//
 //
 //
 //
@@ -2437,6 +2578,9 @@ __webpack_require__.r(__webpack_exports__);
     });
     this.$store.dispatch('getDataCustomer', '/api/customers');
   },
+  mounted: function mounted() {
+    M.AutoInit();
+  },
   watch: {
     valueCust: lodash__WEBPACK_IMPORTED_MODULE_3___default.a.debounce(function (event) {
       _app__WEBPACK_IMPORTED_MODULE_2__["Bus"].$emit('searchCustomer', event);
@@ -2457,7 +2601,12 @@ __webpack_require__.r(__webpack_exports__);
         _this2.btnSales = 'Simpan';
         _this2.$store.state.customers.valueCust = '';
         _this2.$store.state.customers.customerDetail = [];
-        alert(res.data.msg);
+
+        _this2.$swal({
+          title: 'Success',
+          text: res.data.msg,
+          type: 'success'
+        });
       })["catch"](function (err) {
         _this2.btnDisabled = false;
         console.log(err.response.data.msg);
@@ -2468,18 +2617,52 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/page/kas/Cash.vue?vue&type=script&lang=js&":
-/*!************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/page/kas/Cash.vue?vue&type=script&lang=js& ***!
-  \************************************************************************************************************************************************************************/
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/page/dasboard/items/AddItems.vue?vue&type=script&lang=js&":
+/*!***************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/page/dasboard/items/AddItems.vue?vue&type=script&lang=js& ***!
+  \***************************************************************************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _Navbar__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Navbar */ "./resources/js/components/page/Navbar.vue");
-/* harmony import */ var vue_multiselect__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-multiselect */ "./node_modules/vue-multiselect/dist/vue-multiselect.min.js");
-/* harmony import */ var vue_multiselect__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vue_multiselect__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuelidate/lib/validators */ "./node_modules/vuelidate/lib/validators/index.js");
+/* harmony import */ var vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _Navbar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../Navbar */ "./resources/js/components/page/Navbar.vue");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -2543,18 +2726,372 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      isInvalid: true,
-      valueCust: null,
-      valueBank: null,
-      bank: ['BCA', 'MANDIRI', 'BNI'],
-      customer: ['list', 'of', 'options']
+      excel: null,
+      extension: '',
+      disabled: false,
+      errPrice: 'Tidak boleh kosong!',
+      errStock: 'Tidak boleh kosong!'
     };
   },
   components: {
-    Navbar: _Navbar__WEBPACK_IMPORTED_MODULE_0__["default"],
-    Multiselect: vue_multiselect__WEBPACK_IMPORTED_MODULE_1___default.a
+    Navbar: _Navbar__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
-  mounted: function mounted() {}
+  computed: {
+    product: {
+      get: function get() {
+        return this.$store.getters.product;
+      },
+      set: function set(value) {
+        this.$store.state.items.product = value;
+      }
+    },
+    price: {
+      get: function get() {
+        return this.$store.getters.price;
+      },
+      set: function set(value) {
+        this.$store.state.items.price = value;
+      }
+    },
+    stock: {
+      get: function get() {
+        return this.$store.getters.stock;
+      },
+      set: function set(value) {
+        this.$store.state.items.stock = value;
+      }
+    },
+    loadingUpload: function loadingUpload() {
+      return this.$store.getters.loadingUpload;
+    },
+    progressBar: function progressBar() {
+      return this.$store.getters.progressBar;
+    }
+  },
+  watch: {
+    price: function price(valuePrice) {
+      var result = this.$store.state.items.price = valuePrice.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+      if (result == '') this.errPrice = 'Harus berupa angka!';else this.errPrice = 'Tidak boleh kosong!';
+    },
+    stock: function stock(valueStock) {
+      var result = this.$store.state.items.stock = valueStock.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+      if (result == '') this.errStock = 'Harus berupa angka!';else this.errStock = 'Tidak boleh kosong!';
+    }
+  },
+  methods: {
+    saveDataItems: function saveDataItems() {
+      var _this = this;
+
+      this.disabled = !this.disabled;
+      this.$store.dispatch('saveDataItems', {
+        url: 'api/products',
+        product: this.product,
+        price: this.price,
+        stock: this.stock
+      }).then(function (res) {
+        if (res.status == true) {
+          _this.disabled = !_this.disabled;
+          M.toast({
+            html: res.msg
+          });
+        }
+      })["catch"](function (err) {
+        console.log(err.status);
+      });
+    },
+    downloadFile: function downloadFile() {
+      window.location.href = 'api/products/file/downloadFile';
+    },
+    getFile: function getFile(e) {
+      this.excel = e.target.files[0];
+      this.extension = e.target.files[0].name.split('.').pop();
+    },
+    importFile: function importFile() {
+      var _this2 = this;
+
+      if (this.excel !== null) {
+        if (this.extension == 'xlsx' || this.extension == 'xls') {
+          this.$store.dispatch('importFile', this.excel).then(function (status) {
+            if (status === true) {
+              setTimeout(function () {
+                _this2.$refs.file.value = _this2.$refs.files.value = _this2.excel = null;
+              }, 2000);
+            }
+          })["catch"](function (err) {
+            _this2.$refs.file.value = _this2.$refs.files.value = _this2.excel = null;
+            M.toast({
+              html: 'Proses upload bermasalah, silahkan upload ulang!'
+            });
+          });
+        } else {
+          M.toast({
+            html: "Extension file tidak sesuai unduhan! \n                                   &nbsp; <span class=\"yellow-text text-darken-4\"> .".concat(this.extension, " </span> \n                                   &nbsp; (Ga Boleh!)")
+          });
+        }
+      } else {
+        M.toast({
+          html: 'Tidak boleh kosong!'
+        });
+      }
+    }
+  },
+  validations: {
+    product: {
+      required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["required"],
+      minLength: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["minLength"])(5)
+    },
+    price: {
+      required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["required"],
+      minLength: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["minLength"])(3)
+    },
+    stock: {
+      required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["required"],
+      minLength: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["minLength"])(1)
+    },
+    validationGroup: ['product', 'price', 'stock']
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/page/kas/Cash.vue?vue&type=script&lang=js&":
+/*!************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/page/kas/Cash.vue?vue&type=script&lang=js& ***!
+  \************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _Navbar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Navbar */ "./resources/js/components/page/Navbar.vue");
+/* harmony import */ var vue_multiselect__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue-multiselect */ "./node_modules/vue-multiselect/dist/vue-multiselect.min.js");
+/* harmony import */ var vue_multiselect__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(vue_multiselect__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vuelidate/lib/validators */ "./node_modules/vuelidate/lib/validators/index.js");
+/* harmony import */ var vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_3__);
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      disabled: false,
+      selected: true,
+      isInvalid: true,
+      valueBank: null,
+      metode: null,
+      bayar: null,
+      errBayar: 'Tidak boleh kosong!',
+      order: null,
+      errOrder: 'Tidak boleh kosong!',
+      keterangan: null,
+      btn: 'Simpan',
+      bank: ['BCA', 'MANDIRI', 'BNI', 'BII']
+    };
+  },
+  components: {
+    Navbar: _Navbar__WEBPACK_IMPORTED_MODULE_1__["default"],
+    Multiselect: vue_multiselect__WEBPACK_IMPORTED_MODULE_2___default.a
+  },
+  watch: {
+    order: function order(valueOrder) {
+      var result = this.order = valueOrder.replace(/\D/g, "");
+      if (result == '') this.errOrder = 'Harus berupa angka!';else this.errOrder = 'Tidak boleh kosong!';
+    },
+    bayar: function bayar(valueBayar) {
+      var result = this.bayar = valueBayar.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+      if (result == '') this.errBayar = 'Harus berupa angka!';else this.errBayar = 'Tidak boleh kosong!';
+    }
+  },
+  methods: {
+    saveDataCash: function saveDataCash() {
+      var _this = this;
+
+      this.disabled = true;
+      this.btn = 'Loading..';
+      this.$store.dispatch('saveDataPenerimaanCash', {
+        url: 'api/piutang',
+        order: this.order,
+        metode: this.metode,
+        bank: this.valueBank,
+        bayar: this.bayar,
+        ket: this.keterangan
+      }).then(function (res) {
+        if (res.status == true) {
+          _this.$swal({
+            title: 'Success',
+            text: res.msg,
+            type: 'success'
+          });
+
+          _this.disabled = false;
+          _this.btn = 'Simpan';
+          _this.order = _this.valueBank = _this.keterangan = _this.metode = _this.bayar = null;
+        } else {
+          _this.$swal({
+            title: 'Oops!',
+            text: res.msg,
+            type: 'error'
+          });
+
+          _this.disabled = false;
+          _this.btn = 'Simpan';
+        }
+      })["catch"](function (err) {
+        console.log(err.status);
+      });
+    }
+  },
+  validations: {
+    metode: {
+      required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_3__["required"]
+    },
+    valueBank: {
+      isRequired: function () {
+        var _isRequired = _asyncToGenerator(
+        /*#__PURE__*/
+        _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee(value) {
+          return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+            while (1) {
+              switch (_context.prev = _context.next) {
+                case 0:
+                  if (!(this.metode === 'bank' || this.metode === null)) {
+                    _context.next = 12;
+                    break;
+                  }
+
+                  if (!(value === null)) {
+                    _context.next = 7;
+                    break;
+                  }
+
+                  _context.next = 4;
+                  return false;
+
+                case 4:
+                  return _context.abrupt("return", _context.sent);
+
+                case 7:
+                  _context.next = 9;
+                  return true;
+
+                case 9:
+                  return _context.abrupt("return", _context.sent);
+
+                case 10:
+                  _context.next = 15;
+                  break;
+
+                case 12:
+                  _context.next = 14;
+                  return true;
+
+                case 14:
+                  return _context.abrupt("return", _context.sent);
+
+                case 15:
+                case "end":
+                  return _context.stop();
+              }
+            }
+          }, _callee, this);
+        }));
+
+        function isRequired(_x) {
+          return _isRequired.apply(this, arguments);
+        }
+
+        return isRequired;
+      }()
+    },
+    order: {
+      required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_3__["required"],
+      minLength: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_3__["minLength"])(4)
+    },
+    bayar: {
+      required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_3__["required"],
+      minLength: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_3__["minLength"])(3)
+    },
+    keterangan: {
+      minLength: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_3__["minLength"])(5)
+    },
+    validationGroup: ['metode', 'valueBank', 'order', 'bayar', 'keterangan']
+  }
 });
 
 /***/ }),
@@ -2709,6 +3246,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _app__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../app */ "./resources/js/app.js");
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_3__);
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -3028,26 +3572,60 @@ __webpack_require__.r(__webpack_exports__);
     deleteOrder: function deleteOrder(id, key) {
       var _this3 = this;
 
-      this.$store.dispatch('deleteOrder', "api/order/".concat(id)).then(function (res) {
-        if (res.status == true) {
-          _this3.orders.splice(key, 1);
+      this.$swal({
+        title: 'Anda Yakin?',
+        text: 'Ingin menghapus data ini!',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, hapus!',
+        cancelButtonText: 'Jangan, nanti saja!',
+        showCloseButton: true,
+        showLoaderOnConfirm: true
+      }).then(function (result) {
+        if (result.value) {
+          _this3.$store.dispatch('deleteOrder', "api/order/".concat(id)).then(function (res) {
+            if (res.status == true) {
+              _this3.orders.splice(key, 1);
+
+              _this3.$swal('Deleted', res.msg, 'success');
+            }
+          })["catch"](function (err) {
+            console.log(err);
+          });
+        } else {
+          _this3.$swal('Cancelled', 'Your file is still intact', 'info');
         }
-      })["catch"](function (err) {
-        console.log(err);
       });
     },
     deleteOrderModal: function deleteOrderModal(id, key) {
       var _this4 = this;
 
-      this.$store.dispatch('deleteOrderModal', {
-        id: id,
-        url: 'api/orders'
-      }).then(function (res) {
-        if (res.status == true) {
-          _this4.ordersModal.splice(key, 1);
+      this.$swal({
+        title: 'Anda Yakin?',
+        text: 'Ingin menghapus data ini!',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, hapus!',
+        cancelButtonText: 'Jangan, nanti saja!',
+        showCloseButton: true,
+        showLoaderOnConfirm: true
+      }).then(function (result) {
+        if (result.value) {
+          _this4.$store.dispatch('deleteOrderModal', {
+            id: id,
+            url: 'api/orders'
+          }).then(function (res) {
+            if (res.status == true) {
+              _this4.ordersModal.splice(key, 1);
+
+              _this4.$swal('Deleted', res.msg, 'success');
+            }
+          })["catch"](function (err) {
+            console.log(err);
+          });
+        } else {
+          _this4.$swal('Cancelled', 'Your file is still intact', 'info');
         }
-      })["catch"](function (err) {
-        console.log(err);
       });
     }
   }
@@ -3269,48 +3847,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 
@@ -3325,8 +3861,13 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       searchItems: '',
-      disabled: false,
-      errPrice: 'Tidak boleh kosong!'
+      product: '',
+      type: '',
+      category: '',
+      price: '',
+      stock: '',
+      errPrice: 'Tidak boleh kosong!',
+      errStock: 'Tidak boleh kosong!'
     };
   },
   components: {
@@ -3341,30 +3882,6 @@ __webpack_require__.r(__webpack_exports__);
     },
     manageItems: function manageItems() {
       return this.$store.getters.manageItems;
-    },
-    product: {
-      get: function get() {
-        return this.$store.getters.product;
-      },
-      set: function set(value) {
-        this.$store.state.items.product = value;
-      }
-    },
-    price: {
-      get: function get() {
-        return this.$store.getters.price;
-      },
-      set: function set(value) {
-        this.$store.state.items.price = value;
-      }
-    },
-    stock: {
-      get: function get() {
-        return this.$store.getters.stock;
-      },
-      set: function set(value) {
-        this.$store.state.items.stock = value;
-      }
     }
   },
   watch: {
@@ -3372,17 +3889,214 @@ __webpack_require__.r(__webpack_exports__);
       _app__WEBPACK_IMPORTED_MODULE_2__["Bus"].$emit('searchItemManagement', event.trim());
     }, 800),
     price: function price(valuePrice) {
-      var result = this.$store.state.items.price = valuePrice.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+      var result = this.price = valuePrice.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
       if (result == '') this.errPrice = 'Harus berupa angka!';else this.errPrice = 'Tidak boleh kosong!';
+    },
+    stock: function stock(valueStock) {
+      var result = this.stock = valueStock.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+      if (result == '') this.errStock = 'Harus berupa angka!';else this.errStock = 'Tidak boleh kosong!';
     }
   },
   methods: {
-    show: function show() {
-      M.AutoInit();
+    changeEdit: function changeEdit(id, mode) {
+      var items = this.manageItems.find(function (item) {
+        return item.uniqid == id;
+      }); // active edit
+
+      var activeProduct = this.manageItems.find(function (item) {
+        return item.productEdit;
+      });
+      var activeType = this.manageItems.find(function (item) {
+        return item.typeEdit;
+      });
+      var activeCategory = this.manageItems.find(function (item) {
+        return item.categoryEdit;
+      });
+      var activePrice = this.manageItems.find(function (item) {
+        return item.priceEdit;
+      });
+      var activeStock = this.manageItems.find(function (item) {
+        return item.stockEdit;
+      });
+
+      switch (mode) {
+        case 'product':
+          items.productEdit = true;
+          break;
+
+        case 'type':
+          items.typeEdit = true;
+          break;
+
+        case 'category':
+          items.categoryEdit = true;
+          break;
+
+        case 'price':
+          items.priceEdit = true;
+          break;
+
+        default:
+          items.stockEdit = true;
+          break;
+      }
+
+      if (activeProduct) {
+        activeProduct.productEdit = false;
+      } else if (activeType) {
+        activeType.typeEdit = false;
+      } else if (activeCategory) {
+        activeCategory.categoryEdit = false;
+      } else if (activePrice) {
+        activePrice.priceEdit = false;
+      } else if (activeStock) {
+        activeStock.stockEdit = false;
+      }
+    },
+    cancelEdit: function cancelEdit(id, mode) {
+      var items = this.manageItems.find(function (item) {
+        return item.uniqid == id;
+      });
+
+      switch (mode) {
+        case 'product':
+          items.productEdit = false;
+          this.product = '';
+          break;
+
+        case 'type':
+          items.typeEdit = false;
+          this.type = '';
+          break;
+
+        case 'category':
+          items.categoryEdit = false;
+          this.category = '';
+          break;
+
+        case 'price':
+          items.priceEdit = false;
+          this.price = '';
+          break;
+
+        default:
+          items.stockEdit = false;
+          this.stock = '';
+          break;
+      }
+    },
+    editDataProduct: function editDataProduct(id, mode) {
+      var _this = this;
+
+      var item = '';
+      var items = this.manageItems.find(function (item) {
+        return item.uniqid == id;
+      });
+
+      switch (mode) {
+        case 'product':
+          item = this.product;
+          break;
+
+        case 'type':
+          item = this.type;
+          break;
+
+        case 'category':
+          item = this.category;
+          break;
+
+        case 'price':
+          item = this.price;
+          break;
+
+        default:
+          item = this.stock;
+          break;
+      }
+
+      if (!this.$v.product.$invalid || !this.$v.type.$invalid || !this.$v.category.$invalid || !this.$v.price.$invalid || !this.$v.stock.$invalid) {
+        this.$store.dispatch('updateProductsItemsManagement', {
+          mode: mode,
+          id: id,
+          item: item,
+          url: "api/products/".concat(id)
+        }).then(function (res) {
+          switch (mode) {
+            case 'product':
+              items.product = _this.product;
+              items.productEdit = false;
+              _this.product = '';
+              break;
+
+            case 'type':
+              items.type = _this.type;
+              items.typeEdit = false;
+              _this.type = '';
+              break;
+
+            case 'category':
+              items.category = _this.category;
+              items.categoryEdit = false;
+              _this.category = '';
+              break;
+
+            case 'price':
+              items.price = _this.price;
+              items.priceEdit = false;
+              _this.price = '';
+              break;
+
+            default:
+              items.stock = _this.stock;
+              items.stockEdit = false;
+              _this.stock = '';
+              break;
+          }
+        })["catch"](function (err) {
+          console.log(err.response);
+        });
+      } else {
+        alert('error');
+      }
+    },
+    deleteProduct: function deleteProduct(id, key) {
+      var _this2 = this;
+
+      this.$swal({
+        title: 'Anda Yakin?',
+        text: 'Ingin menghapus data ini!',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, hapus!',
+        cancelButtonText: 'Jangan, nanti saja!',
+        showCloseButton: true,
+        showLoaderOnConfirm: true
+      }).then(function (result) {
+        if (result.value) {
+          _this2.$store.dispatch('deleteItemProduct', "api/products/".concat(id)).then(function (res) {
+            if (res.status == true) {
+              _this2.manageItems.splice(1, key);
+
+              _this2.$swal('Deleted', res.msg, 'success');
+            }
+          });
+        } else {
+          _this2.$swal('Cancelled', 'Your file is still intact', 'info');
+        }
+      });
     }
   },
   validations: {
     product: {
+      required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["required"],
+      minLength: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["minLength"])(5)
+    },
+    type: {
+      required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["required"],
+      minLength: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["minLength"])(5)
+    },
+    category: {
       required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["required"],
       minLength: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["minLength"])(5)
     },
@@ -3393,8 +4107,7 @@ __webpack_require__.r(__webpack_exports__);
     stock: {
       required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["required"],
       minLength: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["minLength"])(1)
-    },
-    validationGroup: ['product', 'price', 'stock']
+    }
   }
 });
 
@@ -3571,6 +4284,25 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/css-loader/index.js?!./node_modules/postcss-loader/src/index.js?!./node_modules/sweetalert2/dist/sweetalert2.min.css":
+/*!*******************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/postcss-loader/src??ref--6-2!./node_modules/sweetalert2/dist/sweetalert2.min.css ***!
+  \*******************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "@charset \"UTF-8\";@-webkit-keyframes swal2-show{0%{-webkit-transform:scale(.7);transform:scale(.7)}45%{-webkit-transform:scale(1.05);transform:scale(1.05)}80%{-webkit-transform:scale(.95);transform:scale(.95)}100%{-webkit-transform:scale(1);transform:scale(1)}}@keyframes swal2-show{0%{-webkit-transform:scale(.7);transform:scale(.7)}45%{-webkit-transform:scale(1.05);transform:scale(1.05)}80%{-webkit-transform:scale(.95);transform:scale(.95)}100%{-webkit-transform:scale(1);transform:scale(1)}}@-webkit-keyframes swal2-hide{0%{-webkit-transform:scale(1);transform:scale(1);opacity:1}100%{-webkit-transform:scale(.5);transform:scale(.5);opacity:0}}@keyframes swal2-hide{0%{-webkit-transform:scale(1);transform:scale(1);opacity:1}100%{-webkit-transform:scale(.5);transform:scale(.5);opacity:0}}@-webkit-keyframes swal2-animate-success-line-tip{0%{top:1.1875em;left:.0625em;width:0}54%{top:1.0625em;left:.125em;width:0}70%{top:2.1875em;left:-.375em;width:3.125em}84%{top:3em;left:1.3125em;width:1.0625em}100%{top:2.8125em;left:.875em;width:1.5625em}}@keyframes swal2-animate-success-line-tip{0%{top:1.1875em;left:.0625em;width:0}54%{top:1.0625em;left:.125em;width:0}70%{top:2.1875em;left:-.375em;width:3.125em}84%{top:3em;left:1.3125em;width:1.0625em}100%{top:2.8125em;left:.875em;width:1.5625em}}@-webkit-keyframes swal2-animate-success-line-long{0%{top:3.375em;right:2.875em;width:0}65%{top:3.375em;right:2.875em;width:0}84%{top:2.1875em;right:0;width:3.4375em}100%{top:2.375em;right:.5em;width:2.9375em}}@keyframes swal2-animate-success-line-long{0%{top:3.375em;right:2.875em;width:0}65%{top:3.375em;right:2.875em;width:0}84%{top:2.1875em;right:0;width:3.4375em}100%{top:2.375em;right:.5em;width:2.9375em}}@-webkit-keyframes swal2-rotate-success-circular-line{0%{-webkit-transform:rotate(-45deg);transform:rotate(-45deg)}5%{-webkit-transform:rotate(-45deg);transform:rotate(-45deg)}12%{-webkit-transform:rotate(-405deg);transform:rotate(-405deg)}100%{-webkit-transform:rotate(-405deg);transform:rotate(-405deg)}}@keyframes swal2-rotate-success-circular-line{0%{-webkit-transform:rotate(-45deg);transform:rotate(-45deg)}5%{-webkit-transform:rotate(-45deg);transform:rotate(-45deg)}12%{-webkit-transform:rotate(-405deg);transform:rotate(-405deg)}100%{-webkit-transform:rotate(-405deg);transform:rotate(-405deg)}}@-webkit-keyframes swal2-animate-error-x-mark{0%{margin-top:1.625em;-webkit-transform:scale(.4);transform:scale(.4);opacity:0}50%{margin-top:1.625em;-webkit-transform:scale(.4);transform:scale(.4);opacity:0}80%{margin-top:-.375em;-webkit-transform:scale(1.15);transform:scale(1.15)}100%{margin-top:0;-webkit-transform:scale(1);transform:scale(1);opacity:1}}@keyframes swal2-animate-error-x-mark{0%{margin-top:1.625em;-webkit-transform:scale(.4);transform:scale(.4);opacity:0}50%{margin-top:1.625em;-webkit-transform:scale(.4);transform:scale(.4);opacity:0}80%{margin-top:-.375em;-webkit-transform:scale(1.15);transform:scale(1.15)}100%{margin-top:0;-webkit-transform:scale(1);transform:scale(1);opacity:1}}@-webkit-keyframes swal2-animate-error-icon{0%{-webkit-transform:rotateX(100deg);transform:rotateX(100deg);opacity:0}100%{-webkit-transform:rotateX(0);transform:rotateX(0);opacity:1}}@keyframes swal2-animate-error-icon{0%{-webkit-transform:rotateX(100deg);transform:rotateX(100deg);opacity:0}100%{-webkit-transform:rotateX(0);transform:rotateX(0);opacity:1}}body.swal2-toast-shown .swal2-container{background-color:transparent}body.swal2-toast-shown .swal2-container.swal2-shown{background-color:transparent}body.swal2-toast-shown .swal2-container.swal2-top{top:0;right:auto;bottom:auto;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%)}body.swal2-toast-shown .swal2-container.swal2-top-end,body.swal2-toast-shown .swal2-container.swal2-top-right{top:0;right:0;bottom:auto;left:auto}body.swal2-toast-shown .swal2-container.swal2-top-left,body.swal2-toast-shown .swal2-container.swal2-top-start{top:0;right:auto;bottom:auto;left:0}body.swal2-toast-shown .swal2-container.swal2-center-left,body.swal2-toast-shown .swal2-container.swal2-center-start{top:50%;right:auto;bottom:auto;left:0;-webkit-transform:translateY(-50%);transform:translateY(-50%)}body.swal2-toast-shown .swal2-container.swal2-center{top:50%;right:auto;bottom:auto;left:50%;-webkit-transform:translate(-50%,-50%);transform:translate(-50%,-50%)}body.swal2-toast-shown .swal2-container.swal2-center-end,body.swal2-toast-shown .swal2-container.swal2-center-right{top:50%;right:0;bottom:auto;left:auto;-webkit-transform:translateY(-50%);transform:translateY(-50%)}body.swal2-toast-shown .swal2-container.swal2-bottom-left,body.swal2-toast-shown .swal2-container.swal2-bottom-start{top:auto;right:auto;bottom:0;left:0}body.swal2-toast-shown .swal2-container.swal2-bottom{top:auto;right:auto;bottom:0;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%)}body.swal2-toast-shown .swal2-container.swal2-bottom-end,body.swal2-toast-shown .swal2-container.swal2-bottom-right{top:auto;right:0;bottom:0;left:auto}body.swal2-toast-column .swal2-toast{-webkit-box-orient:vertical;-webkit-box-direction:normal;flex-direction:column;-webkit-box-align:stretch;align-items:stretch}body.swal2-toast-column .swal2-toast .swal2-actions{-webkit-box-flex:1;flex:1;align-self:stretch;height:2.2em;margin-top:.3125em}body.swal2-toast-column .swal2-toast .swal2-loading{-webkit-box-pack:center;justify-content:center}body.swal2-toast-column .swal2-toast .swal2-input{height:2em;margin:.3125em auto;font-size:1em}body.swal2-toast-column .swal2-toast .swal2-validation-message{font-size:1em}.swal2-popup.swal2-toast{-webkit-box-orient:horizontal;-webkit-box-direction:normal;flex-direction:row;-webkit-box-align:center;align-items:center;width:auto;padding:.625em;overflow-y:hidden;box-shadow:0 0 .625em #d9d9d9}.swal2-popup.swal2-toast .swal2-header{-webkit-box-orient:horizontal;-webkit-box-direction:normal;flex-direction:row}.swal2-popup.swal2-toast .swal2-title{-webkit-box-flex:1;flex-grow:1;-webkit-box-pack:start;justify-content:flex-start;margin:0 .6em;font-size:1em}.swal2-popup.swal2-toast .swal2-footer{margin:.5em 0 0;padding:.5em 0 0;font-size:.8em}.swal2-popup.swal2-toast .swal2-close{position:static;width:.8em;height:.8em;line-height:.8}.swal2-popup.swal2-toast .swal2-content{-webkit-box-pack:start;justify-content:flex-start;font-size:1em}.swal2-popup.swal2-toast .swal2-icon{width:2em;min-width:2em;height:2em;margin:0}.swal2-popup.swal2-toast .swal2-icon::before{display:-webkit-box;display:flex;-webkit-box-align:center;align-items:center;font-size:2em;font-weight:700}@media all and (-ms-high-contrast:none),(-ms-high-contrast:active){.swal2-popup.swal2-toast .swal2-icon::before{font-size:.25em}}.swal2-popup.swal2-toast .swal2-icon.swal2-success .swal2-success-ring{width:2em;height:2em}.swal2-popup.swal2-toast .swal2-icon.swal2-error [class^=swal2-x-mark-line]{top:.875em;width:1.375em}.swal2-popup.swal2-toast .swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=left]{left:.3125em}.swal2-popup.swal2-toast .swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=right]{right:.3125em}.swal2-popup.swal2-toast .swal2-actions{flex-basis:auto!important;width:auto;height:auto;margin:0 .3125em}.swal2-popup.swal2-toast .swal2-styled{margin:0 .3125em;padding:.3125em .625em;font-size:1em}.swal2-popup.swal2-toast .swal2-styled:focus{box-shadow:0 0 0 .0625em #fff,0 0 0 .125em rgba(50,100,150,.4)}.swal2-popup.swal2-toast .swal2-success{border-color:#a5dc86}.swal2-popup.swal2-toast .swal2-success [class^=swal2-success-circular-line]{position:absolute;width:1.6em;height:3em;-webkit-transform:rotate(45deg);transform:rotate(45deg);border-radius:50%}.swal2-popup.swal2-toast .swal2-success [class^=swal2-success-circular-line][class$=left]{top:-.8em;left:-.5em;-webkit-transform:rotate(-45deg);transform:rotate(-45deg);-webkit-transform-origin:2em 2em;transform-origin:2em 2em;border-radius:4em 0 0 4em}.swal2-popup.swal2-toast .swal2-success [class^=swal2-success-circular-line][class$=right]{top:-.25em;left:.9375em;-webkit-transform-origin:0 1.5em;transform-origin:0 1.5em;border-radius:0 4em 4em 0}.swal2-popup.swal2-toast .swal2-success .swal2-success-ring{width:2em;height:2em}.swal2-popup.swal2-toast .swal2-success .swal2-success-fix{top:0;left:.4375em;width:.4375em;height:2.6875em}.swal2-popup.swal2-toast .swal2-success [class^=swal2-success-line]{height:.3125em}.swal2-popup.swal2-toast .swal2-success [class^=swal2-success-line][class$=tip]{top:1.125em;left:.1875em;width:.75em}.swal2-popup.swal2-toast .swal2-success [class^=swal2-success-line][class$=long]{top:.9375em;right:.1875em;width:1.375em}.swal2-popup.swal2-toast.swal2-show{-webkit-animation:swal2-toast-show .5s;animation:swal2-toast-show .5s}.swal2-popup.swal2-toast.swal2-hide{-webkit-animation:swal2-toast-hide .1s forwards;animation:swal2-toast-hide .1s forwards}.swal2-popup.swal2-toast .swal2-animate-success-icon .swal2-success-line-tip{-webkit-animation:swal2-toast-animate-success-line-tip .75s;animation:swal2-toast-animate-success-line-tip .75s}.swal2-popup.swal2-toast .swal2-animate-success-icon .swal2-success-line-long{-webkit-animation:swal2-toast-animate-success-line-long .75s;animation:swal2-toast-animate-success-line-long .75s}@-webkit-keyframes swal2-toast-show{0%{-webkit-transform:translateY(-.625em) rotateZ(2deg);transform:translateY(-.625em) rotateZ(2deg)}33%{-webkit-transform:translateY(0) rotateZ(-2deg);transform:translateY(0) rotateZ(-2deg)}66%{-webkit-transform:translateY(.3125em) rotateZ(2deg);transform:translateY(.3125em) rotateZ(2deg)}100%{-webkit-transform:translateY(0) rotateZ(0);transform:translateY(0) rotateZ(0)}}@keyframes swal2-toast-show{0%{-webkit-transform:translateY(-.625em) rotateZ(2deg);transform:translateY(-.625em) rotateZ(2deg)}33%{-webkit-transform:translateY(0) rotateZ(-2deg);transform:translateY(0) rotateZ(-2deg)}66%{-webkit-transform:translateY(.3125em) rotateZ(2deg);transform:translateY(.3125em) rotateZ(2deg)}100%{-webkit-transform:translateY(0) rotateZ(0);transform:translateY(0) rotateZ(0)}}@-webkit-keyframes swal2-toast-hide{100%{-webkit-transform:rotateZ(1deg);transform:rotateZ(1deg);opacity:0}}@keyframes swal2-toast-hide{100%{-webkit-transform:rotateZ(1deg);transform:rotateZ(1deg);opacity:0}}@-webkit-keyframes swal2-toast-animate-success-line-tip{0%{top:.5625em;left:.0625em;width:0}54%{top:.125em;left:.125em;width:0}70%{top:.625em;left:-.25em;width:1.625em}84%{top:1.0625em;left:.75em;width:.5em}100%{top:1.125em;left:.1875em;width:.75em}}@keyframes swal2-toast-animate-success-line-tip{0%{top:.5625em;left:.0625em;width:0}54%{top:.125em;left:.125em;width:0}70%{top:.625em;left:-.25em;width:1.625em}84%{top:1.0625em;left:.75em;width:.5em}100%{top:1.125em;left:.1875em;width:.75em}}@-webkit-keyframes swal2-toast-animate-success-line-long{0%{top:1.625em;right:1.375em;width:0}65%{top:1.25em;right:.9375em;width:0}84%{top:.9375em;right:0;width:1.125em}100%{top:.9375em;right:.1875em;width:1.375em}}@keyframes swal2-toast-animate-success-line-long{0%{top:1.625em;right:1.375em;width:0}65%{top:1.25em;right:.9375em;width:0}84%{top:.9375em;right:0;width:1.125em}100%{top:.9375em;right:.1875em;width:1.375em}}body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown){overflow:hidden}body.swal2-height-auto{height:auto!important}body.swal2-no-backdrop .swal2-shown{top:auto;right:auto;bottom:auto;left:auto;max-width:calc(100% - .625em * 2);background-color:transparent}body.swal2-no-backdrop .swal2-shown>.swal2-modal{box-shadow:0 0 10px rgba(0,0,0,.4)}body.swal2-no-backdrop .swal2-shown.swal2-top{top:0;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%)}body.swal2-no-backdrop .swal2-shown.swal2-top-left,body.swal2-no-backdrop .swal2-shown.swal2-top-start{top:0;left:0}body.swal2-no-backdrop .swal2-shown.swal2-top-end,body.swal2-no-backdrop .swal2-shown.swal2-top-right{top:0;right:0}body.swal2-no-backdrop .swal2-shown.swal2-center{top:50%;left:50%;-webkit-transform:translate(-50%,-50%);transform:translate(-50%,-50%)}body.swal2-no-backdrop .swal2-shown.swal2-center-left,body.swal2-no-backdrop .swal2-shown.swal2-center-start{top:50%;left:0;-webkit-transform:translateY(-50%);transform:translateY(-50%)}body.swal2-no-backdrop .swal2-shown.swal2-center-end,body.swal2-no-backdrop .swal2-shown.swal2-center-right{top:50%;right:0;-webkit-transform:translateY(-50%);transform:translateY(-50%)}body.swal2-no-backdrop .swal2-shown.swal2-bottom{bottom:0;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%)}body.swal2-no-backdrop .swal2-shown.swal2-bottom-left,body.swal2-no-backdrop .swal2-shown.swal2-bottom-start{bottom:0;left:0}body.swal2-no-backdrop .swal2-shown.swal2-bottom-end,body.swal2-no-backdrop .swal2-shown.swal2-bottom-right{right:0;bottom:0}.swal2-container{display:-webkit-box;display:flex;position:fixed;z-index:1060;top:0;right:0;bottom:0;left:0;-webkit-box-orient:horizontal;-webkit-box-direction:normal;flex-direction:row;-webkit-box-align:center;align-items:center;-webkit-box-pack:center;justify-content:center;padding:.625em;overflow-x:hidden;background-color:transparent;-webkit-overflow-scrolling:touch}.swal2-container.swal2-top{-webkit-box-align:start;align-items:flex-start}.swal2-container.swal2-top-left,.swal2-container.swal2-top-start{-webkit-box-align:start;align-items:flex-start;-webkit-box-pack:start;justify-content:flex-start}.swal2-container.swal2-top-end,.swal2-container.swal2-top-right{-webkit-box-align:start;align-items:flex-start;-webkit-box-pack:end;justify-content:flex-end}.swal2-container.swal2-center{-webkit-box-align:center;align-items:center}.swal2-container.swal2-center-left,.swal2-container.swal2-center-start{-webkit-box-align:center;align-items:center;-webkit-box-pack:start;justify-content:flex-start}.swal2-container.swal2-center-end,.swal2-container.swal2-center-right{-webkit-box-align:center;align-items:center;-webkit-box-pack:end;justify-content:flex-end}.swal2-container.swal2-bottom{-webkit-box-align:end;align-items:flex-end}.swal2-container.swal2-bottom-left,.swal2-container.swal2-bottom-start{-webkit-box-align:end;align-items:flex-end;-webkit-box-pack:start;justify-content:flex-start}.swal2-container.swal2-bottom-end,.swal2-container.swal2-bottom-right{-webkit-box-align:end;align-items:flex-end;-webkit-box-pack:end;justify-content:flex-end}.swal2-container.swal2-bottom-end>:first-child,.swal2-container.swal2-bottom-left>:first-child,.swal2-container.swal2-bottom-right>:first-child,.swal2-container.swal2-bottom-start>:first-child,.swal2-container.swal2-bottom>:first-child{margin-top:auto}.swal2-container.swal2-grow-fullscreen>.swal2-modal{display:-webkit-box!important;display:flex!important;-webkit-box-flex:1;flex:1;align-self:stretch;-webkit-box-pack:center;justify-content:center}.swal2-container.swal2-grow-row>.swal2-modal{display:-webkit-box!important;display:flex!important;-webkit-box-flex:1;flex:1;align-content:center;-webkit-box-pack:center;justify-content:center}.swal2-container.swal2-grow-column{-webkit-box-flex:1;flex:1;-webkit-box-orient:vertical;-webkit-box-direction:normal;flex-direction:column}.swal2-container.swal2-grow-column.swal2-bottom,.swal2-container.swal2-grow-column.swal2-center,.swal2-container.swal2-grow-column.swal2-top{-webkit-box-align:center;align-items:center}.swal2-container.swal2-grow-column.swal2-bottom-left,.swal2-container.swal2-grow-column.swal2-bottom-start,.swal2-container.swal2-grow-column.swal2-center-left,.swal2-container.swal2-grow-column.swal2-center-start,.swal2-container.swal2-grow-column.swal2-top-left,.swal2-container.swal2-grow-column.swal2-top-start{-webkit-box-align:start;align-items:flex-start}.swal2-container.swal2-grow-column.swal2-bottom-end,.swal2-container.swal2-grow-column.swal2-bottom-right,.swal2-container.swal2-grow-column.swal2-center-end,.swal2-container.swal2-grow-column.swal2-center-right,.swal2-container.swal2-grow-column.swal2-top-end,.swal2-container.swal2-grow-column.swal2-top-right{-webkit-box-align:end;align-items:flex-end}.swal2-container.swal2-grow-column>.swal2-modal{display:-webkit-box!important;display:flex!important;-webkit-box-flex:1;flex:1;align-content:center;-webkit-box-pack:center;justify-content:center}.swal2-container:not(.swal2-top):not(.swal2-top-start):not(.swal2-top-end):not(.swal2-top-left):not(.swal2-top-right):not(.swal2-center-start):not(.swal2-center-end):not(.swal2-center-left):not(.swal2-center-right):not(.swal2-bottom):not(.swal2-bottom-start):not(.swal2-bottom-end):not(.swal2-bottom-left):not(.swal2-bottom-right):not(.swal2-grow-fullscreen)>.swal2-modal{margin:auto}@media all and (-ms-high-contrast:none),(-ms-high-contrast:active){.swal2-container .swal2-modal{margin:0!important}}.swal2-container.swal2-fade{-webkit-transition:background-color .1s;transition:background-color .1s}.swal2-container.swal2-shown{background-color:rgba(0,0,0,.4)}.swal2-popup{display:none;position:relative;box-sizing:border-box;-webkit-box-orient:vertical;-webkit-box-direction:normal;flex-direction:column;-webkit-box-pack:center;justify-content:center;width:32em;max-width:100%;padding:1.25em;border:none;border-radius:.3125em;background:#fff;font-family:inherit;font-size:1rem}.swal2-popup:focus{outline:0}.swal2-popup.swal2-loading{overflow-y:hidden}.swal2-header{display:-webkit-box;display:flex;-webkit-box-orient:vertical;-webkit-box-direction:normal;flex-direction:column;-webkit-box-align:center;align-items:center}.swal2-title{position:relative;max-width:100%;margin:0 0 .4em;padding:0;color:#595959;font-size:1.875em;font-weight:600;text-align:center;text-transform:none;word-wrap:break-word}.swal2-actions{z-index:1;flex-wrap:wrap;-webkit-box-align:center;align-items:center;-webkit-box-pack:center;justify-content:center;width:100%;margin:1.25em auto 0}.swal2-actions:not(.swal2-loading) .swal2-styled[disabled]{opacity:.4}.swal2-actions:not(.swal2-loading) .swal2-styled:hover{background-image:-webkit-gradient(linear,left top, left bottom,from(rgba(0,0,0,.1)),to(rgba(0,0,0,.1)));background-image:linear-gradient(rgba(0,0,0,.1),rgba(0,0,0,.1))}.swal2-actions:not(.swal2-loading) .swal2-styled:active{background-image:-webkit-gradient(linear,left top, left bottom,from(rgba(0,0,0,.2)),to(rgba(0,0,0,.2)));background-image:linear-gradient(rgba(0,0,0,.2),rgba(0,0,0,.2))}.swal2-actions.swal2-loading .swal2-styled.swal2-confirm{box-sizing:border-box;width:2.5em;height:2.5em;margin:.46875em;padding:0;-webkit-animation:swal2-rotate-loading 1.5s linear 0s infinite normal;animation:swal2-rotate-loading 1.5s linear 0s infinite normal;border:.25em solid transparent;border-radius:100%;border-color:transparent;background-color:transparent!important;color:transparent;cursor:default;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.swal2-actions.swal2-loading .swal2-styled.swal2-cancel{margin-right:30px;margin-left:30px}.swal2-actions.swal2-loading :not(.swal2-styled).swal2-confirm::after{content:\"\";display:inline-block;width:15px;height:15px;margin-left:5px;-webkit-animation:swal2-rotate-loading 1.5s linear 0s infinite normal;animation:swal2-rotate-loading 1.5s linear 0s infinite normal;border:3px solid #999;border-radius:50%;border-right-color:transparent;box-shadow:1px 1px 1px #fff}.swal2-styled{margin:.3125em;padding:.625em 2em;box-shadow:none;font-weight:500}.swal2-styled:not([disabled]){cursor:pointer}.swal2-styled.swal2-confirm{border:0;border-radius:.25em;background:initial;background-color:#3085d6;color:#fff;font-size:1.0625em}.swal2-styled.swal2-cancel{border:0;border-radius:.25em;background:initial;background-color:#aaa;color:#fff;font-size:1.0625em}.swal2-styled:focus{outline:0;box-shadow:0 0 0 2px #fff,0 0 0 4px rgba(50,100,150,.4)}.swal2-styled::-moz-focus-inner{border:0}.swal2-footer{-webkit-box-pack:center;justify-content:center;margin:1.25em 0 0;padding:1em 0 0;border-top:1px solid #eee;color:#545454;font-size:1em}.swal2-image{max-width:100%;margin:1.25em auto}.swal2-close{position:absolute;z-index:2;top:0;right:0;-webkit-box-pack:center;justify-content:center;width:1.2em;height:1.2em;padding:0;overflow:hidden;-webkit-transition:color .1s ease-out;transition:color .1s ease-out;border:none;border-radius:0;outline:initial;background:0 0;color:#ccc;font-family:serif;font-size:2.5em;line-height:1.2;cursor:pointer}.swal2-close:hover{-webkit-transform:none;transform:none;background:0 0;color:#f27474}.swal2-content{z-index:1;-webkit-box-pack:center;justify-content:center;margin:0;padding:0;color:#545454;font-size:1.125em;font-weight:300;line-height:normal;text-align:center;word-wrap:break-word}.swal2-checkbox,.swal2-file,.swal2-input,.swal2-radio,.swal2-select,.swal2-textarea{margin:1em auto}.swal2-file,.swal2-input,.swal2-textarea{box-sizing:border-box;width:100%;-webkit-transition:border-color .3s,box-shadow .3s;transition:border-color .3s,box-shadow .3s;border:1px solid #d9d9d9;border-radius:.1875em;background:inherit;box-shadow:inset 0 1px 1px rgba(0,0,0,.06);color:inherit;font-size:1.125em}.swal2-file.swal2-inputerror,.swal2-input.swal2-inputerror,.swal2-textarea.swal2-inputerror{border-color:#f27474!important;box-shadow:0 0 2px #f27474!important}.swal2-file:focus,.swal2-input:focus,.swal2-textarea:focus{border:1px solid #b4dbed;outline:0;box-shadow:0 0 3px #c4e6f5}.swal2-file::-webkit-input-placeholder,.swal2-input::-webkit-input-placeholder,.swal2-textarea::-webkit-input-placeholder{color:#ccc}.swal2-file::-moz-placeholder,.swal2-input::-moz-placeholder,.swal2-textarea::-moz-placeholder{color:#ccc}.swal2-file:-ms-input-placeholder,.swal2-input:-ms-input-placeholder,.swal2-textarea:-ms-input-placeholder{color:#ccc}.swal2-file::-ms-input-placeholder,.swal2-input::-ms-input-placeholder,.swal2-textarea::-ms-input-placeholder{color:#ccc}.swal2-file::placeholder,.swal2-input::placeholder,.swal2-textarea::placeholder{color:#ccc}.swal2-range{margin:1em auto;background:inherit}.swal2-range input{width:80%}.swal2-range output{width:20%;color:inherit;font-weight:600;text-align:center}.swal2-range input,.swal2-range output{height:2.625em;padding:0;font-size:1.125em;line-height:2.625em}.swal2-input{height:2.625em;padding:0 .75em}.swal2-input[type=number]{max-width:10em}.swal2-file{background:inherit;font-size:1.125em}.swal2-textarea{height:6.75em;padding:.75em}.swal2-select{min-width:50%;max-width:100%;padding:.375em .625em;background:inherit;color:inherit;font-size:1.125em}.swal2-checkbox,.swal2-radio{-webkit-box-align:center;align-items:center;-webkit-box-pack:center;justify-content:center;background:inherit;color:inherit}.swal2-checkbox label,.swal2-radio label{margin:0 .6em;font-size:1.125em}.swal2-checkbox input,.swal2-radio input{margin:0 .4em}.swal2-validation-message{display:none;-webkit-box-align:center;align-items:center;-webkit-box-pack:center;justify-content:center;padding:.625em;overflow:hidden;background:#f0f0f0;color:#666;font-size:1em;font-weight:300}.swal2-validation-message::before{content:\"!\";display:inline-block;width:1.5em;min-width:1.5em;height:1.5em;margin:0 .625em;zoom:normal;border-radius:50%;background-color:#f27474;color:#fff;font-weight:600;line-height:1.5em;text-align:center}@supports (-ms-accelerator:true){.swal2-range input{width:100%!important}.swal2-range output{display:none}}@media all and (-ms-high-contrast:none),(-ms-high-contrast:active){.swal2-range input{width:100%!important}.swal2-range output{display:none}}@-moz-document url-prefix(){.swal2-close:focus{outline:2px solid rgba(50,100,150,.4)}}.swal2-icon{position:relative;box-sizing:content-box;-webkit-box-pack:center;justify-content:center;width:5em;height:5em;margin:1.25em auto 1.875em;zoom:normal;border:.25em solid transparent;border-radius:50%;font-family:inherit;line-height:5em;cursor:default;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.swal2-icon::before{display:-webkit-box;display:flex;-webkit-box-align:center;align-items:center;height:92%;font-size:3.75em}.swal2-icon.swal2-error{border-color:#f27474}.swal2-icon.swal2-error .swal2-x-mark{position:relative;-webkit-box-flex:1;flex-grow:1}.swal2-icon.swal2-error [class^=swal2-x-mark-line]{display:block;position:absolute;top:2.3125em;width:2.9375em;height:.3125em;border-radius:.125em;background-color:#f27474}.swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=left]{left:1.0625em;-webkit-transform:rotate(45deg);transform:rotate(45deg)}.swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=right]{right:1em;-webkit-transform:rotate(-45deg);transform:rotate(-45deg)}.swal2-icon.swal2-warning{border-color:#facea8;color:#f8bb86}.swal2-icon.swal2-warning::before{content:\"!\"}.swal2-icon.swal2-info{border-color:#9de0f6;color:#3fc3ee}.swal2-icon.swal2-info::before{content:\"i\"}.swal2-icon.swal2-question{border-color:#c9dae1;color:#87adbd}.swal2-icon.swal2-question::before{content:\"?\"}.swal2-icon.swal2-question.swal2-arabic-question-mark::before{content:\"\\61F\"}.swal2-icon.swal2-success{border-color:#a5dc86}.swal2-icon.swal2-success [class^=swal2-success-circular-line]{position:absolute;width:3.75em;height:7.5em;-webkit-transform:rotate(45deg);transform:rotate(45deg);border-radius:50%}.swal2-icon.swal2-success [class^=swal2-success-circular-line][class$=left]{top:-.4375em;left:-2.0635em;-webkit-transform:rotate(-45deg);transform:rotate(-45deg);-webkit-transform-origin:3.75em 3.75em;transform-origin:3.75em 3.75em;border-radius:7.5em 0 0 7.5em}.swal2-icon.swal2-success [class^=swal2-success-circular-line][class$=right]{top:-.6875em;left:1.875em;-webkit-transform:rotate(-45deg);transform:rotate(-45deg);-webkit-transform-origin:0 3.75em;transform-origin:0 3.75em;border-radius:0 7.5em 7.5em 0}.swal2-icon.swal2-success .swal2-success-ring{position:absolute;z-index:2;top:-.25em;left:-.25em;box-sizing:content-box;width:100%;height:100%;border:.25em solid rgba(165,220,134,.3);border-radius:50%}.swal2-icon.swal2-success .swal2-success-fix{position:absolute;z-index:1;top:.5em;left:1.625em;width:.4375em;height:5.625em;-webkit-transform:rotate(-45deg);transform:rotate(-45deg)}.swal2-icon.swal2-success [class^=swal2-success-line]{display:block;position:absolute;z-index:2;height:.3125em;border-radius:.125em;background-color:#a5dc86}.swal2-icon.swal2-success [class^=swal2-success-line][class$=tip]{top:2.875em;left:.875em;width:1.5625em;-webkit-transform:rotate(45deg);transform:rotate(45deg)}.swal2-icon.swal2-success [class^=swal2-success-line][class$=long]{top:2.375em;right:.5em;width:2.9375em;-webkit-transform:rotate(-45deg);transform:rotate(-45deg)}.swal2-progress-steps{-webkit-box-align:center;align-items:center;margin:0 0 1.25em;padding:0;background:inherit;font-weight:600}.swal2-progress-steps li{display:inline-block;position:relative}.swal2-progress-steps .swal2-progress-step{z-index:20;width:2em;height:2em;border-radius:2em;background:#3085d6;color:#fff;line-height:2em;text-align:center}.swal2-progress-steps .swal2-progress-step.swal2-active-progress-step{background:#3085d6}.swal2-progress-steps .swal2-progress-step.swal2-active-progress-step~.swal2-progress-step{background:#add8e6;color:#fff}.swal2-progress-steps .swal2-progress-step.swal2-active-progress-step~.swal2-progress-step-line{background:#add8e6}.swal2-progress-steps .swal2-progress-step-line{z-index:10;width:2.5em;height:.4em;margin:0 -1px;background:#3085d6}[class^=swal2]{-webkit-tap-highlight-color:transparent}.swal2-show{-webkit-animation:swal2-show .3s;animation:swal2-show .3s}.swal2-show.swal2-noanimation{-webkit-animation:none;animation:none}.swal2-hide{-webkit-animation:swal2-hide .15s forwards;animation:swal2-hide .15s forwards}.swal2-hide.swal2-noanimation{-webkit-animation:none;animation:none}.swal2-rtl .swal2-close{right:auto;left:0}.swal2-animate-success-icon .swal2-success-line-tip{-webkit-animation:swal2-animate-success-line-tip .75s;animation:swal2-animate-success-line-tip .75s}.swal2-animate-success-icon .swal2-success-line-long{-webkit-animation:swal2-animate-success-line-long .75s;animation:swal2-animate-success-line-long .75s}.swal2-animate-success-icon .swal2-success-circular-line-right{-webkit-animation:swal2-rotate-success-circular-line 4.25s ease-in;animation:swal2-rotate-success-circular-line 4.25s ease-in}.swal2-animate-error-icon{-webkit-animation:swal2-animate-error-icon .5s;animation:swal2-animate-error-icon .5s}.swal2-animate-error-icon .swal2-x-mark{-webkit-animation:swal2-animate-error-x-mark .5s;animation:swal2-animate-error-x-mark .5s}@-webkit-keyframes swal2-rotate-loading{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@keyframes swal2-rotate-loading{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@media print{body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown){overflow-y:scroll!important}body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown)>[aria-hidden=true]{display:none}body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown) .swal2-container{position:static!important}}", ""]);
+
+// exports
+
+
+/***/ }),
+
 /***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Login.vue?vue&type=style&index=0&id=6bdc8b8e&scoped=true&lang=css&":
 /*!***********************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Login.vue?vue&type=style&index=0&id=6bdc8b8e&scoped=true&lang=css& ***!
@@ -3697,7 +4429,26 @@ exports = module.exports = __webpack_require__(/*! ../../../../../../node_module
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n/* .cash{\r\n    margin-top: 20px;\r\n} */\r\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n/* .cash{\r\n    margin-top: 20px;\r\n} */\r\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/page/dasboard/items/AddItems.vue?vue&type=style&index=0&id=4afd5850&scoped=true&lang=css&":
+/*!**********************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/page/dasboard/items/AddItems.vue?vue&type=style&index=0&id=4afd5850&scoped=true&lang=css& ***!
+  \**********************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.upload[data-v-4afd5850]{\r\n    margin-top: 18px;\n}\r\n", ""]);
 
 // exports
 
@@ -3830,7 +4581,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../../node_module
 
 
 // module
-exports.push([module.i, "\ni[data-v-a79c6462]:hover{\r\n    cursor: pointer;\n}\n.upload[data-v-a79c6462]{\r\n    margin-top: 18px;\n}\r\n", ""]);
+exports.push([module.i, "\ni[data-v-a79c6462]:hover{\r\n    cursor: pointer;\n}\r\n", ""]);
 
 // exports
 
@@ -60687,6 +61438,743 @@ process.umask = function() { return 0; };
 
 /***/ }),
 
+/***/ "./node_modules/regenerator-runtime/runtime.js":
+/*!*****************************************************!*\
+  !*** ./node_modules/regenerator-runtime/runtime.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/**
+ * Copyright (c) 2014-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+var runtime = (function (exports) {
+  "use strict";
+
+  var Op = Object.prototype;
+  var hasOwn = Op.hasOwnProperty;
+  var undefined; // More compressible than void 0.
+  var $Symbol = typeof Symbol === "function" ? Symbol : {};
+  var iteratorSymbol = $Symbol.iterator || "@@iterator";
+  var asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator";
+  var toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag";
+
+  function wrap(innerFn, outerFn, self, tryLocsList) {
+    // If outerFn provided and outerFn.prototype is a Generator, then outerFn.prototype instanceof Generator.
+    var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator;
+    var generator = Object.create(protoGenerator.prototype);
+    var context = new Context(tryLocsList || []);
+
+    // The ._invoke method unifies the implementations of the .next,
+    // .throw, and .return methods.
+    generator._invoke = makeInvokeMethod(innerFn, self, context);
+
+    return generator;
+  }
+  exports.wrap = wrap;
+
+  // Try/catch helper to minimize deoptimizations. Returns a completion
+  // record like context.tryEntries[i].completion. This interface could
+  // have been (and was previously) designed to take a closure to be
+  // invoked without arguments, but in all the cases we care about we
+  // already have an existing method we want to call, so there's no need
+  // to create a new function object. We can even get away with assuming
+  // the method takes exactly one argument, since that happens to be true
+  // in every case, so we don't have to touch the arguments object. The
+  // only additional allocation required is the completion record, which
+  // has a stable shape and so hopefully should be cheap to allocate.
+  function tryCatch(fn, obj, arg) {
+    try {
+      return { type: "normal", arg: fn.call(obj, arg) };
+    } catch (err) {
+      return { type: "throw", arg: err };
+    }
+  }
+
+  var GenStateSuspendedStart = "suspendedStart";
+  var GenStateSuspendedYield = "suspendedYield";
+  var GenStateExecuting = "executing";
+  var GenStateCompleted = "completed";
+
+  // Returning this object from the innerFn has the same effect as
+  // breaking out of the dispatch switch statement.
+  var ContinueSentinel = {};
+
+  // Dummy constructor functions that we use as the .constructor and
+  // .constructor.prototype properties for functions that return Generator
+  // objects. For full spec compliance, you may wish to configure your
+  // minifier not to mangle the names of these two functions.
+  function Generator() {}
+  function GeneratorFunction() {}
+  function GeneratorFunctionPrototype() {}
+
+  // This is a polyfill for %IteratorPrototype% for environments that
+  // don't natively support it.
+  var IteratorPrototype = {};
+  IteratorPrototype[iteratorSymbol] = function () {
+    return this;
+  };
+
+  var getProto = Object.getPrototypeOf;
+  var NativeIteratorPrototype = getProto && getProto(getProto(values([])));
+  if (NativeIteratorPrototype &&
+      NativeIteratorPrototype !== Op &&
+      hasOwn.call(NativeIteratorPrototype, iteratorSymbol)) {
+    // This environment has a native %IteratorPrototype%; use it instead
+    // of the polyfill.
+    IteratorPrototype = NativeIteratorPrototype;
+  }
+
+  var Gp = GeneratorFunctionPrototype.prototype =
+    Generator.prototype = Object.create(IteratorPrototype);
+  GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
+  GeneratorFunctionPrototype.constructor = GeneratorFunction;
+  GeneratorFunctionPrototype[toStringTagSymbol] =
+    GeneratorFunction.displayName = "GeneratorFunction";
+
+  // Helper for defining the .next, .throw, and .return methods of the
+  // Iterator interface in terms of a single ._invoke method.
+  function defineIteratorMethods(prototype) {
+    ["next", "throw", "return"].forEach(function(method) {
+      prototype[method] = function(arg) {
+        return this._invoke(method, arg);
+      };
+    });
+  }
+
+  exports.isGeneratorFunction = function(genFun) {
+    var ctor = typeof genFun === "function" && genFun.constructor;
+    return ctor
+      ? ctor === GeneratorFunction ||
+        // For the native GeneratorFunction constructor, the best we can
+        // do is to check its .name property.
+        (ctor.displayName || ctor.name) === "GeneratorFunction"
+      : false;
+  };
+
+  exports.mark = function(genFun) {
+    if (Object.setPrototypeOf) {
+      Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
+    } else {
+      genFun.__proto__ = GeneratorFunctionPrototype;
+      if (!(toStringTagSymbol in genFun)) {
+        genFun[toStringTagSymbol] = "GeneratorFunction";
+      }
+    }
+    genFun.prototype = Object.create(Gp);
+    return genFun;
+  };
+
+  // Within the body of any async function, `await x` is transformed to
+  // `yield regeneratorRuntime.awrap(x)`, so that the runtime can test
+  // `hasOwn.call(value, "__await")` to determine if the yielded value is
+  // meant to be awaited.
+  exports.awrap = function(arg) {
+    return { __await: arg };
+  };
+
+  function AsyncIterator(generator) {
+    function invoke(method, arg, resolve, reject) {
+      var record = tryCatch(generator[method], generator, arg);
+      if (record.type === "throw") {
+        reject(record.arg);
+      } else {
+        var result = record.arg;
+        var value = result.value;
+        if (value &&
+            typeof value === "object" &&
+            hasOwn.call(value, "__await")) {
+          return Promise.resolve(value.__await).then(function(value) {
+            invoke("next", value, resolve, reject);
+          }, function(err) {
+            invoke("throw", err, resolve, reject);
+          });
+        }
+
+        return Promise.resolve(value).then(function(unwrapped) {
+          // When a yielded Promise is resolved, its final value becomes
+          // the .value of the Promise<{value,done}> result for the
+          // current iteration.
+          result.value = unwrapped;
+          resolve(result);
+        }, function(error) {
+          // If a rejected Promise was yielded, throw the rejection back
+          // into the async generator function so it can be handled there.
+          return invoke("throw", error, resolve, reject);
+        });
+      }
+    }
+
+    var previousPromise;
+
+    function enqueue(method, arg) {
+      function callInvokeWithMethodAndArg() {
+        return new Promise(function(resolve, reject) {
+          invoke(method, arg, resolve, reject);
+        });
+      }
+
+      return previousPromise =
+        // If enqueue has been called before, then we want to wait until
+        // all previous Promises have been resolved before calling invoke,
+        // so that results are always delivered in the correct order. If
+        // enqueue has not been called before, then it is important to
+        // call invoke immediately, without waiting on a callback to fire,
+        // so that the async generator function has the opportunity to do
+        // any necessary setup in a predictable way. This predictability
+        // is why the Promise constructor synchronously invokes its
+        // executor callback, and why async functions synchronously
+        // execute code before the first await. Since we implement simple
+        // async functions in terms of async generators, it is especially
+        // important to get this right, even though it requires care.
+        previousPromise ? previousPromise.then(
+          callInvokeWithMethodAndArg,
+          // Avoid propagating failures to Promises returned by later
+          // invocations of the iterator.
+          callInvokeWithMethodAndArg
+        ) : callInvokeWithMethodAndArg();
+    }
+
+    // Define the unified helper method that is used to implement .next,
+    // .throw, and .return (see defineIteratorMethods).
+    this._invoke = enqueue;
+  }
+
+  defineIteratorMethods(AsyncIterator.prototype);
+  AsyncIterator.prototype[asyncIteratorSymbol] = function () {
+    return this;
+  };
+  exports.AsyncIterator = AsyncIterator;
+
+  // Note that simple async functions are implemented on top of
+  // AsyncIterator objects; they just return a Promise for the value of
+  // the final result produced by the iterator.
+  exports.async = function(innerFn, outerFn, self, tryLocsList) {
+    var iter = new AsyncIterator(
+      wrap(innerFn, outerFn, self, tryLocsList)
+    );
+
+    return exports.isGeneratorFunction(outerFn)
+      ? iter // If outerFn is a generator, return the full iterator.
+      : iter.next().then(function(result) {
+          return result.done ? result.value : iter.next();
+        });
+  };
+
+  function makeInvokeMethod(innerFn, self, context) {
+    var state = GenStateSuspendedStart;
+
+    return function invoke(method, arg) {
+      if (state === GenStateExecuting) {
+        throw new Error("Generator is already running");
+      }
+
+      if (state === GenStateCompleted) {
+        if (method === "throw") {
+          throw arg;
+        }
+
+        // Be forgiving, per 25.3.3.3.3 of the spec:
+        // https://people.mozilla.org/~jorendorff/es6-draft.html#sec-generatorresume
+        return doneResult();
+      }
+
+      context.method = method;
+      context.arg = arg;
+
+      while (true) {
+        var delegate = context.delegate;
+        if (delegate) {
+          var delegateResult = maybeInvokeDelegate(delegate, context);
+          if (delegateResult) {
+            if (delegateResult === ContinueSentinel) continue;
+            return delegateResult;
+          }
+        }
+
+        if (context.method === "next") {
+          // Setting context._sent for legacy support of Babel's
+          // function.sent implementation.
+          context.sent = context._sent = context.arg;
+
+        } else if (context.method === "throw") {
+          if (state === GenStateSuspendedStart) {
+            state = GenStateCompleted;
+            throw context.arg;
+          }
+
+          context.dispatchException(context.arg);
+
+        } else if (context.method === "return") {
+          context.abrupt("return", context.arg);
+        }
+
+        state = GenStateExecuting;
+
+        var record = tryCatch(innerFn, self, context);
+        if (record.type === "normal") {
+          // If an exception is thrown from innerFn, we leave state ===
+          // GenStateExecuting and loop back for another invocation.
+          state = context.done
+            ? GenStateCompleted
+            : GenStateSuspendedYield;
+
+          if (record.arg === ContinueSentinel) {
+            continue;
+          }
+
+          return {
+            value: record.arg,
+            done: context.done
+          };
+
+        } else if (record.type === "throw") {
+          state = GenStateCompleted;
+          // Dispatch the exception by looping back around to the
+          // context.dispatchException(context.arg) call above.
+          context.method = "throw";
+          context.arg = record.arg;
+        }
+      }
+    };
+  }
+
+  // Call delegate.iterator[context.method](context.arg) and handle the
+  // result, either by returning a { value, done } result from the
+  // delegate iterator, or by modifying context.method and context.arg,
+  // setting context.delegate to null, and returning the ContinueSentinel.
+  function maybeInvokeDelegate(delegate, context) {
+    var method = delegate.iterator[context.method];
+    if (method === undefined) {
+      // A .throw or .return when the delegate iterator has no .throw
+      // method always terminates the yield* loop.
+      context.delegate = null;
+
+      if (context.method === "throw") {
+        // Note: ["return"] must be used for ES3 parsing compatibility.
+        if (delegate.iterator["return"]) {
+          // If the delegate iterator has a return method, give it a
+          // chance to clean up.
+          context.method = "return";
+          context.arg = undefined;
+          maybeInvokeDelegate(delegate, context);
+
+          if (context.method === "throw") {
+            // If maybeInvokeDelegate(context) changed context.method from
+            // "return" to "throw", let that override the TypeError below.
+            return ContinueSentinel;
+          }
+        }
+
+        context.method = "throw";
+        context.arg = new TypeError(
+          "The iterator does not provide a 'throw' method");
+      }
+
+      return ContinueSentinel;
+    }
+
+    var record = tryCatch(method, delegate.iterator, context.arg);
+
+    if (record.type === "throw") {
+      context.method = "throw";
+      context.arg = record.arg;
+      context.delegate = null;
+      return ContinueSentinel;
+    }
+
+    var info = record.arg;
+
+    if (! info) {
+      context.method = "throw";
+      context.arg = new TypeError("iterator result is not an object");
+      context.delegate = null;
+      return ContinueSentinel;
+    }
+
+    if (info.done) {
+      // Assign the result of the finished delegate to the temporary
+      // variable specified by delegate.resultName (see delegateYield).
+      context[delegate.resultName] = info.value;
+
+      // Resume execution at the desired location (see delegateYield).
+      context.next = delegate.nextLoc;
+
+      // If context.method was "throw" but the delegate handled the
+      // exception, let the outer generator proceed normally. If
+      // context.method was "next", forget context.arg since it has been
+      // "consumed" by the delegate iterator. If context.method was
+      // "return", allow the original .return call to continue in the
+      // outer generator.
+      if (context.method !== "return") {
+        context.method = "next";
+        context.arg = undefined;
+      }
+
+    } else {
+      // Re-yield the result returned by the delegate method.
+      return info;
+    }
+
+    // The delegate iterator is finished, so forget it and continue with
+    // the outer generator.
+    context.delegate = null;
+    return ContinueSentinel;
+  }
+
+  // Define Generator.prototype.{next,throw,return} in terms of the
+  // unified ._invoke helper method.
+  defineIteratorMethods(Gp);
+
+  Gp[toStringTagSymbol] = "Generator";
+
+  // A Generator should always return itself as the iterator object when the
+  // @@iterator function is called on it. Some browsers' implementations of the
+  // iterator prototype chain incorrectly implement this, causing the Generator
+  // object to not be returned from this call. This ensures that doesn't happen.
+  // See https://github.com/facebook/regenerator/issues/274 for more details.
+  Gp[iteratorSymbol] = function() {
+    return this;
+  };
+
+  Gp.toString = function() {
+    return "[object Generator]";
+  };
+
+  function pushTryEntry(locs) {
+    var entry = { tryLoc: locs[0] };
+
+    if (1 in locs) {
+      entry.catchLoc = locs[1];
+    }
+
+    if (2 in locs) {
+      entry.finallyLoc = locs[2];
+      entry.afterLoc = locs[3];
+    }
+
+    this.tryEntries.push(entry);
+  }
+
+  function resetTryEntry(entry) {
+    var record = entry.completion || {};
+    record.type = "normal";
+    delete record.arg;
+    entry.completion = record;
+  }
+
+  function Context(tryLocsList) {
+    // The root entry object (effectively a try statement without a catch
+    // or a finally block) gives us a place to store values thrown from
+    // locations where there is no enclosing try statement.
+    this.tryEntries = [{ tryLoc: "root" }];
+    tryLocsList.forEach(pushTryEntry, this);
+    this.reset(true);
+  }
+
+  exports.keys = function(object) {
+    var keys = [];
+    for (var key in object) {
+      keys.push(key);
+    }
+    keys.reverse();
+
+    // Rather than returning an object with a next method, we keep
+    // things simple and return the next function itself.
+    return function next() {
+      while (keys.length) {
+        var key = keys.pop();
+        if (key in object) {
+          next.value = key;
+          next.done = false;
+          return next;
+        }
+      }
+
+      // To avoid creating an additional object, we just hang the .value
+      // and .done properties off the next function object itself. This
+      // also ensures that the minifier will not anonymize the function.
+      next.done = true;
+      return next;
+    };
+  };
+
+  function values(iterable) {
+    if (iterable) {
+      var iteratorMethod = iterable[iteratorSymbol];
+      if (iteratorMethod) {
+        return iteratorMethod.call(iterable);
+      }
+
+      if (typeof iterable.next === "function") {
+        return iterable;
+      }
+
+      if (!isNaN(iterable.length)) {
+        var i = -1, next = function next() {
+          while (++i < iterable.length) {
+            if (hasOwn.call(iterable, i)) {
+              next.value = iterable[i];
+              next.done = false;
+              return next;
+            }
+          }
+
+          next.value = undefined;
+          next.done = true;
+
+          return next;
+        };
+
+        return next.next = next;
+      }
+    }
+
+    // Return an iterator with no values.
+    return { next: doneResult };
+  }
+  exports.values = values;
+
+  function doneResult() {
+    return { value: undefined, done: true };
+  }
+
+  Context.prototype = {
+    constructor: Context,
+
+    reset: function(skipTempReset) {
+      this.prev = 0;
+      this.next = 0;
+      // Resetting context._sent for legacy support of Babel's
+      // function.sent implementation.
+      this.sent = this._sent = undefined;
+      this.done = false;
+      this.delegate = null;
+
+      this.method = "next";
+      this.arg = undefined;
+
+      this.tryEntries.forEach(resetTryEntry);
+
+      if (!skipTempReset) {
+        for (var name in this) {
+          // Not sure about the optimal order of these conditions:
+          if (name.charAt(0) === "t" &&
+              hasOwn.call(this, name) &&
+              !isNaN(+name.slice(1))) {
+            this[name] = undefined;
+          }
+        }
+      }
+    },
+
+    stop: function() {
+      this.done = true;
+
+      var rootEntry = this.tryEntries[0];
+      var rootRecord = rootEntry.completion;
+      if (rootRecord.type === "throw") {
+        throw rootRecord.arg;
+      }
+
+      return this.rval;
+    },
+
+    dispatchException: function(exception) {
+      if (this.done) {
+        throw exception;
+      }
+
+      var context = this;
+      function handle(loc, caught) {
+        record.type = "throw";
+        record.arg = exception;
+        context.next = loc;
+
+        if (caught) {
+          // If the dispatched exception was caught by a catch block,
+          // then let that catch block handle the exception normally.
+          context.method = "next";
+          context.arg = undefined;
+        }
+
+        return !! caught;
+      }
+
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        var record = entry.completion;
+
+        if (entry.tryLoc === "root") {
+          // Exception thrown outside of any try block that could handle
+          // it, so set the completion value of the entire function to
+          // throw the exception.
+          return handle("end");
+        }
+
+        if (entry.tryLoc <= this.prev) {
+          var hasCatch = hasOwn.call(entry, "catchLoc");
+          var hasFinally = hasOwn.call(entry, "finallyLoc");
+
+          if (hasCatch && hasFinally) {
+            if (this.prev < entry.catchLoc) {
+              return handle(entry.catchLoc, true);
+            } else if (this.prev < entry.finallyLoc) {
+              return handle(entry.finallyLoc);
+            }
+
+          } else if (hasCatch) {
+            if (this.prev < entry.catchLoc) {
+              return handle(entry.catchLoc, true);
+            }
+
+          } else if (hasFinally) {
+            if (this.prev < entry.finallyLoc) {
+              return handle(entry.finallyLoc);
+            }
+
+          } else {
+            throw new Error("try statement without catch or finally");
+          }
+        }
+      }
+    },
+
+    abrupt: function(type, arg) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.tryLoc <= this.prev &&
+            hasOwn.call(entry, "finallyLoc") &&
+            this.prev < entry.finallyLoc) {
+          var finallyEntry = entry;
+          break;
+        }
+      }
+
+      if (finallyEntry &&
+          (type === "break" ||
+           type === "continue") &&
+          finallyEntry.tryLoc <= arg &&
+          arg <= finallyEntry.finallyLoc) {
+        // Ignore the finally entry if control is not jumping to a
+        // location outside the try/catch block.
+        finallyEntry = null;
+      }
+
+      var record = finallyEntry ? finallyEntry.completion : {};
+      record.type = type;
+      record.arg = arg;
+
+      if (finallyEntry) {
+        this.method = "next";
+        this.next = finallyEntry.finallyLoc;
+        return ContinueSentinel;
+      }
+
+      return this.complete(record);
+    },
+
+    complete: function(record, afterLoc) {
+      if (record.type === "throw") {
+        throw record.arg;
+      }
+
+      if (record.type === "break" ||
+          record.type === "continue") {
+        this.next = record.arg;
+      } else if (record.type === "return") {
+        this.rval = this.arg = record.arg;
+        this.method = "return";
+        this.next = "end";
+      } else if (record.type === "normal" && afterLoc) {
+        this.next = afterLoc;
+      }
+
+      return ContinueSentinel;
+    },
+
+    finish: function(finallyLoc) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.finallyLoc === finallyLoc) {
+          this.complete(entry.completion, entry.afterLoc);
+          resetTryEntry(entry);
+          return ContinueSentinel;
+        }
+      }
+    },
+
+    "catch": function(tryLoc) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.tryLoc === tryLoc) {
+          var record = entry.completion;
+          if (record.type === "throw") {
+            var thrown = record.arg;
+            resetTryEntry(entry);
+          }
+          return thrown;
+        }
+      }
+
+      // The context.catch method must only be called with a location
+      // argument that corresponds to a known catch block.
+      throw new Error("illegal catch attempt");
+    },
+
+    delegateYield: function(iterable, resultName, nextLoc) {
+      this.delegate = {
+        iterator: values(iterable),
+        resultName: resultName,
+        nextLoc: nextLoc
+      };
+
+      if (this.method === "next") {
+        // Deliberately forget the last sent value so that we don't
+        // accidentally pass it on to the delegate.
+        this.arg = undefined;
+      }
+
+      return ContinueSentinel;
+    }
+  };
+
+  // Regardless of whether this script is executing as a CommonJS module
+  // or not, return the runtime object so that we can declare the variable
+  // regeneratorRuntime in the outer scope, which allows this module to be
+  // injected easily by `bin/regenerator --include-runtime script.js`.
+  return exports;
+
+}(
+  // If this script is executing as a CommonJS module, use module.exports
+  // as the regeneratorRuntime namespace. Otherwise create a new empty
+  // object. Either way, the resulting object will be used to initialize
+  // the regeneratorRuntime variable at the top of this file.
+   true ? module.exports : undefined
+));
+
+try {
+  regeneratorRuntime = runtime;
+} catch (accidentalStrictMode) {
+  // This module should not be running in strict mode, so the above
+  // assignment should always work unless something is misconfigured. Just
+  // in case runtime.js accidentally runs in strict mode, we can escape
+  // strict mode using a global Function call. This could conceivably fail
+  // if a Content Security Policy forbids using Function, but in that case
+  // the proper solution is to fix the accidental strict mode problem. If
+  // you've misconfigured your bundler to force strict mode and applied a
+  // CSP to forbid Function, and you're not willing to fix either of those
+  // problems, please detail your unique predicament in a GitHub issue.
+  Function("r", "regeneratorRuntime = r")(runtime);
+}
+
+
+/***/ }),
+
 /***/ "./node_modules/setimmediate/setImmediate.js":
 /*!***************************************************!*\
   !*** ./node_modules/setimmediate/setImmediate.js ***!
@@ -61074,6 +62562,36 @@ if(false) {}
 
 
 var content = __webpack_require__(/*! !../../../../../../node_modules/css-loader??ref--6-1!../../../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../../../node_modules/postcss-loader/src??ref--6-2!../../../../../../node_modules/vue-loader/lib??vue-loader-options!./PaymentPenjualan.vue?vue&type=style&index=0&id=49511ae5&scoped=true&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/page/dasboard/checkout/PaymentPenjualan.vue?vue&type=style&index=0&id=49511ae5&scoped=true&lang=css&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/page/dasboard/items/AddItems.vue?vue&type=style&index=0&id=4afd5850&scoped=true&lang=css&":
+/*!**************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/page/dasboard/items/AddItems.vue?vue&type=style&index=0&id=4afd5850&scoped=true&lang=css& ***!
+  \**************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../../../../node_modules/css-loader??ref--6-1!../../../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../../../node_modules/postcss-loader/src??ref--6-2!../../../../../../node_modules/vue-loader/lib??vue-loader-options!./AddItems.vue?vue&type=style&index=0&id=4afd5850&scoped=true&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/page/dasboard/items/AddItems.vue?vue&type=style&index=0&id=4afd5850&scoped=true&lang=css&");
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -61841,6 +63359,2881 @@ module.exports = function (css) {
 	return fixedCss;
 };
 
+
+/***/ }),
+
+/***/ "./node_modules/sweetalert2/dist/sweetalert2.all.js":
+/*!**********************************************************!*\
+  !*** ./node_modules/sweetalert2/dist/sweetalert2.all.js ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*!
+* sweetalert2 v8.14.0
+* Released under the MIT License.
+*/
+(function (global, factory) {
+	 true ? module.exports = factory() :
+	undefined;
+}(this, (function () { 'use strict';
+
+function _typeof(obj) {
+  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+    _typeof = function (obj) {
+      return typeof obj;
+    };
+  } else {
+    _typeof = function (obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+    };
+  }
+
+  return _typeof(obj);
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _defineProperties(target, props) {
+  for (var i = 0; i < props.length; i++) {
+    var descriptor = props[i];
+    descriptor.enumerable = descriptor.enumerable || false;
+    descriptor.configurable = true;
+    if ("value" in descriptor) descriptor.writable = true;
+    Object.defineProperty(target, descriptor.key, descriptor);
+  }
+}
+
+function _createClass(Constructor, protoProps, staticProps) {
+  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+  if (staticProps) _defineProperties(Constructor, staticProps);
+  return Constructor;
+}
+
+function _extends() {
+  _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends.apply(this, arguments);
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function");
+  }
+
+  subClass.prototype = Object.create(superClass && superClass.prototype, {
+    constructor: {
+      value: subClass,
+      writable: true,
+      configurable: true
+    }
+  });
+  if (superClass) _setPrototypeOf(subClass, superClass);
+}
+
+function _getPrototypeOf(o) {
+  _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
+    return o.__proto__ || Object.getPrototypeOf(o);
+  };
+  return _getPrototypeOf(o);
+}
+
+function _setPrototypeOf(o, p) {
+  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
+}
+
+function isNativeReflectConstruct() {
+  if (typeof Reflect === "undefined" || !Reflect.construct) return false;
+  if (Reflect.construct.sham) return false;
+  if (typeof Proxy === "function") return true;
+
+  try {
+    Date.prototype.toString.call(Reflect.construct(Date, [], function () {}));
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+function _construct(Parent, args, Class) {
+  if (isNativeReflectConstruct()) {
+    _construct = Reflect.construct;
+  } else {
+    _construct = function _construct(Parent, args, Class) {
+      var a = [null];
+      a.push.apply(a, args);
+      var Constructor = Function.bind.apply(Parent, a);
+      var instance = new Constructor();
+      if (Class) _setPrototypeOf(instance, Class.prototype);
+      return instance;
+    };
+  }
+
+  return _construct.apply(null, arguments);
+}
+
+function _assertThisInitialized(self) {
+  if (self === void 0) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return self;
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (call && (typeof call === "object" || typeof call === "function")) {
+    return call;
+  }
+
+  return _assertThisInitialized(self);
+}
+
+function _superPropBase(object, property) {
+  while (!Object.prototype.hasOwnProperty.call(object, property)) {
+    object = _getPrototypeOf(object);
+    if (object === null) break;
+  }
+
+  return object;
+}
+
+function _get(target, property, receiver) {
+  if (typeof Reflect !== "undefined" && Reflect.get) {
+    _get = Reflect.get;
+  } else {
+    _get = function _get(target, property, receiver) {
+      var base = _superPropBase(target, property);
+
+      if (!base) return;
+      var desc = Object.getOwnPropertyDescriptor(base, property);
+
+      if (desc.get) {
+        return desc.get.call(receiver);
+      }
+
+      return desc.value;
+    };
+  }
+
+  return _get(target, property, receiver || target);
+}
+
+var consolePrefix = 'SweetAlert2:';
+/**
+ * Filter the unique values into a new array
+ * @param arr
+ */
+
+var uniqueArray = function uniqueArray(arr) {
+  var result = [];
+
+  for (var i = 0; i < arr.length; i++) {
+    if (result.indexOf(arr[i]) === -1) {
+      result.push(arr[i]);
+    }
+  }
+
+  return result;
+};
+/**
+ * Returns the array ob object values (Object.values isn't supported in IE11)
+ * @param obj
+ */
+
+var objectValues = function objectValues(obj) {
+  return Object.keys(obj).map(function (key) {
+    return obj[key];
+  });
+};
+/**
+ * Convert NodeList to Array
+ * @param nodeList
+ */
+
+var toArray = function toArray(nodeList) {
+  return Array.prototype.slice.call(nodeList);
+};
+/**
+ * Standardise console warnings
+ * @param message
+ */
+
+var warn = function warn(message) {
+  console.warn("".concat(consolePrefix, " ").concat(message));
+};
+/**
+ * Standardise console errors
+ * @param message
+ */
+
+var error = function error(message) {
+  console.error("".concat(consolePrefix, " ").concat(message));
+};
+/**
+ * Private global state for `warnOnce`
+ * @type {Array}
+ * @private
+ */
+
+var previousWarnOnceMessages = [];
+/**
+ * Show a console warning, but only if it hasn't already been shown
+ * @param message
+ */
+
+var warnOnce = function warnOnce(message) {
+  if (!(previousWarnOnceMessages.indexOf(message) !== -1)) {
+    previousWarnOnceMessages.push(message);
+    warn(message);
+  }
+};
+/**
+ * Show a one-time console warning about deprecated params/methods
+ */
+
+var warnAboutDepreation = function warnAboutDepreation(deprecatedParam, useInstead) {
+  warnOnce("\"".concat(deprecatedParam, "\" is deprecated and will be removed in the next major release. Please use \"").concat(useInstead, "\" instead."));
+};
+/**
+ * If `arg` is a function, call it (with no arguments or context) and return the result.
+ * Otherwise, just pass the value through
+ * @param arg
+ */
+
+var callIfFunction = function callIfFunction(arg) {
+  return typeof arg === 'function' ? arg() : arg;
+};
+var isPromise = function isPromise(arg) {
+  return arg && Promise.resolve(arg) === arg;
+};
+
+var DismissReason = Object.freeze({
+  cancel: 'cancel',
+  backdrop: 'backdrop',
+  close: 'close',
+  esc: 'esc',
+  timer: 'timer'
+});
+
+var argsToParams = function argsToParams(args) {
+  var params = {};
+
+  switch (_typeof(args[0])) {
+    case 'object':
+      _extends(params, args[0]);
+
+      break;
+
+    default:
+      ['title', 'html', 'type'].forEach(function (name, index) {
+        switch (_typeof(args[index])) {
+          case 'string':
+            params[name] = args[index];
+            break;
+
+          case 'undefined':
+            break;
+
+          default:
+            error("Unexpected type of ".concat(name, "! Expected \"string\", got ").concat(_typeof(args[index])));
+        }
+      });
+  }
+
+  return params;
+};
+
+var swalPrefix = 'swal2-';
+var prefix = function prefix(items) {
+  var result = {};
+
+  for (var i in items) {
+    result[items[i]] = swalPrefix + items[i];
+  }
+
+  return result;
+};
+var swalClasses = prefix(['container', 'shown', 'height-auto', 'iosfix', 'popup', 'modal', 'no-backdrop', 'toast', 'toast-shown', 'toast-column', 'fade', 'show', 'hide', 'noanimation', 'close', 'title', 'header', 'content', 'actions', 'confirm', 'cancel', 'footer', 'icon', 'image', 'input', 'file', 'range', 'select', 'radio', 'checkbox', 'label', 'textarea', 'inputerror', 'validation-message', 'progress-steps', 'active-progress-step', 'progress-step', 'progress-step-line', 'loading', 'styled', 'top', 'top-start', 'top-end', 'top-left', 'top-right', 'center', 'center-start', 'center-end', 'center-left', 'center-right', 'bottom', 'bottom-start', 'bottom-end', 'bottom-left', 'bottom-right', 'grow-row', 'grow-column', 'grow-fullscreen', 'rtl']);
+var iconTypes = prefix(['success', 'warning', 'info', 'question', 'error']);
+
+var states = {
+  previousBodyPadding: null
+};
+var hasClass = function hasClass(elem, className) {
+  return elem.classList.contains(className);
+};
+var applyCustomClass = function applyCustomClass(elem, customClass, className) {
+  // Clean up previous custom classes
+  toArray(elem.classList).forEach(function (className) {
+    if (!(objectValues(swalClasses).indexOf(className) !== -1) && !(objectValues(iconTypes).indexOf(className) !== -1)) {
+      elem.classList.remove(className);
+    }
+  });
+
+  if (customClass && customClass[className]) {
+    addClass(elem, customClass[className]);
+  }
+};
+function getInput(content, inputType) {
+  if (!inputType) {
+    return null;
+  }
+
+  switch (inputType) {
+    case 'select':
+    case 'textarea':
+    case 'file':
+      return getChildByClass(content, swalClasses[inputType]);
+
+    case 'checkbox':
+      return content.querySelector(".".concat(swalClasses.checkbox, " input"));
+
+    case 'radio':
+      return content.querySelector(".".concat(swalClasses.radio, " input:checked")) || content.querySelector(".".concat(swalClasses.radio, " input:first-child"));
+
+    case 'range':
+      return content.querySelector(".".concat(swalClasses.range, " input"));
+
+    default:
+      return getChildByClass(content, swalClasses.input);
+  }
+}
+var focusInput = function focusInput(input) {
+  input.focus(); // place cursor at end of text in text input
+
+  if (input.type !== 'file') {
+    // http://stackoverflow.com/a/2345915
+    var val = input.value;
+    input.value = '';
+    input.value = val;
+  }
+};
+var toggleClass = function toggleClass(target, classList, condition) {
+  if (!target || !classList) {
+    return;
+  }
+
+  if (typeof classList === 'string') {
+    classList = classList.split(/\s+/).filter(Boolean);
+  }
+
+  classList.forEach(function (className) {
+    if (target.forEach) {
+      target.forEach(function (elem) {
+        condition ? elem.classList.add(className) : elem.classList.remove(className);
+      });
+    } else {
+      condition ? target.classList.add(className) : target.classList.remove(className);
+    }
+  });
+};
+var addClass = function addClass(target, classList) {
+  toggleClass(target, classList, true);
+};
+var removeClass = function removeClass(target, classList) {
+  toggleClass(target, classList, false);
+};
+var getChildByClass = function getChildByClass(elem, className) {
+  for (var i = 0; i < elem.childNodes.length; i++) {
+    if (hasClass(elem.childNodes[i], className)) {
+      return elem.childNodes[i];
+    }
+  }
+};
+var applyNumericalStyle = function applyNumericalStyle(elem, property, value) {
+  if (value || parseInt(value) === 0) {
+    elem.style[property] = typeof value === 'number' ? value + 'px' : value;
+  } else {
+    elem.style.removeProperty(property);
+  }
+};
+var show = function show(elem) {
+  var display = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'flex';
+  elem.style.opacity = '';
+  elem.style.display = display;
+};
+var hide = function hide(elem) {
+  elem.style.opacity = '';
+  elem.style.display = 'none';
+};
+var toggle = function toggle(elem, condition, display) {
+  condition ? show(elem, display) : hide(elem);
+}; // borrowed from jquery $(elem).is(':visible') implementation
+
+var isVisible = function isVisible(elem) {
+  return !!(elem && (elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length));
+};
+var isScrollable = function isScrollable(elem) {
+  return !!(elem.scrollHeight > elem.clientHeight);
+}; // borrowed from https://stackoverflow.com/a/46352119
+
+var hasCssAnimation = function hasCssAnimation(elem) {
+  var style = window.getComputedStyle(elem);
+  var animDuration = parseFloat(style.getPropertyValue('animation-duration') || '0');
+  var transDuration = parseFloat(style.getPropertyValue('transition-duration') || '0');
+  return animDuration > 0 || transDuration > 0;
+};
+var contains = function contains(haystack, needle) {
+  if (typeof haystack.contains === 'function') {
+    return haystack.contains(needle);
+  }
+};
+
+var getContainer = function getContainer() {
+  return document.body.querySelector('.' + swalClasses.container);
+};
+var elementBySelector = function elementBySelector(selectorString) {
+  var container = getContainer();
+  return container ? container.querySelector(selectorString) : null;
+};
+
+var elementByClass = function elementByClass(className) {
+  return elementBySelector('.' + className);
+};
+
+var getPopup = function getPopup() {
+  return elementByClass(swalClasses.popup);
+};
+var getIcons = function getIcons() {
+  var popup = getPopup();
+  return toArray(popup.querySelectorAll('.' + swalClasses.icon));
+};
+var getIcon = function getIcon() {
+  var visibleIcon = getIcons().filter(function (icon) {
+    return isVisible(icon);
+  });
+  return visibleIcon.length ? visibleIcon[0] : null;
+};
+var getTitle = function getTitle() {
+  return elementByClass(swalClasses.title);
+};
+var getContent = function getContent() {
+  return elementByClass(swalClasses.content);
+};
+var getImage = function getImage() {
+  return elementByClass(swalClasses.image);
+};
+var getProgressSteps = function getProgressSteps() {
+  return elementByClass(swalClasses['progress-steps']);
+};
+var getValidationMessage = function getValidationMessage() {
+  return elementByClass(swalClasses['validation-message']);
+};
+var getConfirmButton = function getConfirmButton() {
+  return elementBySelector('.' + swalClasses.actions + ' .' + swalClasses.confirm);
+};
+var getCancelButton = function getCancelButton() {
+  return elementBySelector('.' + swalClasses.actions + ' .' + swalClasses.cancel);
+};
+var getActions = function getActions() {
+  return elementByClass(swalClasses.actions);
+};
+var getHeader = function getHeader() {
+  return elementByClass(swalClasses.header);
+};
+var getFooter = function getFooter() {
+  return elementByClass(swalClasses.footer);
+};
+var getCloseButton = function getCloseButton() {
+  return elementByClass(swalClasses.close);
+};
+var getFocusableElements = function getFocusableElements() {
+  var focusableElementsWithTabindex = toArray(getPopup().querySelectorAll('[tabindex]:not([tabindex="-1"]):not([tabindex="0"])')) // sort according to tabindex
+  .sort(function (a, b) {
+    a = parseInt(a.getAttribute('tabindex'));
+    b = parseInt(b.getAttribute('tabindex'));
+
+    if (a > b) {
+      return 1;
+    } else if (a < b) {
+      return -1;
+    }
+
+    return 0;
+  }); // https://github.com/jkup/focusable/blob/master/index.js
+
+  var otherFocusableElements = toArray(getPopup().querySelectorAll('a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, [tabindex="0"], [contenteditable], audio[controls], video[controls]')).filter(function (el) {
+    return el.getAttribute('tabindex') !== '-1';
+  });
+  return uniqueArray(focusableElementsWithTabindex.concat(otherFocusableElements)).filter(function (el) {
+    return isVisible(el);
+  });
+};
+var isModal = function isModal() {
+  return !isToast() && !document.body.classList.contains(swalClasses['no-backdrop']);
+};
+var isToast = function isToast() {
+  return document.body.classList.contains(swalClasses['toast-shown']);
+};
+var isLoading = function isLoading() {
+  return getPopup().hasAttribute('data-loading');
+};
+
+// Detect Node env
+var isNodeEnv = function isNodeEnv() {
+  return typeof window === 'undefined' || typeof document === 'undefined';
+};
+
+var sweetHTML = "\n <div aria-labelledby=\"".concat(swalClasses.title, "\" aria-describedby=\"").concat(swalClasses.content, "\" class=\"").concat(swalClasses.popup, "\" tabindex=\"-1\">\n   <div class=\"").concat(swalClasses.header, "\">\n     <ul class=\"").concat(swalClasses['progress-steps'], "\"></ul>\n     <div class=\"").concat(swalClasses.icon, " ").concat(iconTypes.error, "\">\n       <span class=\"swal2-x-mark\"><span class=\"swal2-x-mark-line-left\"></span><span class=\"swal2-x-mark-line-right\"></span></span>\n     </div>\n     <div class=\"").concat(swalClasses.icon, " ").concat(iconTypes.question, "\"></div>\n     <div class=\"").concat(swalClasses.icon, " ").concat(iconTypes.warning, "\"></div>\n     <div class=\"").concat(swalClasses.icon, " ").concat(iconTypes.info, "\"></div>\n     <div class=\"").concat(swalClasses.icon, " ").concat(iconTypes.success, "\">\n       <div class=\"swal2-success-circular-line-left\"></div>\n       <span class=\"swal2-success-line-tip\"></span> <span class=\"swal2-success-line-long\"></span>\n       <div class=\"swal2-success-ring\"></div> <div class=\"swal2-success-fix\"></div>\n       <div class=\"swal2-success-circular-line-right\"></div>\n     </div>\n     <img class=\"").concat(swalClasses.image, "\" />\n     <h2 class=\"").concat(swalClasses.title, "\" id=\"").concat(swalClasses.title, "\"></h2>\n     <button type=\"button\" class=\"").concat(swalClasses.close, "\"></button>\n   </div>\n   <div class=\"").concat(swalClasses.content, "\">\n     <div id=\"").concat(swalClasses.content, "\"></div>\n     <input class=\"").concat(swalClasses.input, "\" />\n     <input type=\"file\" class=\"").concat(swalClasses.file, "\" />\n     <div class=\"").concat(swalClasses.range, "\">\n       <input type=\"range\" />\n       <output></output>\n     </div>\n     <select class=\"").concat(swalClasses.select, "\"></select>\n     <div class=\"").concat(swalClasses.radio, "\"></div>\n     <label for=\"").concat(swalClasses.checkbox, "\" class=\"").concat(swalClasses.checkbox, "\">\n       <input type=\"checkbox\" />\n       <span class=\"").concat(swalClasses.label, "\"></span>\n     </label>\n     <textarea class=\"").concat(swalClasses.textarea, "\"></textarea>\n     <div class=\"").concat(swalClasses['validation-message'], "\" id=\"").concat(swalClasses['validation-message'], "\"></div>\n   </div>\n   <div class=\"").concat(swalClasses.actions, "\">\n     <button type=\"button\" class=\"").concat(swalClasses.confirm, "\">OK</button>\n     <button type=\"button\" class=\"").concat(swalClasses.cancel, "\">Cancel</button>\n   </div>\n   <div class=\"").concat(swalClasses.footer, "\">\n   </div>\n </div>\n").replace(/(^|\n)\s*/g, '');
+
+var resetOldContainer = function resetOldContainer() {
+  var oldContainer = getContainer();
+
+  if (!oldContainer) {
+    return;
+  }
+
+  oldContainer.parentNode.removeChild(oldContainer);
+  removeClass([document.documentElement, document.body], [swalClasses['no-backdrop'], swalClasses['toast-shown'], swalClasses['has-column']]);
+};
+
+var oldInputVal; // IE11 workaround, see #1109 for details
+
+var resetValidationMessage = function resetValidationMessage(e) {
+  if (Swal.isVisible() && oldInputVal !== e.target.value) {
+    Swal.resetValidationMessage();
+  }
+
+  oldInputVal = e.target.value;
+};
+
+var addInputChangeListeners = function addInputChangeListeners() {
+  var content = getContent();
+  var input = getChildByClass(content, swalClasses.input);
+  var file = getChildByClass(content, swalClasses.file);
+  var range = content.querySelector(".".concat(swalClasses.range, " input"));
+  var rangeOutput = content.querySelector(".".concat(swalClasses.range, " output"));
+  var select = getChildByClass(content, swalClasses.select);
+  var checkbox = content.querySelector(".".concat(swalClasses.checkbox, " input"));
+  var textarea = getChildByClass(content, swalClasses.textarea);
+  input.oninput = resetValidationMessage;
+  file.onchange = resetValidationMessage;
+  select.onchange = resetValidationMessage;
+  checkbox.onchange = resetValidationMessage;
+  textarea.oninput = resetValidationMessage;
+
+  range.oninput = function (e) {
+    resetValidationMessage(e);
+    rangeOutput.value = range.value;
+  };
+
+  range.onchange = function (e) {
+    resetValidationMessage(e);
+    range.nextSibling.value = range.value;
+  };
+};
+
+var getTarget = function getTarget(target) {
+  return typeof target === 'string' ? document.querySelector(target) : target;
+};
+
+var setupAccessibility = function setupAccessibility(params) {
+  var popup = getPopup();
+  popup.setAttribute('role', params.toast ? 'alert' : 'dialog');
+  popup.setAttribute('aria-live', params.toast ? 'polite' : 'assertive');
+
+  if (!params.toast) {
+    popup.setAttribute('aria-modal', 'true');
+  }
+};
+
+var setupRTL = function setupRTL(targetElement) {
+  if (window.getComputedStyle(targetElement).direction === 'rtl') {
+    addClass(getContainer(), swalClasses.rtl);
+  }
+};
+/*
+ * Add modal + backdrop to DOM
+ */
+
+
+var init = function init(params) {
+  // Clean up the old popup container if it exists
+  resetOldContainer();
+  /* istanbul ignore if */
+
+  if (isNodeEnv()) {
+    error('SweetAlert2 requires document to initialize');
+    return;
+  }
+
+  var container = document.createElement('div');
+  container.className = swalClasses.container;
+  container.innerHTML = sweetHTML;
+  var targetElement = getTarget(params.target);
+  targetElement.appendChild(container);
+  setupAccessibility(params);
+  setupRTL(targetElement);
+  addInputChangeListeners();
+};
+
+var parseHtmlToContainer = function parseHtmlToContainer(param, target) {
+  // DOM element
+  if (param instanceof HTMLElement) {
+    target.appendChild(param); // JQuery element(s)
+  } else if (_typeof(param) === 'object') {
+    handleJqueryElem(target, param); // Plain string
+  } else if (param) {
+    target.innerHTML = param;
+  }
+};
+
+var handleJqueryElem = function handleJqueryElem(target, elem) {
+  target.innerHTML = '';
+
+  if (0 in elem) {
+    for (var i = 0; i in elem; i++) {
+      target.appendChild(elem[i].cloneNode(true));
+    }
+  } else {
+    target.appendChild(elem.cloneNode(true));
+  }
+};
+
+var animationEndEvent = function () {
+  // Prevent run in Node env
+
+  /* istanbul ignore if */
+  if (isNodeEnv()) {
+    return false;
+  }
+
+  var testEl = document.createElement('div');
+  var transEndEventNames = {
+    WebkitAnimation: 'webkitAnimationEnd',
+    OAnimation: 'oAnimationEnd oanimationend',
+    animation: 'animationend'
+  };
+
+  for (var i in transEndEventNames) {
+    if (Object.prototype.hasOwnProperty.call(transEndEventNames, i) && typeof testEl.style[i] !== 'undefined') {
+      return transEndEventNames[i];
+    }
+  }
+
+  return false;
+}();
+
+// Measure width of scrollbar
+// https://github.com/twbs/bootstrap/blob/master/js/modal.js#L279-L286
+var measureScrollbar = function measureScrollbar() {
+  var supportsTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints;
+
+  if (supportsTouch) {
+    return 0;
+  }
+
+  var scrollDiv = document.createElement('div');
+  scrollDiv.style.width = '50px';
+  scrollDiv.style.height = '50px';
+  scrollDiv.style.overflow = 'scroll';
+  document.body.appendChild(scrollDiv);
+  var scrollbarWidth = scrollDiv.offsetWidth - scrollDiv.clientWidth;
+  document.body.removeChild(scrollDiv);
+  return scrollbarWidth;
+};
+
+function handleButtonsStyling(confirmButton, cancelButton, params) {
+  addClass([confirmButton, cancelButton], swalClasses.styled); // Buttons background colors
+
+  if (params.confirmButtonColor) {
+    confirmButton.style.backgroundColor = params.confirmButtonColor;
+  }
+
+  if (params.cancelButtonColor) {
+    cancelButton.style.backgroundColor = params.cancelButtonColor;
+  } // Loading state
+
+
+  var confirmButtonBackgroundColor = window.getComputedStyle(confirmButton).getPropertyValue('background-color');
+  confirmButton.style.borderLeftColor = confirmButtonBackgroundColor;
+  confirmButton.style.borderRightColor = confirmButtonBackgroundColor;
+}
+
+function renderButton(button, buttonType, params) {
+  toggle(button, params['showC' + buttonType.substring(1) + 'Button'], 'inline-block');
+  button.innerHTML = params[buttonType + 'ButtonText']; // Set caption text
+
+  button.setAttribute('aria-label', params[buttonType + 'ButtonAriaLabel']); // ARIA label
+  // Add buttons custom classes
+
+  button.className = swalClasses[buttonType];
+  applyCustomClass(button, params.customClass, buttonType + 'Button');
+  addClass(button, params[buttonType + 'ButtonClass']);
+}
+
+var renderActions = function renderActions(instance, params) {
+  var actions = getActions();
+  var confirmButton = getConfirmButton();
+  var cancelButton = getCancelButton(); // Actions (buttons) wrapper
+
+  if (!params.showConfirmButton && !params.showCancelButton) {
+    hide(actions);
+  } else {
+    show(actions);
+  } // Custom class
+
+
+  applyCustomClass(actions, params.customClass, 'actions'); // Render confirm button
+
+  renderButton(confirmButton, 'confirm', params); // render Cancel Button
+
+  renderButton(cancelButton, 'cancel', params);
+
+  if (params.buttonsStyling) {
+    handleButtonsStyling(confirmButton, cancelButton, params);
+  } else {
+    removeClass([confirmButton, cancelButton], swalClasses.styled);
+    confirmButton.style.backgroundColor = confirmButton.style.borderLeftColor = confirmButton.style.borderRightColor = '';
+    cancelButton.style.backgroundColor = cancelButton.style.borderLeftColor = cancelButton.style.borderRightColor = '';
+  }
+};
+
+function handleBackdropParam(container, backdrop) {
+  if (typeof backdrop === 'string') {
+    container.style.background = backdrop;
+  } else if (!backdrop) {
+    addClass([document.documentElement, document.body], swalClasses['no-backdrop']);
+  }
+}
+
+function handlePositionParam(container, position) {
+  if (position in swalClasses) {
+    addClass(container, swalClasses[position]);
+  } else {
+    warn('The "position" parameter is not valid, defaulting to "center"');
+    addClass(container, swalClasses.center);
+  }
+}
+
+function handleGrowParam(container, grow) {
+  if (grow && typeof grow === 'string') {
+    var growClass = 'grow-' + grow;
+
+    if (growClass in swalClasses) {
+      addClass(container, swalClasses[growClass]);
+    }
+  }
+}
+
+var renderContainer = function renderContainer(instance, params) {
+  var container = getContainer();
+
+  if (!container) {
+    return;
+  }
+
+  handleBackdropParam(container, params.backdrop);
+
+  if (!params.backdrop && params.allowOutsideClick) {
+    warn('"allowOutsideClick" parameter requires `backdrop` parameter to be set to `true`');
+  }
+
+  handlePositionParam(container, params.position);
+  handleGrowParam(container, params.grow); // Custom class
+
+  applyCustomClass(container, params.customClass, 'container');
+
+  if (params.customContainerClass) {
+    // @deprecated
+    addClass(container, params.customContainerClass);
+  }
+};
+
+/**
+ * This module containts `WeakMap`s for each effectively-"private  property" that a `Swal` has.
+ * For example, to set the private property "foo" of `this` to "bar", you can `privateProps.foo.set(this, 'bar')`
+ * This is the approach that Babel will probably take to implement private methods/fields
+ *   https://github.com/tc39/proposal-private-methods
+ *   https://github.com/babel/babel/pull/7555
+ * Once we have the changes from that PR in Babel, and our core class fits reasonable in *one module*
+ *   then we can use that language feature.
+ */
+var privateProps = {
+  promise: new WeakMap(),
+  innerParams: new WeakMap(),
+  domCache: new WeakMap()
+};
+
+var inputTypes = ['input', 'file', 'range', 'select', 'radio', 'checkbox', 'textarea'];
+var renderInput = function renderInput(instance, params) {
+  var content = getContent();
+  var innerParams = privateProps.innerParams.get(instance);
+  var rerender = !innerParams || params.input !== innerParams.input;
+  inputTypes.forEach(function (inputType) {
+    var inputClass = swalClasses[inputType];
+    var inputContainer = getChildByClass(content, inputClass); // set attributes
+
+    setAttributes(inputType, params.inputAttributes); // set class
+
+    setClass(inputContainer, inputClass, params);
+
+    if (rerender) {
+      hide(inputContainer);
+    }
+  });
+
+  if (params.input && rerender) {
+    showInput(params);
+  }
+};
+
+var showInput = function showInput(params) {
+  if (!renderInputType[params.input]) {
+    return error("Unexpected type of input! Expected \"text\", \"email\", \"password\", \"number\", \"tel\", \"select\", \"radio\", \"checkbox\", \"textarea\", \"file\" or \"url\", got \"".concat(params.input, "\""));
+  }
+
+  var input = renderInputType[params.input](params);
+  show(input);
+};
+
+var removeAttributes = function removeAttributes(input) {
+  for (var i = 0; i < input.attributes.length; i++) {
+    var attrName = input.attributes[i].name;
+
+    if (!(['type', 'value', 'style'].indexOf(attrName) !== -1)) {
+      input.removeAttribute(attrName);
+    }
+  }
+};
+
+var setAttributes = function setAttributes(inputType, inputAttributes) {
+  var input = getInput(getContent(), inputType);
+
+  if (!input) {
+    return;
+  }
+
+  removeAttributes(input);
+
+  for (var attr in inputAttributes) {
+    // Do not set a placeholder for <input type="range">
+    // it'll crash Edge, #1298
+    if (inputType === 'range' && attr === 'placeholder') {
+      continue;
+    }
+
+    input.setAttribute(attr, inputAttributes[attr]);
+  }
+};
+
+var setClass = function setClass(inputContainer, inputClass, params) {
+  inputContainer.className = inputClass;
+
+  if (params.inputClass) {
+    addClass(inputContainer, params.inputClass);
+  }
+
+  if (params.customClass) {
+    addClass(inputContainer, params.customClass.input);
+  }
+};
+
+var setInputPlaceholder = function setInputPlaceholder(input, params) {
+  if (!input.placeholder || params.inputPlaceholder) {
+    input.placeholder = params.inputPlaceholder;
+  }
+};
+
+var renderInputType = {};
+
+renderInputType.text = renderInputType.email = renderInputType.password = renderInputType.number = renderInputType.tel = renderInputType.url = function (params) {
+  var input = getChildByClass(getContent(), swalClasses.input);
+
+  if (typeof params.inputValue === 'string' || typeof params.inputValue === 'number') {
+    input.value = params.inputValue;
+  } else if (!isPromise(params.inputValue)) {
+    warn("Unexpected type of inputValue! Expected \"string\", \"number\" or \"Promise\", got \"".concat(_typeof(params.inputValue), "\""));
+  }
+
+  setInputPlaceholder(input, params);
+  input.type = params.input;
+  return input;
+};
+
+renderInputType.file = function (params) {
+  var input = getChildByClass(getContent(), swalClasses.file);
+  setInputPlaceholder(input, params);
+  input.type = params.input;
+  return input;
+};
+
+renderInputType.range = function (params) {
+  var range = getChildByClass(getContent(), swalClasses.range);
+  var rangeInput = range.querySelector('input');
+  var rangeOutput = range.querySelector('output');
+  rangeInput.value = params.inputValue;
+  rangeInput.type = params.input;
+  rangeOutput.value = params.inputValue;
+  return range;
+};
+
+renderInputType.select = function (params) {
+  var select = getChildByClass(getContent(), swalClasses.select);
+  select.innerHTML = '';
+
+  if (params.inputPlaceholder) {
+    var placeholder = document.createElement('option');
+    placeholder.innerHTML = params.inputPlaceholder;
+    placeholder.value = '';
+    placeholder.disabled = true;
+    placeholder.selected = true;
+    select.appendChild(placeholder);
+  }
+
+  return select;
+};
+
+renderInputType.radio = function () {
+  var radio = getChildByClass(getContent(), swalClasses.radio);
+  radio.innerHTML = '';
+  return radio;
+};
+
+renderInputType.checkbox = function (params) {
+  var checkbox = getChildByClass(getContent(), swalClasses.checkbox);
+  var checkboxInput = getInput(getContent(), 'checkbox');
+  checkboxInput.type = 'checkbox';
+  checkboxInput.value = 1;
+  checkboxInput.id = swalClasses.checkbox;
+  checkboxInput.checked = Boolean(params.inputValue);
+  var label = checkbox.querySelector('span');
+  label.innerHTML = params.inputPlaceholder;
+  return checkbox;
+};
+
+renderInputType.textarea = function (params) {
+  var textarea = getChildByClass(getContent(), swalClasses.textarea);
+  textarea.value = params.inputValue;
+  setInputPlaceholder(textarea, params);
+  return textarea;
+};
+
+var renderContent = function renderContent(instance, params) {
+  var content = getContent().querySelector('#' + swalClasses.content); // Content as HTML
+
+  if (params.html) {
+    parseHtmlToContainer(params.html, content);
+    show(content, 'block'); // Content as plain text
+  } else if (params.text) {
+    content.textContent = params.text;
+    show(content, 'block'); // No content
+  } else {
+    hide(content);
+  }
+
+  renderInput(instance, params); // Custom class
+
+  applyCustomClass(getContent(), params.customClass, 'content');
+};
+
+var renderFooter = function renderFooter(instance, params) {
+  var footer = getFooter();
+  toggle(footer, params.footer);
+
+  if (params.footer) {
+    parseHtmlToContainer(params.footer, footer);
+  } // Custom class
+
+
+  applyCustomClass(footer, params.customClass, 'footer');
+};
+
+var renderCloseButton = function renderCloseButton(instance, params) {
+  var closeButton = getCloseButton();
+  closeButton.innerHTML = params.closeButtonHtml; // Custom class
+
+  applyCustomClass(closeButton, params.customClass, 'closeButton');
+  toggle(closeButton, params.showCloseButton);
+  closeButton.setAttribute('aria-label', params.closeButtonAriaLabel);
+};
+
+var renderIcon = function renderIcon(instance, params) {
+  var innerParams = privateProps.innerParams.get(instance); // if the icon with the given type already rendered,
+  // apply the custom class without re-rendering the icon
+
+  if (innerParams && params.type === innerParams.type && getIcon()) {
+    applyCustomClass(getIcon(), params.customClass, 'icon');
+    return;
+  }
+
+  hideAllIcons();
+
+  if (!params.type) {
+    return;
+  }
+
+  adjustSuccessIconBackgoundColor();
+
+  if (Object.keys(iconTypes).indexOf(params.type) !== -1) {
+    var icon = elementBySelector(".".concat(swalClasses.icon, ".").concat(iconTypes[params.type]));
+    show(icon); // Custom class
+
+    applyCustomClass(icon, params.customClass, 'icon'); // Animate icon
+
+    toggleClass(icon, "swal2-animate-".concat(params.type, "-icon"), params.animation);
+  } else {
+    error("Unknown type! Expected \"success\", \"error\", \"warning\", \"info\" or \"question\", got \"".concat(params.type, "\""));
+  }
+};
+
+var hideAllIcons = function hideAllIcons() {
+  var icons = getIcons();
+
+  for (var i = 0; i < icons.length; i++) {
+    hide(icons[i]);
+  }
+}; // Adjust success icon background color to match the popup background color
+
+
+var adjustSuccessIconBackgoundColor = function adjustSuccessIconBackgoundColor() {
+  var popup = getPopup();
+  var popupBackgroundColor = window.getComputedStyle(popup).getPropertyValue('background-color');
+  var successIconParts = popup.querySelectorAll('[class^=swal2-success-circular-line], .swal2-success-fix');
+
+  for (var i = 0; i < successIconParts.length; i++) {
+    successIconParts[i].style.backgroundColor = popupBackgroundColor;
+  }
+};
+
+var renderImage = function renderImage(instance, params) {
+  var image = getImage();
+
+  if (!params.imageUrl) {
+    return hide(image);
+  }
+
+  show(image); // Src, alt
+
+  image.setAttribute('src', params.imageUrl);
+  image.setAttribute('alt', params.imageAlt); // Width, height
+
+  applyNumericalStyle(image, 'width', params.imageWidth);
+  applyNumericalStyle(image, 'height', params.imageHeight); // Class
+
+  image.className = swalClasses.image;
+  applyCustomClass(image, params.customClass, 'image');
+
+  if (params.imageClass) {
+    addClass(image, params.imageClass);
+  }
+};
+
+var createStepElement = function createStepElement(step) {
+  var stepEl = document.createElement('li');
+  addClass(stepEl, swalClasses['progress-step']);
+  stepEl.innerHTML = step;
+  return stepEl;
+};
+
+var createLineElement = function createLineElement(params) {
+  var lineEl = document.createElement('li');
+  addClass(lineEl, swalClasses['progress-step-line']);
+
+  if (params.progressStepsDistance) {
+    lineEl.style.width = params.progressStepsDistance;
+  }
+
+  return lineEl;
+};
+
+var renderProgressSteps = function renderProgressSteps(instance, params) {
+  var progressStepsContainer = getProgressSteps();
+
+  if (!params.progressSteps || params.progressSteps.length === 0) {
+    return hide(progressStepsContainer);
+  }
+
+  show(progressStepsContainer);
+  progressStepsContainer.innerHTML = '';
+  var currentProgressStep = parseInt(params.currentProgressStep === null ? Swal.getQueueStep() : params.currentProgressStep);
+
+  if (currentProgressStep >= params.progressSteps.length) {
+    warn('Invalid currentProgressStep parameter, it should be less than progressSteps.length ' + '(currentProgressStep like JS arrays starts from 0)');
+  }
+
+  params.progressSteps.forEach(function (step, index) {
+    var stepEl = createStepElement(step);
+    progressStepsContainer.appendChild(stepEl);
+
+    if (index === currentProgressStep) {
+      addClass(stepEl, swalClasses['active-progress-step']);
+    }
+
+    if (index !== params.progressSteps.length - 1) {
+      var lineEl = createLineElement(step);
+      progressStepsContainer.appendChild(lineEl);
+    }
+  });
+};
+
+var renderTitle = function renderTitle(instance, params) {
+  var title = getTitle();
+  toggle(title, params.title || params.titleText);
+
+  if (params.title) {
+    parseHtmlToContainer(params.title, title);
+  }
+
+  if (params.titleText) {
+    title.innerText = params.titleText;
+  } // Custom class
+
+
+  applyCustomClass(title, params.customClass, 'title');
+};
+
+var renderHeader = function renderHeader(instance, params) {
+  var header = getHeader(); // Custom class
+
+  applyCustomClass(header, params.customClass, 'header'); // Progress steps
+
+  renderProgressSteps(instance, params); // Icon
+
+  renderIcon(instance, params); // Image
+
+  renderImage(instance, params); // Title
+
+  renderTitle(instance, params); // Close button
+
+  renderCloseButton(instance, params);
+};
+
+var renderPopup = function renderPopup(instance, params) {
+  var popup = getPopup(); // Width
+
+  applyNumericalStyle(popup, 'width', params.width); // Padding
+
+  applyNumericalStyle(popup, 'padding', params.padding); // Background
+
+  if (params.background) {
+    popup.style.background = params.background;
+  } // Default Class
+
+
+  popup.className = swalClasses.popup;
+
+  if (params.toast) {
+    addClass([document.documentElement, document.body], swalClasses['toast-shown']);
+    addClass(popup, swalClasses.toast);
+  } else {
+    addClass(popup, swalClasses.modal);
+  } // Custom class
+
+
+  applyCustomClass(popup, params.customClass, 'popup');
+
+  if (typeof params.customClass === 'string') {
+    addClass(popup, params.customClass);
+  } // CSS animation
+
+
+  toggleClass(popup, swalClasses.noanimation, !params.animation);
+};
+
+var render = function render(instance, params) {
+  renderPopup(instance, params);
+  renderContainer(instance, params);
+  renderHeader(instance, params);
+  renderContent(instance, params);
+  renderActions(instance, params);
+  renderFooter(instance, params);
+};
+
+/*
+ * Global function to determine if SweetAlert2 popup is shown
+ */
+
+var isVisible$1 = function isVisible$$1() {
+  return isVisible(getPopup());
+};
+/*
+ * Global function to click 'Confirm' button
+ */
+
+var clickConfirm = function clickConfirm() {
+  return getConfirmButton() && getConfirmButton().click();
+};
+/*
+ * Global function to click 'Cancel' button
+ */
+
+var clickCancel = function clickCancel() {
+  return getCancelButton() && getCancelButton().click();
+};
+
+function fire() {
+  var Swal = this;
+
+  for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+    args[_key] = arguments[_key];
+  }
+
+  return _construct(Swal, args);
+}
+
+/**
+ * Returns an extended version of `Swal` containing `params` as defaults.
+ * Useful for reusing Swal configuration.
+ *
+ * For example:
+ *
+ * Before:
+ * const textPromptOptions = { input: 'text', showCancelButton: true }
+ * const {value: firstName} = await Swal.fire({ ...textPromptOptions, title: 'What is your first name?' })
+ * const {value: lastName} = await Swal.fire({ ...textPromptOptions, title: 'What is your last name?' })
+ *
+ * After:
+ * const TextPrompt = Swal.mixin({ input: 'text', showCancelButton: true })
+ * const {value: firstName} = await TextPrompt('What is your first name?')
+ * const {value: lastName} = await TextPrompt('What is your last name?')
+ *
+ * @param mixinParams
+ */
+function mixin(mixinParams) {
+  var MixinSwal =
+  /*#__PURE__*/
+  function (_this) {
+    _inherits(MixinSwal, _this);
+
+    function MixinSwal() {
+      _classCallCheck(this, MixinSwal);
+
+      return _possibleConstructorReturn(this, _getPrototypeOf(MixinSwal).apply(this, arguments));
+    }
+
+    _createClass(MixinSwal, [{
+      key: "_main",
+      value: function _main(params) {
+        return _get(_getPrototypeOf(MixinSwal.prototype), "_main", this).call(this, _extends({}, mixinParams, params));
+      }
+    }]);
+
+    return MixinSwal;
+  }(this);
+
+  return MixinSwal;
+}
+
+// private global state for the queue feature
+var currentSteps = [];
+/*
+ * Global function for chaining sweetAlert popups
+ */
+
+var queue = function queue(steps) {
+  var Swal = this;
+  currentSteps = steps;
+
+  var resetAndResolve = function resetAndResolve(resolve, value) {
+    currentSteps = [];
+    document.body.removeAttribute('data-swal2-queue-step');
+    resolve(value);
+  };
+
+  var queueResult = [];
+  return new Promise(function (resolve) {
+    (function step(i, callback) {
+      if (i < currentSteps.length) {
+        document.body.setAttribute('data-swal2-queue-step', i);
+        Swal.fire(currentSteps[i]).then(function (result) {
+          if (typeof result.value !== 'undefined') {
+            queueResult.push(result.value);
+            step(i + 1, callback);
+          } else {
+            resetAndResolve(resolve, {
+              dismiss: result.dismiss
+            });
+          }
+        });
+      } else {
+        resetAndResolve(resolve, {
+          value: queueResult
+        });
+      }
+    })(0);
+  });
+};
+/*
+ * Global function for getting the index of current popup in queue
+ */
+
+var getQueueStep = function getQueueStep() {
+  return document.body.getAttribute('data-swal2-queue-step');
+};
+/*
+ * Global function for inserting a popup to the queue
+ */
+
+var insertQueueStep = function insertQueueStep(step, index) {
+  if (index && index < currentSteps.length) {
+    return currentSteps.splice(index, 0, step);
+  }
+
+  return currentSteps.push(step);
+};
+/*
+ * Global function for deleting a popup from the queue
+ */
+
+var deleteQueueStep = function deleteQueueStep(index) {
+  if (typeof currentSteps[index] !== 'undefined') {
+    currentSteps.splice(index, 1);
+  }
+};
+
+/**
+ * Show spinner instead of Confirm button and disable Cancel button
+ */
+
+var showLoading = function showLoading() {
+  var popup = getPopup();
+
+  if (!popup) {
+    Swal.fire('');
+  }
+
+  popup = getPopup();
+  var actions = getActions();
+  var confirmButton = getConfirmButton();
+  var cancelButton = getCancelButton();
+  show(actions);
+  show(confirmButton);
+  addClass([popup, actions], swalClasses.loading);
+  confirmButton.disabled = true;
+  cancelButton.disabled = true;
+  popup.setAttribute('data-loading', true);
+  popup.setAttribute('aria-busy', true);
+  popup.focus();
+};
+
+var RESTORE_FOCUS_TIMEOUT = 100;
+
+var globalState = {};
+var focusPreviousActiveElement = function focusPreviousActiveElement() {
+  if (globalState.previousActiveElement && globalState.previousActiveElement.focus) {
+    globalState.previousActiveElement.focus();
+    globalState.previousActiveElement = null;
+  } else if (document.body) {
+    document.body.focus();
+  }
+}; // Restore previous active (focused) element
+
+
+var restoreActiveElement = function restoreActiveElement() {
+  return new Promise(function (resolve) {
+    var x = window.scrollX;
+    var y = window.scrollY;
+    globalState.restoreFocusTimeout = setTimeout(function () {
+      focusPreviousActiveElement();
+      resolve();
+    }, RESTORE_FOCUS_TIMEOUT); // issues/900
+
+    if (typeof x !== 'undefined' && typeof y !== 'undefined') {
+      // IE doesn't have scrollX/scrollY support
+      window.scrollTo(x, y);
+    }
+  });
+};
+
+/**
+ * If `timer` parameter is set, returns number of milliseconds of timer remained.
+ * Otherwise, returns undefined.
+ */
+
+var getTimerLeft = function getTimerLeft() {
+  return globalState.timeout && globalState.timeout.getTimerLeft();
+};
+/**
+ * Stop timer. Returns number of milliseconds of timer remained.
+ * If `timer` parameter isn't set, returns undefined.
+ */
+
+var stopTimer = function stopTimer() {
+  return globalState.timeout && globalState.timeout.stop();
+};
+/**
+ * Resume timer. Returns number of milliseconds of timer remained.
+ * If `timer` parameter isn't set, returns undefined.
+ */
+
+var resumeTimer = function resumeTimer() {
+  return globalState.timeout && globalState.timeout.start();
+};
+/**
+ * Resume timer. Returns number of milliseconds of timer remained.
+ * If `timer` parameter isn't set, returns undefined.
+ */
+
+var toggleTimer = function toggleTimer() {
+  var timer = globalState.timeout;
+  return timer && (timer.running ? timer.stop() : timer.start());
+};
+/**
+ * Increase timer. Returns number of milliseconds of an updated timer.
+ * If `timer` parameter isn't set, returns undefined.
+ */
+
+var increaseTimer = function increaseTimer(n) {
+  return globalState.timeout && globalState.timeout.increase(n);
+};
+/**
+ * Check if timer is running. Returns true if timer is running
+ * or false if timer is paused or stopped.
+ * If `timer` parameter isn't set, returns undefined
+ */
+
+var isTimerRunning = function isTimerRunning() {
+  return globalState.timeout && globalState.timeout.isRunning();
+};
+
+var defaultParams = {
+  title: '',
+  titleText: '',
+  text: '',
+  html: '',
+  footer: '',
+  type: null,
+  toast: false,
+  customClass: '',
+  customContainerClass: '',
+  target: 'body',
+  backdrop: true,
+  animation: true,
+  heightAuto: true,
+  allowOutsideClick: true,
+  allowEscapeKey: true,
+  allowEnterKey: true,
+  stopKeydownPropagation: true,
+  keydownListenerCapture: false,
+  showConfirmButton: true,
+  showCancelButton: false,
+  preConfirm: null,
+  confirmButtonText: 'OK',
+  confirmButtonAriaLabel: '',
+  confirmButtonColor: null,
+  confirmButtonClass: '',
+  cancelButtonText: 'Cancel',
+  cancelButtonAriaLabel: '',
+  cancelButtonColor: null,
+  cancelButtonClass: '',
+  buttonsStyling: true,
+  reverseButtons: false,
+  focusConfirm: true,
+  focusCancel: false,
+  showCloseButton: false,
+  closeButtonHtml: '&times;',
+  closeButtonAriaLabel: 'Close this dialog',
+  showLoaderOnConfirm: false,
+  imageUrl: null,
+  imageWidth: null,
+  imageHeight: null,
+  imageAlt: '',
+  imageClass: '',
+  timer: null,
+  width: null,
+  padding: null,
+  background: null,
+  input: null,
+  inputPlaceholder: '',
+  inputValue: '',
+  inputOptions: {},
+  inputAutoTrim: true,
+  inputClass: '',
+  inputAttributes: {},
+  inputValidator: null,
+  validationMessage: null,
+  grow: false,
+  position: 'center',
+  progressSteps: [],
+  currentProgressStep: null,
+  progressStepsDistance: null,
+  onBeforeOpen: null,
+  onAfterClose: null,
+  onOpen: null,
+  onClose: null,
+  scrollbarPadding: true
+};
+var updatableParams = ['title', 'titleText', 'text', 'html', 'type', 'customClass', 'showConfirmButton', 'showCancelButton', 'confirmButtonText', 'confirmButtonAriaLabel', 'confirmButtonColor', 'confirmButtonClass', 'cancelButtonText', 'cancelButtonAriaLabel', 'cancelButtonColor', 'cancelButtonClass', 'buttonsStyling', 'reverseButtons', 'imageUrl', 'imageWidth', 'imageHeigth', 'imageAlt', 'imageClass', 'progressSteps', 'currentProgressStep'];
+var deprecatedParams = {
+  customContainerClass: 'customClass',
+  confirmButtonClass: 'customClass',
+  cancelButtonClass: 'customClass',
+  imageClass: 'customClass',
+  inputClass: 'customClass'
+};
+var toastIncompatibleParams = ['allowOutsideClick', 'allowEnterKey', 'backdrop', 'focusConfirm', 'focusCancel', 'heightAuto', 'keydownListenerCapture'];
+/**
+ * Is valid parameter
+ * @param {String} paramName
+ */
+
+var isValidParameter = function isValidParameter(paramName) {
+  return Object.prototype.hasOwnProperty.call(defaultParams, paramName);
+};
+/**
+ * Is valid parameter for Swal.update() method
+ * @param {String} paramName
+ */
+
+var isUpdatableParameter = function isUpdatableParameter(paramName) {
+  return updatableParams.indexOf(paramName) !== -1;
+};
+/**
+ * Is deprecated parameter
+ * @param {String} paramName
+ */
+
+var isDeprecatedParameter = function isDeprecatedParameter(paramName) {
+  return deprecatedParams[paramName];
+};
+
+var checkIfParamIsValid = function checkIfParamIsValid(param) {
+  if (!isValidParameter(param)) {
+    warn("Unknown parameter \"".concat(param, "\""));
+  }
+};
+
+var checkIfToastParamIsValid = function checkIfToastParamIsValid(param) {
+  if (toastIncompatibleParams.indexOf(param) !== -1) {
+    warn("The parameter \"".concat(param, "\" is incompatible with toasts"));
+  }
+};
+
+var checkIfParamIsDeprecated = function checkIfParamIsDeprecated(param) {
+  if (isDeprecatedParameter(param)) {
+    warnAboutDepreation(param, isDeprecatedParameter(param));
+  }
+};
+/**
+ * Show relevant warnings for given params
+ *
+ * @param params
+ */
+
+
+var showWarningsForParams = function showWarningsForParams(params) {
+  for (var param in params) {
+    checkIfParamIsValid(param);
+
+    if (params.toast) {
+      checkIfToastParamIsValid(param);
+    }
+
+    checkIfParamIsDeprecated();
+  }
+};
+
+
+
+var staticMethods = Object.freeze({
+	isValidParameter: isValidParameter,
+	isUpdatableParameter: isUpdatableParameter,
+	isDeprecatedParameter: isDeprecatedParameter,
+	argsToParams: argsToParams,
+	isVisible: isVisible$1,
+	clickConfirm: clickConfirm,
+	clickCancel: clickCancel,
+	getContainer: getContainer,
+	getPopup: getPopup,
+	getTitle: getTitle,
+	getContent: getContent,
+	getImage: getImage,
+	getIcon: getIcon,
+	getIcons: getIcons,
+	getCloseButton: getCloseButton,
+	getActions: getActions,
+	getConfirmButton: getConfirmButton,
+	getCancelButton: getCancelButton,
+	getHeader: getHeader,
+	getFooter: getFooter,
+	getFocusableElements: getFocusableElements,
+	getValidationMessage: getValidationMessage,
+	isLoading: isLoading,
+	fire: fire,
+	mixin: mixin,
+	queue: queue,
+	getQueueStep: getQueueStep,
+	insertQueueStep: insertQueueStep,
+	deleteQueueStep: deleteQueueStep,
+	showLoading: showLoading,
+	enableLoading: showLoading,
+	getTimerLeft: getTimerLeft,
+	stopTimer: stopTimer,
+	resumeTimer: resumeTimer,
+	toggleTimer: toggleTimer,
+	increaseTimer: increaseTimer,
+	isTimerRunning: isTimerRunning
+});
+
+/**
+ * Enables buttons and hide loader.
+ */
+
+function hideLoading() {
+  var innerParams = privateProps.innerParams.get(this);
+  var domCache = privateProps.domCache.get(this);
+
+  if (!innerParams.showConfirmButton) {
+    hide(domCache.confirmButton);
+
+    if (!innerParams.showCancelButton) {
+      hide(domCache.actions);
+    }
+  }
+
+  removeClass([domCache.popup, domCache.actions], swalClasses.loading);
+  domCache.popup.removeAttribute('aria-busy');
+  domCache.popup.removeAttribute('data-loading');
+  domCache.confirmButton.disabled = false;
+  domCache.cancelButton.disabled = false;
+}
+
+function getInput$1(instance) {
+  var innerParams = privateProps.innerParams.get(instance || this);
+  var domCache = privateProps.domCache.get(instance || this);
+
+  if (!domCache) {
+    return null;
+  }
+
+  return getInput(domCache.content, innerParams.input);
+}
+
+var fixScrollbar = function fixScrollbar() {
+  // for queues, do not do this more than once
+  if (states.previousBodyPadding !== null) {
+    return;
+  } // if the body has overflow
+
+
+  if (document.body.scrollHeight > window.innerHeight) {
+    // add padding so the content doesn't shift after removal of scrollbar
+    states.previousBodyPadding = parseInt(window.getComputedStyle(document.body).getPropertyValue('padding-right'));
+    document.body.style.paddingRight = states.previousBodyPadding + measureScrollbar() + 'px';
+  }
+};
+var undoScrollbar = function undoScrollbar() {
+  if (states.previousBodyPadding !== null) {
+    document.body.style.paddingRight = states.previousBodyPadding + 'px';
+    states.previousBodyPadding = null;
+  }
+};
+
+/* istanbul ignore next */
+
+var iOSfix = function iOSfix() {
+  var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+  if (iOS && !hasClass(document.body, swalClasses.iosfix)) {
+    var offset = document.body.scrollTop;
+    document.body.style.top = offset * -1 + 'px';
+    addClass(document.body, swalClasses.iosfix);
+    lockBodyScroll();
+  }
+};
+
+var lockBodyScroll = function lockBodyScroll() {
+  // #1246
+  var container = getContainer();
+  var preventTouchMove;
+
+  container.ontouchstart = function (e) {
+    preventTouchMove = e.target === container || !isScrollable(container) && e.target.tagName !== 'INPUT' // #1603
+    ;
+  };
+
+  container.ontouchmove = function (e) {
+    if (preventTouchMove) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  };
+};
+/* istanbul ignore next */
+
+
+var undoIOSfix = function undoIOSfix() {
+  if (hasClass(document.body, swalClasses.iosfix)) {
+    var offset = parseInt(document.body.style.top, 10);
+    removeClass(document.body, swalClasses.iosfix);
+    document.body.style.top = '';
+    document.body.scrollTop = offset * -1;
+  }
+};
+
+var isIE11 = function isIE11() {
+  return !!window.MSInputMethodContext && !!document.documentMode;
+}; // Fix IE11 centering sweetalert2/issues/933
+
+/* istanbul ignore next */
+
+
+var fixVerticalPositionIE = function fixVerticalPositionIE() {
+  var container = getContainer();
+  var popup = getPopup();
+  container.style.removeProperty('align-items');
+
+  if (popup.offsetTop < 0) {
+    container.style.alignItems = 'flex-start';
+  }
+};
+/* istanbul ignore next */
+
+
+var IEfix = function IEfix() {
+  if (typeof window !== 'undefined' && isIE11()) {
+    fixVerticalPositionIE();
+    window.addEventListener('resize', fixVerticalPositionIE);
+  }
+};
+/* istanbul ignore next */
+
+var undoIEfix = function undoIEfix() {
+  if (typeof window !== 'undefined' && isIE11()) {
+    window.removeEventListener('resize', fixVerticalPositionIE);
+  }
+};
+
+// Adding aria-hidden="true" to elements outside of the active modal dialog ensures that
+// elements not within the active modal dialog will not be surfaced if a user opens a screen
+// reader’s list of elements (headings, form controls, landmarks, etc.) in the document.
+
+var setAriaHidden = function setAriaHidden() {
+  var bodyChildren = toArray(document.body.children);
+  bodyChildren.forEach(function (el) {
+    if (el === getContainer() || contains(el, getContainer())) {
+      return;
+    }
+
+    if (el.hasAttribute('aria-hidden')) {
+      el.setAttribute('data-previous-aria-hidden', el.getAttribute('aria-hidden'));
+    }
+
+    el.setAttribute('aria-hidden', 'true');
+  });
+};
+var unsetAriaHidden = function unsetAriaHidden() {
+  var bodyChildren = toArray(document.body.children);
+  bodyChildren.forEach(function (el) {
+    if (el.hasAttribute('data-previous-aria-hidden')) {
+      el.setAttribute('aria-hidden', el.getAttribute('data-previous-aria-hidden'));
+      el.removeAttribute('data-previous-aria-hidden');
+    } else {
+      el.removeAttribute('aria-hidden');
+    }
+  });
+};
+
+/**
+ * This module containts `WeakMap`s for each effectively-"private  property" that a `Swal` has.
+ * For example, to set the private property "foo" of `this` to "bar", you can `privateProps.foo.set(this, 'bar')`
+ * This is the approach that Babel will probably take to implement private methods/fields
+ *   https://github.com/tc39/proposal-private-methods
+ *   https://github.com/babel/babel/pull/7555
+ * Once we have the changes from that PR in Babel, and our core class fits reasonable in *one module*
+ *   then we can use that language feature.
+ */
+var privateMethods = {
+  swalPromiseResolve: new WeakMap()
+};
+
+/*
+ * Instance method to close sweetAlert
+ */
+
+function removePopupAndResetState(instance, container, isToast, onAfterClose) {
+  if (isToast) {
+    triggerOnAfterCloseAndDispose(instance, onAfterClose);
+  } else {
+    restoreActiveElement().then(function () {
+      return triggerOnAfterCloseAndDispose(instance, onAfterClose);
+    });
+    globalState.keydownTarget.removeEventListener('keydown', globalState.keydownHandler, {
+      capture: globalState.keydownListenerCapture
+    });
+    globalState.keydownHandlerAdded = false;
+  }
+
+  if (container.parentNode) {
+    container.parentNode.removeChild(container);
+  }
+
+  if (isModal()) {
+    undoScrollbar();
+    undoIOSfix();
+    undoIEfix();
+    unsetAriaHidden();
+  }
+
+  removeBodyClasses();
+}
+
+function removeBodyClasses() {
+  removeClass([document.documentElement, document.body], [swalClasses.shown, swalClasses['height-auto'], swalClasses['no-backdrop'], swalClasses['toast-shown'], swalClasses['toast-column']]);
+}
+
+function disposeSwal(instance) {
+  // Unset this.params so GC will dispose it (#1569)
+  delete instance.params; // Unset globalState props so GC will dispose globalState (#1569)
+
+  delete globalState.keydownHandler;
+  delete globalState.keydownTarget; // Unset WeakMaps so GC will be able to dispose them (#1569)
+
+  unsetWeakMaps(privateProps);
+  unsetWeakMaps(privateMethods);
+}
+
+function close(resolveValue) {
+  var popup = getPopup();
+
+  if (!popup || hasClass(popup, swalClasses.hide)) {
+    return;
+  }
+
+  var innerParams = privateProps.innerParams.get(this);
+
+  if (!innerParams) {
+    return;
+  }
+
+  var swalPromiseResolve = privateMethods.swalPromiseResolve.get(this);
+  removeClass(popup, swalClasses.show);
+  addClass(popup, swalClasses.hide);
+  handlePopupAnimation(this, popup, innerParams); // Resolve Swal promise
+
+  swalPromiseResolve(resolveValue || {});
+}
+
+var handlePopupAnimation = function handlePopupAnimation(instance, popup, innerParams) {
+  var container = getContainer(); // If animation is supported, animate
+
+  var animationIsSupported = animationEndEvent && hasCssAnimation(popup);
+  var onClose = innerParams.onClose,
+      onAfterClose = innerParams.onAfterClose;
+
+  if (onClose !== null && typeof onClose === 'function') {
+    onClose(popup);
+  }
+
+  if (animationIsSupported) {
+    animatePopup(instance, popup, container, onAfterClose);
+  } else {
+    // Otherwise, remove immediately
+    removePopupAndResetState(instance, container, isToast(), onAfterClose);
+  }
+};
+
+var animatePopup = function animatePopup(instance, popup, container, onAfterClose) {
+  globalState.swalCloseEventFinishedCallback = removePopupAndResetState.bind(null, instance, container, isToast(), onAfterClose);
+  popup.addEventListener(animationEndEvent, function (e) {
+    if (e.target === popup) {
+      globalState.swalCloseEventFinishedCallback();
+      delete globalState.swalCloseEventFinishedCallback;
+    }
+  });
+};
+
+var unsetWeakMaps = function unsetWeakMaps(obj) {
+  for (var i in obj) {
+    obj[i] = new WeakMap();
+  }
+};
+
+var triggerOnAfterCloseAndDispose = function triggerOnAfterCloseAndDispose(instance, onAfterClose) {
+  setTimeout(function () {
+    if (onAfterClose !== null && typeof onAfterClose === 'function') {
+      onAfterClose();
+    }
+
+    if (!getPopup()) {
+      disposeSwal(instance);
+    }
+  });
+};
+
+function setButtonsDisabled(instance, buttons, disabled) {
+  var domCache = privateProps.domCache.get(instance);
+  buttons.forEach(function (button) {
+    domCache[button].disabled = disabled;
+  });
+}
+
+function setInputDisabled(input, disabled) {
+  if (!input) {
+    return false;
+  }
+
+  if (input.type === 'radio') {
+    var radiosContainer = input.parentNode.parentNode;
+    var radios = radiosContainer.querySelectorAll('input');
+
+    for (var i = 0; i < radios.length; i++) {
+      radios[i].disabled = disabled;
+    }
+  } else {
+    input.disabled = disabled;
+  }
+}
+
+function enableButtons() {
+  setButtonsDisabled(this, ['confirmButton', 'cancelButton'], false);
+}
+function disableButtons() {
+  setButtonsDisabled(this, ['confirmButton', 'cancelButton'], true);
+} // @deprecated
+
+function enableConfirmButton() {
+  warnAboutDepreation('Swal.disableConfirmButton()', "Swal.getConfirmButton().removeAttribute('disabled')");
+  setButtonsDisabled(this, ['confirmButton'], false);
+} // @deprecated
+
+function disableConfirmButton() {
+  warnAboutDepreation('Swal.enableConfirmButton()', "Swal.getConfirmButton().setAttribute('disabled', '')");
+  setButtonsDisabled(this, ['confirmButton'], true);
+}
+function enableInput() {
+  return setInputDisabled(this.getInput(), false);
+}
+function disableInput() {
+  return setInputDisabled(this.getInput(), true);
+}
+
+function showValidationMessage(error) {
+  var domCache = privateProps.domCache.get(this);
+  domCache.validationMessage.innerHTML = error;
+  var popupComputedStyle = window.getComputedStyle(domCache.popup);
+  domCache.validationMessage.style.marginLeft = "-".concat(popupComputedStyle.getPropertyValue('padding-left'));
+  domCache.validationMessage.style.marginRight = "-".concat(popupComputedStyle.getPropertyValue('padding-right'));
+  show(domCache.validationMessage);
+  var input = this.getInput();
+
+  if (input) {
+    input.setAttribute('aria-invalid', true);
+    input.setAttribute('aria-describedBy', swalClasses['validation-message']);
+    focusInput(input);
+    addClass(input, swalClasses.inputerror);
+  }
+} // Hide block with validation message
+
+function resetValidationMessage$1() {
+  var domCache = privateProps.domCache.get(this);
+
+  if (domCache.validationMessage) {
+    hide(domCache.validationMessage);
+  }
+
+  var input = this.getInput();
+
+  if (input) {
+    input.removeAttribute('aria-invalid');
+    input.removeAttribute('aria-describedBy');
+    removeClass(input, swalClasses.inputerror);
+  }
+}
+
+function getProgressSteps$1() {
+  warnAboutDepreation('Swal.getProgressSteps()', "const swalInstance = Swal.fire({progressSteps: ['1', '2', '3']}); const progressSteps = swalInstance.params.progressSteps");
+  var innerParams = privateProps.innerParams.get(this);
+  return innerParams.progressSteps;
+}
+function setProgressSteps(progressSteps) {
+  warnAboutDepreation('Swal.setProgressSteps()', 'Swal.update()');
+  var innerParams = privateProps.innerParams.get(this);
+
+  var updatedParams = _extends({}, innerParams, {
+    progressSteps: progressSteps
+  });
+
+  renderProgressSteps(this, updatedParams);
+  privateProps.innerParams.set(this, updatedParams);
+}
+function showProgressSteps() {
+  var domCache = privateProps.domCache.get(this);
+  show(domCache.progressSteps);
+}
+function hideProgressSteps() {
+  var domCache = privateProps.domCache.get(this);
+  hide(domCache.progressSteps);
+}
+
+var Timer =
+/*#__PURE__*/
+function () {
+  function Timer(callback, delay) {
+    _classCallCheck(this, Timer);
+
+    this.callback = callback;
+    this.remaining = delay;
+    this.running = false;
+    this.start();
+  }
+
+  _createClass(Timer, [{
+    key: "start",
+    value: function start() {
+      if (!this.running) {
+        this.running = true;
+        this.started = new Date();
+        this.id = setTimeout(this.callback, this.remaining);
+      }
+
+      return this.remaining;
+    }
+  }, {
+    key: "stop",
+    value: function stop() {
+      if (this.running) {
+        this.running = false;
+        clearTimeout(this.id);
+        this.remaining -= new Date() - this.started;
+      }
+
+      return this.remaining;
+    }
+  }, {
+    key: "increase",
+    value: function increase(n) {
+      var running = this.running;
+
+      if (running) {
+        this.stop();
+      }
+
+      this.remaining += n;
+
+      if (running) {
+        this.start();
+      }
+
+      return this.remaining;
+    }
+  }, {
+    key: "getTimerLeft",
+    value: function getTimerLeft() {
+      if (this.running) {
+        this.stop();
+        this.start();
+      }
+
+      return this.remaining;
+    }
+  }, {
+    key: "isRunning",
+    value: function isRunning() {
+      return this.running;
+    }
+  }]);
+
+  return Timer;
+}();
+
+var defaultInputValidators = {
+  email: function email(string, validationMessage) {
+    return /^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9.-]+\.[a-zA-Z0-9-]{2,24}$/.test(string) ? Promise.resolve() : Promise.resolve(validationMessage || 'Invalid email address');
+  },
+  url: function url(string, validationMessage) {
+    // taken from https://stackoverflow.com/a/3809435 with a small change from #1306
+    return /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,63}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)$/.test(string) ? Promise.resolve() : Promise.resolve(validationMessage || 'Invalid URL');
+  }
+};
+
+function setDefaultInputValidators(params) {
+  // Use default `inputValidator` for supported input types if not provided
+  if (!params.inputValidator) {
+    Object.keys(defaultInputValidators).forEach(function (key) {
+      if (params.input === key) {
+        params.inputValidator = defaultInputValidators[key];
+      }
+    });
+  }
+}
+
+function validateCustomTargetElement(params) {
+  // Determine if the custom target element is valid
+  if (!params.target || typeof params.target === 'string' && !document.querySelector(params.target) || typeof params.target !== 'string' && !params.target.appendChild) {
+    warn('Target parameter is not valid, defaulting to "body"');
+    params.target = 'body';
+  }
+}
+/**
+ * Set type, text and actions on popup
+ *
+ * @param params
+ * @returns {boolean}
+ */
+
+
+function setParameters(params) {
+  setDefaultInputValidators(params); // showLoaderOnConfirm && preConfirm
+
+  if (params.showLoaderOnConfirm && !params.preConfirm) {
+    warn('showLoaderOnConfirm is set to true, but preConfirm is not defined.\n' + 'showLoaderOnConfirm should be used together with preConfirm, see usage example:\n' + 'https://sweetalert2.github.io/#ajax-request');
+  } // params.animation will be actually used in renderPopup.js
+  // but in case when params.animation is a function, we need to call that function
+  // before popup (re)initialization, so it'll be possible to check Swal.isVisible()
+  // inside the params.animation function
+
+
+  params.animation = callIfFunction(params.animation);
+  validateCustomTargetElement(params); // Replace newlines with <br> in title
+
+  if (typeof params.title === 'string') {
+    params.title = params.title.split('\n').join('<br />');
+  }
+
+  init(params);
+}
+
+function swalOpenAnimationFinished(popup, container) {
+  popup.removeEventListener(animationEndEvent, swalOpenAnimationFinished);
+  container.style.overflowY = 'auto';
+}
+/**
+ * Open popup, add necessary classes and styles, fix scrollbar
+ *
+ * @param {Array} params
+ */
+
+
+var openPopup = function openPopup(params) {
+  var container = getContainer();
+  var popup = getPopup();
+
+  if (typeof params.onBeforeOpen === 'function') {
+    params.onBeforeOpen(popup);
+  }
+
+  addClasses(container, popup, params); // scrolling is 'hidden' until animation is done, after that 'auto'
+
+  setScrollingVisibility(container, popup);
+
+  if (isModal()) {
+    fixScrollContainer(container, params.scrollbarPadding);
+  }
+
+  if (!isToast() && !globalState.previousActiveElement) {
+    globalState.previousActiveElement = document.activeElement;
+  }
+
+  if (typeof params.onOpen === 'function') {
+    setTimeout(function () {
+      return params.onOpen(popup);
+    });
+  }
+};
+
+var setScrollingVisibility = function setScrollingVisibility(container, popup) {
+  if (animationEndEvent && hasCssAnimation(popup)) {
+    container.style.overflowY = 'hidden';
+    popup.addEventListener(animationEndEvent, swalOpenAnimationFinished.bind(null, popup, container));
+  } else {
+    container.style.overflowY = 'auto';
+  }
+};
+
+var fixScrollContainer = function fixScrollContainer(container, scrollbarPadding) {
+  iOSfix();
+  IEfix();
+  setAriaHidden();
+
+  if (scrollbarPadding) {
+    fixScrollbar();
+  } // sweetalert2/issues/1247
+
+
+  setTimeout(function () {
+    container.scrollTop = 0;
+  });
+};
+
+var addClasses = function addClasses(container, popup, params) {
+  if (params.animation) {
+    addClass(popup, swalClasses.show);
+    addClass(container, swalClasses.fade);
+  }
+
+  show(popup);
+  addClass([document.documentElement, document.body, container], swalClasses.shown);
+
+  if (params.heightAuto && params.backdrop && !params.toast) {
+    addClass([document.documentElement, document.body], swalClasses['height-auto']);
+  }
+};
+
+var handleInputOptions = function handleInputOptions(instance, params) {
+  var content = getContent();
+
+  var processInputOptions = function processInputOptions(inputOptions) {
+    return populateInputOptions[params.input](content, formatInputOptions(inputOptions), params);
+  };
+
+  if (isPromise(params.inputOptions)) {
+    showLoading();
+    params.inputOptions.then(function (inputOptions) {
+      instance.hideLoading();
+      processInputOptions(inputOptions);
+    });
+  } else if (_typeof(params.inputOptions) === 'object') {
+    processInputOptions(params.inputOptions);
+  } else {
+    error("Unexpected type of inputOptions! Expected object, Map or Promise, got ".concat(_typeof(params.inputOptions)));
+  }
+};
+var handleInputValue = function handleInputValue(instance, params) {
+  var input = instance.getInput();
+  hide(input);
+  params.inputValue.then(function (inputValue) {
+    input.value = params.input === 'number' ? parseFloat(inputValue) || 0 : inputValue + '';
+    show(input);
+    input.focus();
+    instance.hideLoading();
+  })["catch"](function (err) {
+    error('Error in inputValue promise: ' + err);
+    input.value = '';
+    show(input);
+    input.focus();
+    instance.hideLoading();
+  });
+};
+var populateInputOptions = {
+  select: function select(content, inputOptions, params) {
+    var select = getChildByClass(content, swalClasses.select);
+    inputOptions.forEach(function (inputOption) {
+      var optionValue = inputOption[0];
+      var optionLabel = inputOption[1];
+      var option = document.createElement('option');
+      option.value = optionValue;
+      option.innerHTML = optionLabel;
+
+      if (params.inputValue.toString() === optionValue.toString()) {
+        option.selected = true;
+      }
+
+      select.appendChild(option);
+    });
+    select.focus();
+  },
+  radio: function radio(content, inputOptions, params) {
+    var radio = getChildByClass(content, swalClasses.radio);
+    inputOptions.forEach(function (inputOption) {
+      var radioValue = inputOption[0];
+      var radioLabel = inputOption[1];
+      var radioInput = document.createElement('input');
+      var radioLabelElement = document.createElement('label');
+      radioInput.type = 'radio';
+      radioInput.name = swalClasses.radio;
+      radioInput.value = radioValue;
+
+      if (params.inputValue.toString() === radioValue.toString()) {
+        radioInput.checked = true;
+      }
+
+      var label = document.createElement('span');
+      label.innerHTML = radioLabel;
+      label.className = swalClasses.label;
+      radioLabelElement.appendChild(radioInput);
+      radioLabelElement.appendChild(label);
+      radio.appendChild(radioLabelElement);
+    });
+    var radios = radio.querySelectorAll('input');
+
+    if (radios.length) {
+      radios[0].focus();
+    }
+  }
+  /**
+   * Converts `inputOptions` into an array of `[value, label]`s
+   * @param inputOptions
+   */
+
+};
+
+var formatInputOptions = function formatInputOptions(inputOptions) {
+  var result = [];
+
+  if (typeof Map !== 'undefined' && inputOptions instanceof Map) {
+    inputOptions.forEach(function (value, key) {
+      result.push([key, value]);
+    });
+  } else {
+    Object.keys(inputOptions).forEach(function (key) {
+      result.push([key, inputOptions[key]]);
+    });
+  }
+
+  return result;
+};
+
+function _main(userParams) {
+  var _this = this;
+
+  showWarningsForParams(userParams); // Check if there is another Swal closing
+
+  if (getPopup() && globalState.swalCloseEventFinishedCallback) {
+    globalState.swalCloseEventFinishedCallback();
+    delete globalState.swalCloseEventFinishedCallback;
+  } // Check if there is a swal disposal defer timer
+
+
+  if (globalState.deferDisposalTimer) {
+    clearTimeout(globalState.deferDisposalTimer);
+    delete globalState.deferDisposalTimer;
+  }
+
+  var innerParams = _extends({}, defaultParams, userParams);
+
+  setParameters(innerParams);
+  Object.freeze(innerParams); // clear the previous timer
+
+  if (globalState.timeout) {
+    globalState.timeout.stop();
+    delete globalState.timeout;
+  } // clear the restore focus timeout
+
+
+  clearTimeout(globalState.restoreFocusTimeout);
+  var domCache = {
+    popup: getPopup(),
+    container: getContainer(),
+    content: getContent(),
+    actions: getActions(),
+    confirmButton: getConfirmButton(),
+    cancelButton: getCancelButton(),
+    closeButton: getCloseButton(),
+    validationMessage: getValidationMessage(),
+    progressSteps: getProgressSteps()
+  };
+  privateProps.domCache.set(this, domCache);
+  render(this, innerParams);
+  privateProps.innerParams.set(this, innerParams);
+  var constructor = this.constructor;
+  return new Promise(function (resolve) {
+    // functions to handle all closings/dismissals
+    var succeedWith = function succeedWith(value) {
+      _this.closePopup({
+        value: value
+      });
+    };
+
+    var dismissWith = function dismissWith(dismiss) {
+      _this.closePopup({
+        dismiss: dismiss
+      });
+    };
+
+    privateMethods.swalPromiseResolve.set(_this, resolve); // Close on timer
+
+    if (innerParams.timer) {
+      globalState.timeout = new Timer(function () {
+        dismissWith('timer');
+        delete globalState.timeout;
+      }, innerParams.timer);
+    } // Get the value of the popup input
+
+
+    var getInputValue = function getInputValue() {
+      var input = _this.getInput();
+
+      if (!input) {
+        return null;
+      }
+
+      switch (innerParams.input) {
+        case 'checkbox':
+          return input.checked ? 1 : 0;
+
+        case 'radio':
+          return input.checked ? input.value : null;
+
+        case 'file':
+          return input.files.length ? input.files[0] : null;
+
+        default:
+          return innerParams.inputAutoTrim ? input.value.trim() : input.value;
+      }
+    }; // input autofocus
+
+
+    if (innerParams.input) {
+      setTimeout(function () {
+        var input = _this.getInput();
+
+        if (input) {
+          focusInput(input);
+        }
+      }, 0);
+    }
+
+    var confirm = function confirm(value) {
+      if (innerParams.showLoaderOnConfirm) {
+        constructor.showLoading(); // TODO: make showLoading an *instance* method
+      }
+
+      if (innerParams.preConfirm) {
+        _this.resetValidationMessage();
+
+        var preConfirmPromise = Promise.resolve().then(function () {
+          return innerParams.preConfirm(value, innerParams.validationMessage);
+        });
+        preConfirmPromise.then(function (preConfirmValue) {
+          if (isVisible(domCache.validationMessage) || preConfirmValue === false) {
+            _this.hideLoading();
+          } else {
+            succeedWith(typeof preConfirmValue === 'undefined' ? value : preConfirmValue);
+          }
+        });
+      } else {
+        succeedWith(value);
+      }
+    }; // Mouse interactions
+
+
+    var onButtonEvent = function onButtonEvent(e) {
+      var target = e.target;
+      var confirmButton = domCache.confirmButton,
+          cancelButton = domCache.cancelButton;
+      var targetedConfirm = confirmButton && (confirmButton === target || confirmButton.contains(target));
+      var targetedCancel = cancelButton && (cancelButton === target || cancelButton.contains(target));
+
+      switch (e.type) {
+        case 'click':
+          // Clicked 'confirm'
+          if (targetedConfirm) {
+            _this.disableButtons();
+
+            if (innerParams.input) {
+              var inputValue = getInputValue();
+
+              if (innerParams.inputValidator) {
+                _this.disableInput();
+
+                var validationPromise = Promise.resolve().then(function () {
+                  return innerParams.inputValidator(inputValue, innerParams.validationMessage);
+                });
+                validationPromise.then(function (validationMessage) {
+                  _this.enableButtons();
+
+                  _this.enableInput();
+
+                  if (validationMessage) {
+                    _this.showValidationMessage(validationMessage);
+                  } else {
+                    confirm(inputValue);
+                  }
+                });
+              } else if (!_this.getInput().checkValidity()) {
+                _this.enableButtons();
+
+                _this.showValidationMessage(innerParams.validationMessage);
+              } else {
+                confirm(inputValue);
+              }
+            } else {
+              confirm(true);
+            } // Clicked 'cancel'
+
+          } else if (targetedCancel) {
+            _this.disableButtons();
+
+            dismissWith(constructor.DismissReason.cancel);
+          }
+
+          break;
+
+        default:
+      }
+    };
+
+    var buttons = domCache.popup.querySelectorAll('button');
+
+    for (var i = 0; i < buttons.length; i++) {
+      buttons[i].onclick = onButtonEvent;
+      buttons[i].onmouseover = onButtonEvent;
+      buttons[i].onmouseout = onButtonEvent;
+      buttons[i].onmousedown = onButtonEvent;
+    } // Closing popup by close button
+
+
+    domCache.closeButton.onclick = function () {
+      dismissWith(constructor.DismissReason.close);
+    };
+
+    if (innerParams.toast) {
+      // Closing popup by internal click
+      domCache.popup.onclick = function () {
+        if (innerParams.showConfirmButton || innerParams.showCancelButton || innerParams.showCloseButton || innerParams.input) {
+          return;
+        }
+
+        dismissWith(constructor.DismissReason.close);
+      };
+    } else {
+      var ignoreOutsideClick = false; // Ignore click events that had mousedown on the popup but mouseup on the container
+      // This can happen when the user drags a slider
+
+      domCache.popup.onmousedown = function () {
+        domCache.container.onmouseup = function (e) {
+          domCache.container.onmouseup = undefined; // We only check if the mouseup target is the container because usually it doesn't
+          // have any other direct children aside of the popup
+
+          if (e.target === domCache.container) {
+            ignoreOutsideClick = true;
+          }
+        };
+      }; // Ignore click events that had mousedown on the container but mouseup on the popup
+
+
+      domCache.container.onmousedown = function () {
+        domCache.popup.onmouseup = function (e) {
+          domCache.popup.onmouseup = undefined; // We also need to check if the mouseup target is a child of the popup
+
+          if (e.target === domCache.popup || domCache.popup.contains(e.target)) {
+            ignoreOutsideClick = true;
+          }
+        };
+      };
+
+      domCache.container.onclick = function (e) {
+        if (ignoreOutsideClick) {
+          ignoreOutsideClick = false;
+          return;
+        }
+
+        if (e.target !== domCache.container) {
+          return;
+        }
+
+        if (callIfFunction(innerParams.allowOutsideClick)) {
+          dismissWith(constructor.DismissReason.backdrop);
+        }
+      };
+    } // Reverse buttons (Confirm on the right side)
+
+
+    if (innerParams.reverseButtons) {
+      domCache.confirmButton.parentNode.insertBefore(domCache.cancelButton, domCache.confirmButton);
+    } else {
+      domCache.confirmButton.parentNode.insertBefore(domCache.confirmButton, domCache.cancelButton);
+    } // Focus handling
+
+
+    var setFocus = function setFocus(index, increment) {
+      var focusableElements = getFocusableElements(innerParams.focusCancel); // search for visible elements and select the next possible match
+
+      for (var _i = 0; _i < focusableElements.length; _i++) {
+        index = index + increment; // rollover to first item
+
+        if (index === focusableElements.length) {
+          index = 0; // go to last item
+        } else if (index === -1) {
+          index = focusableElements.length - 1;
+        }
+
+        return focusableElements[index].focus();
+      } // no visible focusable elements, focus the popup
+
+
+      domCache.popup.focus();
+    };
+
+    var keydownHandler = function keydownHandler(e, innerParams) {
+      if (innerParams.stopKeydownPropagation) {
+        e.stopPropagation();
+      }
+
+      var arrowKeys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Left', 'Right', 'Up', 'Down' // IE11
+      ];
+
+      if (e.key === 'Enter' && !e.isComposing) {
+        if (e.target && _this.getInput() && e.target.outerHTML === _this.getInput().outerHTML) {
+          if (['textarea', 'file'].indexOf(innerParams.input) !== -1) {
+            return; // do not submit
+          }
+
+          constructor.clickConfirm();
+          e.preventDefault();
+        } // TAB
+
+      } else if (e.key === 'Tab') {
+        var targetElement = e.target;
+        var focusableElements = getFocusableElements(innerParams.focusCancel);
+        var btnIndex = -1;
+
+        for (var _i2 = 0; _i2 < focusableElements.length; _i2++) {
+          if (targetElement === focusableElements[_i2]) {
+            btnIndex = _i2;
+            break;
+          }
+        }
+
+        if (!e.shiftKey) {
+          // Cycle to the next button
+          setFocus(btnIndex, 1);
+        } else {
+          // Cycle to the prev button
+          setFocus(btnIndex, -1);
+        }
+
+        e.stopPropagation();
+        e.preventDefault(); // ARROWS - switch focus between buttons
+      } else if (arrowKeys.indexOf(e.key) !== -1) {
+        // focus Cancel button if Confirm button is currently focused
+        if (document.activeElement === domCache.confirmButton && isVisible(domCache.cancelButton)) {
+          domCache.cancelButton.focus(); // and vice versa
+        } else if (document.activeElement === domCache.cancelButton && isVisible(domCache.confirmButton)) {
+          domCache.confirmButton.focus();
+        } // ESC
+
+      } else if ((e.key === 'Escape' || e.key === 'Esc') && callIfFunction(innerParams.allowEscapeKey) === true) {
+        e.preventDefault();
+        dismissWith(constructor.DismissReason.esc);
+      }
+    };
+
+    if (globalState.keydownTarget && globalState.keydownHandlerAdded) {
+      globalState.keydownTarget.removeEventListener('keydown', globalState.keydownHandler, {
+        capture: globalState.keydownListenerCapture
+      });
+      globalState.keydownHandlerAdded = false;
+    }
+
+    if (!innerParams.toast) {
+      globalState.keydownHandler = function (e) {
+        return keydownHandler(e, innerParams);
+      };
+
+      globalState.keydownTarget = innerParams.keydownListenerCapture ? window : domCache.popup;
+      globalState.keydownListenerCapture = innerParams.keydownListenerCapture;
+      globalState.keydownTarget.addEventListener('keydown', globalState.keydownHandler, {
+        capture: globalState.keydownListenerCapture
+      });
+      globalState.keydownHandlerAdded = true;
+    }
+
+    _this.enableButtons();
+
+    _this.hideLoading();
+
+    _this.resetValidationMessage();
+
+    if (innerParams.toast && (innerParams.input || innerParams.footer || innerParams.showCloseButton)) {
+      addClass(document.body, swalClasses['toast-column']);
+    } else {
+      removeClass(document.body, swalClasses['toast-column']);
+    } // inputOptions, inputValue
+
+
+    if (innerParams.input === 'select' || innerParams.input === 'radio') {
+      handleInputOptions(_this, innerParams);
+    } else if (['text', 'email', 'number', 'tel', 'textarea'].indexOf(innerParams.input) !== -1 && isPromise(innerParams.inputValue)) {
+      handleInputValue(_this, innerParams);
+    }
+
+    openPopup(innerParams);
+
+    if (!innerParams.toast) {
+      if (!callIfFunction(innerParams.allowEnterKey)) {
+        if (document.activeElement && typeof document.activeElement.blur === 'function') {
+          document.activeElement.blur();
+        }
+      } else if (innerParams.focusCancel && isVisible(domCache.cancelButton)) {
+        domCache.cancelButton.focus();
+      } else if (innerParams.focusConfirm && isVisible(domCache.confirmButton)) {
+        domCache.confirmButton.focus();
+      } else {
+        setFocus(-1, 1);
+      }
+    } // fix scroll
+
+
+    domCache.container.scrollTop = 0;
+  });
+}
+
+/**
+ * Updates popup parameters.
+ */
+
+function update(params) {
+  var validUpdatableParams = {}; // assign valid params from `params` to `defaults`
+
+  Object.keys(params).forEach(function (param) {
+    if (Swal.isUpdatableParameter(param)) {
+      validUpdatableParams[param] = params[param];
+    } else {
+      warn("Invalid parameter to update: \"".concat(param, "\". Updatable params are listed here: https://github.com/sweetalert2/sweetalert2/blob/master/src/utils/params.js"));
+    }
+  });
+  var innerParams = privateProps.innerParams.get(this);
+
+  var updatedParams = _extends({}, innerParams, validUpdatableParams);
+
+  render(this, updatedParams);
+  privateProps.innerParams.set(this, updatedParams);
+  Object.defineProperties(this, {
+    params: {
+      value: _extends({}, this.params, params),
+      writable: false,
+      enumerable: true
+    }
+  });
+}
+
+
+
+var instanceMethods = Object.freeze({
+	hideLoading: hideLoading,
+	disableLoading: hideLoading,
+	getInput: getInput$1,
+	close: close,
+	closePopup: close,
+	closeModal: close,
+	closeToast: close,
+	enableButtons: enableButtons,
+	disableButtons: disableButtons,
+	enableConfirmButton: enableConfirmButton,
+	disableConfirmButton: disableConfirmButton,
+	enableInput: enableInput,
+	disableInput: disableInput,
+	showValidationMessage: showValidationMessage,
+	resetValidationMessage: resetValidationMessage$1,
+	getProgressSteps: getProgressSteps$1,
+	setProgressSteps: setProgressSteps,
+	showProgressSteps: showProgressSteps,
+	hideProgressSteps: hideProgressSteps,
+	_main: _main,
+	update: update
+});
+
+var currentInstance; // SweetAlert constructor
+
+function SweetAlert() {
+  // Prevent run in Node env
+
+  /* istanbul ignore if */
+  if (typeof window === 'undefined') {
+    return;
+  } // Check for the existence of Promise
+
+  /* istanbul ignore if */
+
+
+  if (typeof Promise === 'undefined') {
+    error('This package requires a Promise library, please include a shim to enable it in this browser (See: https://github.com/sweetalert2/sweetalert2/wiki/Migration-from-SweetAlert-to-SweetAlert2#1-ie-support)');
+  }
+
+  currentInstance = this;
+
+  for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+    args[_key] = arguments[_key];
+  }
+
+  var outerParams = Object.freeze(this.constructor.argsToParams(args));
+  Object.defineProperties(this, {
+    params: {
+      value: outerParams,
+      writable: false,
+      enumerable: true,
+      configurable: true
+    }
+  });
+
+  var promise = this._main(this.params);
+
+  privateProps.promise.set(this, promise);
+} // `catch` cannot be the name of a module export, so we define our thenable methods here instead
+
+
+SweetAlert.prototype.then = function (onFulfilled) {
+  var promise = privateProps.promise.get(this);
+  return promise.then(onFulfilled);
+};
+
+SweetAlert.prototype["finally"] = function (onFinally) {
+  var promise = privateProps.promise.get(this);
+  return promise["finally"](onFinally);
+}; // Assign instance methods from src/instanceMethods/*.js to prototype
+
+
+_extends(SweetAlert.prototype, instanceMethods); // Assign static methods from src/staticMethods/*.js to constructor
+
+
+_extends(SweetAlert, staticMethods); // Proxy to instance methods to constructor, for now, for backwards compatibility
+
+
+Object.keys(instanceMethods).forEach(function (key) {
+  SweetAlert[key] = function () {
+    if (currentInstance) {
+      var _currentInstance;
+
+      return (_currentInstance = currentInstance)[key].apply(_currentInstance, arguments);
+    }
+  };
+});
+SweetAlert.DismissReason = DismissReason;
+SweetAlert.version = '8.14.0';
+
+var Swal = SweetAlert;
+Swal["default"] = Swal;
+
+return Swal;
+
+})));
+if (typeof this !== 'undefined' && this.Sweetalert2){  this.swal = this.sweetAlert = this.Swal = this.SweetAlert = this.Sweetalert2}
+
+"undefined"!=typeof document&&function(e,t){var n=e.createElement("style");if(e.getElementsByTagName("head")[0].appendChild(n),n.styleSheet)n.styleSheet.disabled||(n.styleSheet.cssText=t);else try{n.innerHTML=t}catch(e){n.innerText=t}}(document,"@charset \"UTF-8\";@-webkit-keyframes swal2-show{0%{transform:scale(.7)}45%{transform:scale(1.05)}80%{transform:scale(.95)}100%{transform:scale(1)}}@keyframes swal2-show{0%{transform:scale(.7)}45%{transform:scale(1.05)}80%{transform:scale(.95)}100%{transform:scale(1)}}@-webkit-keyframes swal2-hide{0%{transform:scale(1);opacity:1}100%{transform:scale(.5);opacity:0}}@keyframes swal2-hide{0%{transform:scale(1);opacity:1}100%{transform:scale(.5);opacity:0}}@-webkit-keyframes swal2-animate-success-line-tip{0%{top:1.1875em;left:.0625em;width:0}54%{top:1.0625em;left:.125em;width:0}70%{top:2.1875em;left:-.375em;width:3.125em}84%{top:3em;left:1.3125em;width:1.0625em}100%{top:2.8125em;left:.875em;width:1.5625em}}@keyframes swal2-animate-success-line-tip{0%{top:1.1875em;left:.0625em;width:0}54%{top:1.0625em;left:.125em;width:0}70%{top:2.1875em;left:-.375em;width:3.125em}84%{top:3em;left:1.3125em;width:1.0625em}100%{top:2.8125em;left:.875em;width:1.5625em}}@-webkit-keyframes swal2-animate-success-line-long{0%{top:3.375em;right:2.875em;width:0}65%{top:3.375em;right:2.875em;width:0}84%{top:2.1875em;right:0;width:3.4375em}100%{top:2.375em;right:.5em;width:2.9375em}}@keyframes swal2-animate-success-line-long{0%{top:3.375em;right:2.875em;width:0}65%{top:3.375em;right:2.875em;width:0}84%{top:2.1875em;right:0;width:3.4375em}100%{top:2.375em;right:.5em;width:2.9375em}}@-webkit-keyframes swal2-rotate-success-circular-line{0%{transform:rotate(-45deg)}5%{transform:rotate(-45deg)}12%{transform:rotate(-405deg)}100%{transform:rotate(-405deg)}}@keyframes swal2-rotate-success-circular-line{0%{transform:rotate(-45deg)}5%{transform:rotate(-45deg)}12%{transform:rotate(-405deg)}100%{transform:rotate(-405deg)}}@-webkit-keyframes swal2-animate-error-x-mark{0%{margin-top:1.625em;transform:scale(.4);opacity:0}50%{margin-top:1.625em;transform:scale(.4);opacity:0}80%{margin-top:-.375em;transform:scale(1.15)}100%{margin-top:0;transform:scale(1);opacity:1}}@keyframes swal2-animate-error-x-mark{0%{margin-top:1.625em;transform:scale(.4);opacity:0}50%{margin-top:1.625em;transform:scale(.4);opacity:0}80%{margin-top:-.375em;transform:scale(1.15)}100%{margin-top:0;transform:scale(1);opacity:1}}@-webkit-keyframes swal2-animate-error-icon{0%{transform:rotateX(100deg);opacity:0}100%{transform:rotateX(0);opacity:1}}@keyframes swal2-animate-error-icon{0%{transform:rotateX(100deg);opacity:0}100%{transform:rotateX(0);opacity:1}}body.swal2-toast-shown .swal2-container{background-color:transparent}body.swal2-toast-shown .swal2-container.swal2-shown{background-color:transparent}body.swal2-toast-shown .swal2-container.swal2-top{top:0;right:auto;bottom:auto;left:50%;transform:translateX(-50%)}body.swal2-toast-shown .swal2-container.swal2-top-end,body.swal2-toast-shown .swal2-container.swal2-top-right{top:0;right:0;bottom:auto;left:auto}body.swal2-toast-shown .swal2-container.swal2-top-left,body.swal2-toast-shown .swal2-container.swal2-top-start{top:0;right:auto;bottom:auto;left:0}body.swal2-toast-shown .swal2-container.swal2-center-left,body.swal2-toast-shown .swal2-container.swal2-center-start{top:50%;right:auto;bottom:auto;left:0;transform:translateY(-50%)}body.swal2-toast-shown .swal2-container.swal2-center{top:50%;right:auto;bottom:auto;left:50%;transform:translate(-50%,-50%)}body.swal2-toast-shown .swal2-container.swal2-center-end,body.swal2-toast-shown .swal2-container.swal2-center-right{top:50%;right:0;bottom:auto;left:auto;transform:translateY(-50%)}body.swal2-toast-shown .swal2-container.swal2-bottom-left,body.swal2-toast-shown .swal2-container.swal2-bottom-start{top:auto;right:auto;bottom:0;left:0}body.swal2-toast-shown .swal2-container.swal2-bottom{top:auto;right:auto;bottom:0;left:50%;transform:translateX(-50%)}body.swal2-toast-shown .swal2-container.swal2-bottom-end,body.swal2-toast-shown .swal2-container.swal2-bottom-right{top:auto;right:0;bottom:0;left:auto}body.swal2-toast-column .swal2-toast{flex-direction:column;align-items:stretch}body.swal2-toast-column .swal2-toast .swal2-actions{flex:1;align-self:stretch;height:2.2em;margin-top:.3125em}body.swal2-toast-column .swal2-toast .swal2-loading{justify-content:center}body.swal2-toast-column .swal2-toast .swal2-input{height:2em;margin:.3125em auto;font-size:1em}body.swal2-toast-column .swal2-toast .swal2-validation-message{font-size:1em}.swal2-popup.swal2-toast{flex-direction:row;align-items:center;width:auto;padding:.625em;overflow-y:hidden;box-shadow:0 0 .625em #d9d9d9}.swal2-popup.swal2-toast .swal2-header{flex-direction:row}.swal2-popup.swal2-toast .swal2-title{flex-grow:1;justify-content:flex-start;margin:0 .6em;font-size:1em}.swal2-popup.swal2-toast .swal2-footer{margin:.5em 0 0;padding:.5em 0 0;font-size:.8em}.swal2-popup.swal2-toast .swal2-close{position:static;width:.8em;height:.8em;line-height:.8}.swal2-popup.swal2-toast .swal2-content{justify-content:flex-start;font-size:1em}.swal2-popup.swal2-toast .swal2-icon{width:2em;min-width:2em;height:2em;margin:0}.swal2-popup.swal2-toast .swal2-icon::before{display:flex;align-items:center;font-size:2em;font-weight:700}@media all and (-ms-high-contrast:none),(-ms-high-contrast:active){.swal2-popup.swal2-toast .swal2-icon::before{font-size:.25em}}.swal2-popup.swal2-toast .swal2-icon.swal2-success .swal2-success-ring{width:2em;height:2em}.swal2-popup.swal2-toast .swal2-icon.swal2-error [class^=swal2-x-mark-line]{top:.875em;width:1.375em}.swal2-popup.swal2-toast .swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=left]{left:.3125em}.swal2-popup.swal2-toast .swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=right]{right:.3125em}.swal2-popup.swal2-toast .swal2-actions{flex-basis:auto!important;width:auto;height:auto;margin:0 .3125em}.swal2-popup.swal2-toast .swal2-styled{margin:0 .3125em;padding:.3125em .625em;font-size:1em}.swal2-popup.swal2-toast .swal2-styled:focus{box-shadow:0 0 0 .0625em #fff,0 0 0 .125em rgba(50,100,150,.4)}.swal2-popup.swal2-toast .swal2-success{border-color:#a5dc86}.swal2-popup.swal2-toast .swal2-success [class^=swal2-success-circular-line]{position:absolute;width:1.6em;height:3em;transform:rotate(45deg);border-radius:50%}.swal2-popup.swal2-toast .swal2-success [class^=swal2-success-circular-line][class$=left]{top:-.8em;left:-.5em;transform:rotate(-45deg);transform-origin:2em 2em;border-radius:4em 0 0 4em}.swal2-popup.swal2-toast .swal2-success [class^=swal2-success-circular-line][class$=right]{top:-.25em;left:.9375em;transform-origin:0 1.5em;border-radius:0 4em 4em 0}.swal2-popup.swal2-toast .swal2-success .swal2-success-ring{width:2em;height:2em}.swal2-popup.swal2-toast .swal2-success .swal2-success-fix{top:0;left:.4375em;width:.4375em;height:2.6875em}.swal2-popup.swal2-toast .swal2-success [class^=swal2-success-line]{height:.3125em}.swal2-popup.swal2-toast .swal2-success [class^=swal2-success-line][class$=tip]{top:1.125em;left:.1875em;width:.75em}.swal2-popup.swal2-toast .swal2-success [class^=swal2-success-line][class$=long]{top:.9375em;right:.1875em;width:1.375em}.swal2-popup.swal2-toast.swal2-show{-webkit-animation:swal2-toast-show .5s;animation:swal2-toast-show .5s}.swal2-popup.swal2-toast.swal2-hide{-webkit-animation:swal2-toast-hide .1s forwards;animation:swal2-toast-hide .1s forwards}.swal2-popup.swal2-toast .swal2-animate-success-icon .swal2-success-line-tip{-webkit-animation:swal2-toast-animate-success-line-tip .75s;animation:swal2-toast-animate-success-line-tip .75s}.swal2-popup.swal2-toast .swal2-animate-success-icon .swal2-success-line-long{-webkit-animation:swal2-toast-animate-success-line-long .75s;animation:swal2-toast-animate-success-line-long .75s}@-webkit-keyframes swal2-toast-show{0%{transform:translateY(-.625em) rotateZ(2deg)}33%{transform:translateY(0) rotateZ(-2deg)}66%{transform:translateY(.3125em) rotateZ(2deg)}100%{transform:translateY(0) rotateZ(0)}}@keyframes swal2-toast-show{0%{transform:translateY(-.625em) rotateZ(2deg)}33%{transform:translateY(0) rotateZ(-2deg)}66%{transform:translateY(.3125em) rotateZ(2deg)}100%{transform:translateY(0) rotateZ(0)}}@-webkit-keyframes swal2-toast-hide{100%{transform:rotateZ(1deg);opacity:0}}@keyframes swal2-toast-hide{100%{transform:rotateZ(1deg);opacity:0}}@-webkit-keyframes swal2-toast-animate-success-line-tip{0%{top:.5625em;left:.0625em;width:0}54%{top:.125em;left:.125em;width:0}70%{top:.625em;left:-.25em;width:1.625em}84%{top:1.0625em;left:.75em;width:.5em}100%{top:1.125em;left:.1875em;width:.75em}}@keyframes swal2-toast-animate-success-line-tip{0%{top:.5625em;left:.0625em;width:0}54%{top:.125em;left:.125em;width:0}70%{top:.625em;left:-.25em;width:1.625em}84%{top:1.0625em;left:.75em;width:.5em}100%{top:1.125em;left:.1875em;width:.75em}}@-webkit-keyframes swal2-toast-animate-success-line-long{0%{top:1.625em;right:1.375em;width:0}65%{top:1.25em;right:.9375em;width:0}84%{top:.9375em;right:0;width:1.125em}100%{top:.9375em;right:.1875em;width:1.375em}}@keyframes swal2-toast-animate-success-line-long{0%{top:1.625em;right:1.375em;width:0}65%{top:1.25em;right:.9375em;width:0}84%{top:.9375em;right:0;width:1.125em}100%{top:.9375em;right:.1875em;width:1.375em}}body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown){overflow:hidden}body.swal2-height-auto{height:auto!important}body.swal2-no-backdrop .swal2-shown{top:auto;right:auto;bottom:auto;left:auto;max-width:calc(100% - .625em * 2);background-color:transparent}body.swal2-no-backdrop .swal2-shown>.swal2-modal{box-shadow:0 0 10px rgba(0,0,0,.4)}body.swal2-no-backdrop .swal2-shown.swal2-top{top:0;left:50%;transform:translateX(-50%)}body.swal2-no-backdrop .swal2-shown.swal2-top-left,body.swal2-no-backdrop .swal2-shown.swal2-top-start{top:0;left:0}body.swal2-no-backdrop .swal2-shown.swal2-top-end,body.swal2-no-backdrop .swal2-shown.swal2-top-right{top:0;right:0}body.swal2-no-backdrop .swal2-shown.swal2-center{top:50%;left:50%;transform:translate(-50%,-50%)}body.swal2-no-backdrop .swal2-shown.swal2-center-left,body.swal2-no-backdrop .swal2-shown.swal2-center-start{top:50%;left:0;transform:translateY(-50%)}body.swal2-no-backdrop .swal2-shown.swal2-center-end,body.swal2-no-backdrop .swal2-shown.swal2-center-right{top:50%;right:0;transform:translateY(-50%)}body.swal2-no-backdrop .swal2-shown.swal2-bottom{bottom:0;left:50%;transform:translateX(-50%)}body.swal2-no-backdrop .swal2-shown.swal2-bottom-left,body.swal2-no-backdrop .swal2-shown.swal2-bottom-start{bottom:0;left:0}body.swal2-no-backdrop .swal2-shown.swal2-bottom-end,body.swal2-no-backdrop .swal2-shown.swal2-bottom-right{right:0;bottom:0}.swal2-container{display:flex;position:fixed;z-index:1060;top:0;right:0;bottom:0;left:0;flex-direction:row;align-items:center;justify-content:center;padding:.625em;overflow-x:hidden;background-color:transparent;-webkit-overflow-scrolling:touch}.swal2-container.swal2-top{align-items:flex-start}.swal2-container.swal2-top-left,.swal2-container.swal2-top-start{align-items:flex-start;justify-content:flex-start}.swal2-container.swal2-top-end,.swal2-container.swal2-top-right{align-items:flex-start;justify-content:flex-end}.swal2-container.swal2-center{align-items:center}.swal2-container.swal2-center-left,.swal2-container.swal2-center-start{align-items:center;justify-content:flex-start}.swal2-container.swal2-center-end,.swal2-container.swal2-center-right{align-items:center;justify-content:flex-end}.swal2-container.swal2-bottom{align-items:flex-end}.swal2-container.swal2-bottom-left,.swal2-container.swal2-bottom-start{align-items:flex-end;justify-content:flex-start}.swal2-container.swal2-bottom-end,.swal2-container.swal2-bottom-right{align-items:flex-end;justify-content:flex-end}.swal2-container.swal2-bottom-end>:first-child,.swal2-container.swal2-bottom-left>:first-child,.swal2-container.swal2-bottom-right>:first-child,.swal2-container.swal2-bottom-start>:first-child,.swal2-container.swal2-bottom>:first-child{margin-top:auto}.swal2-container.swal2-grow-fullscreen>.swal2-modal{display:flex!important;flex:1;align-self:stretch;justify-content:center}.swal2-container.swal2-grow-row>.swal2-modal{display:flex!important;flex:1;align-content:center;justify-content:center}.swal2-container.swal2-grow-column{flex:1;flex-direction:column}.swal2-container.swal2-grow-column.swal2-bottom,.swal2-container.swal2-grow-column.swal2-center,.swal2-container.swal2-grow-column.swal2-top{align-items:center}.swal2-container.swal2-grow-column.swal2-bottom-left,.swal2-container.swal2-grow-column.swal2-bottom-start,.swal2-container.swal2-grow-column.swal2-center-left,.swal2-container.swal2-grow-column.swal2-center-start,.swal2-container.swal2-grow-column.swal2-top-left,.swal2-container.swal2-grow-column.swal2-top-start{align-items:flex-start}.swal2-container.swal2-grow-column.swal2-bottom-end,.swal2-container.swal2-grow-column.swal2-bottom-right,.swal2-container.swal2-grow-column.swal2-center-end,.swal2-container.swal2-grow-column.swal2-center-right,.swal2-container.swal2-grow-column.swal2-top-end,.swal2-container.swal2-grow-column.swal2-top-right{align-items:flex-end}.swal2-container.swal2-grow-column>.swal2-modal{display:flex!important;flex:1;align-content:center;justify-content:center}.swal2-container:not(.swal2-top):not(.swal2-top-start):not(.swal2-top-end):not(.swal2-top-left):not(.swal2-top-right):not(.swal2-center-start):not(.swal2-center-end):not(.swal2-center-left):not(.swal2-center-right):not(.swal2-bottom):not(.swal2-bottom-start):not(.swal2-bottom-end):not(.swal2-bottom-left):not(.swal2-bottom-right):not(.swal2-grow-fullscreen)>.swal2-modal{margin:auto}@media all and (-ms-high-contrast:none),(-ms-high-contrast:active){.swal2-container .swal2-modal{margin:0!important}}.swal2-container.swal2-fade{transition:background-color .1s}.swal2-container.swal2-shown{background-color:rgba(0,0,0,.4)}.swal2-popup{display:none;position:relative;box-sizing:border-box;flex-direction:column;justify-content:center;width:32em;max-width:100%;padding:1.25em;border:none;border-radius:.3125em;background:#fff;font-family:inherit;font-size:1rem}.swal2-popup:focus{outline:0}.swal2-popup.swal2-loading{overflow-y:hidden}.swal2-header{display:flex;flex-direction:column;align-items:center}.swal2-title{position:relative;max-width:100%;margin:0 0 .4em;padding:0;color:#595959;font-size:1.875em;font-weight:600;text-align:center;text-transform:none;word-wrap:break-word}.swal2-actions{z-index:1;flex-wrap:wrap;align-items:center;justify-content:center;width:100%;margin:1.25em auto 0}.swal2-actions:not(.swal2-loading) .swal2-styled[disabled]{opacity:.4}.swal2-actions:not(.swal2-loading) .swal2-styled:hover{background-image:linear-gradient(rgba(0,0,0,.1),rgba(0,0,0,.1))}.swal2-actions:not(.swal2-loading) .swal2-styled:active{background-image:linear-gradient(rgba(0,0,0,.2),rgba(0,0,0,.2))}.swal2-actions.swal2-loading .swal2-styled.swal2-confirm{box-sizing:border-box;width:2.5em;height:2.5em;margin:.46875em;padding:0;-webkit-animation:swal2-rotate-loading 1.5s linear 0s infinite normal;animation:swal2-rotate-loading 1.5s linear 0s infinite normal;border:.25em solid transparent;border-radius:100%;border-color:transparent;background-color:transparent!important;color:transparent;cursor:default;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.swal2-actions.swal2-loading .swal2-styled.swal2-cancel{margin-right:30px;margin-left:30px}.swal2-actions.swal2-loading :not(.swal2-styled).swal2-confirm::after{content:\"\";display:inline-block;width:15px;height:15px;margin-left:5px;-webkit-animation:swal2-rotate-loading 1.5s linear 0s infinite normal;animation:swal2-rotate-loading 1.5s linear 0s infinite normal;border:3px solid #999;border-radius:50%;border-right-color:transparent;box-shadow:1px 1px 1px #fff}.swal2-styled{margin:.3125em;padding:.625em 2em;box-shadow:none;font-weight:500}.swal2-styled:not([disabled]){cursor:pointer}.swal2-styled.swal2-confirm{border:0;border-radius:.25em;background:initial;background-color:#3085d6;color:#fff;font-size:1.0625em}.swal2-styled.swal2-cancel{border:0;border-radius:.25em;background:initial;background-color:#aaa;color:#fff;font-size:1.0625em}.swal2-styled:focus{outline:0;box-shadow:0 0 0 2px #fff,0 0 0 4px rgba(50,100,150,.4)}.swal2-styled::-moz-focus-inner{border:0}.swal2-footer{justify-content:center;margin:1.25em 0 0;padding:1em 0 0;border-top:1px solid #eee;color:#545454;font-size:1em}.swal2-image{max-width:100%;margin:1.25em auto}.swal2-close{position:absolute;z-index:2;top:0;right:0;justify-content:center;width:1.2em;height:1.2em;padding:0;overflow:hidden;transition:color .1s ease-out;border:none;border-radius:0;outline:initial;background:0 0;color:#ccc;font-family:serif;font-size:2.5em;line-height:1.2;cursor:pointer}.swal2-close:hover{transform:none;background:0 0;color:#f27474}.swal2-content{z-index:1;justify-content:center;margin:0;padding:0;color:#545454;font-size:1.125em;font-weight:300;line-height:normal;text-align:center;word-wrap:break-word}.swal2-checkbox,.swal2-file,.swal2-input,.swal2-radio,.swal2-select,.swal2-textarea{margin:1em auto}.swal2-file,.swal2-input,.swal2-textarea{box-sizing:border-box;width:100%;transition:border-color .3s,box-shadow .3s;border:1px solid #d9d9d9;border-radius:.1875em;background:inherit;box-shadow:inset 0 1px 1px rgba(0,0,0,.06);color:inherit;font-size:1.125em}.swal2-file.swal2-inputerror,.swal2-input.swal2-inputerror,.swal2-textarea.swal2-inputerror{border-color:#f27474!important;box-shadow:0 0 2px #f27474!important}.swal2-file:focus,.swal2-input:focus,.swal2-textarea:focus{border:1px solid #b4dbed;outline:0;box-shadow:0 0 3px #c4e6f5}.swal2-file::-webkit-input-placeholder,.swal2-input::-webkit-input-placeholder,.swal2-textarea::-webkit-input-placeholder{color:#ccc}.swal2-file::-moz-placeholder,.swal2-input::-moz-placeholder,.swal2-textarea::-moz-placeholder{color:#ccc}.swal2-file:-ms-input-placeholder,.swal2-input:-ms-input-placeholder,.swal2-textarea:-ms-input-placeholder{color:#ccc}.swal2-file::-ms-input-placeholder,.swal2-input::-ms-input-placeholder,.swal2-textarea::-ms-input-placeholder{color:#ccc}.swal2-file::placeholder,.swal2-input::placeholder,.swal2-textarea::placeholder{color:#ccc}.swal2-range{margin:1em auto;background:inherit}.swal2-range input{width:80%}.swal2-range output{width:20%;color:inherit;font-weight:600;text-align:center}.swal2-range input,.swal2-range output{height:2.625em;padding:0;font-size:1.125em;line-height:2.625em}.swal2-input{height:2.625em;padding:0 .75em}.swal2-input[type=number]{max-width:10em}.swal2-file{background:inherit;font-size:1.125em}.swal2-textarea{height:6.75em;padding:.75em}.swal2-select{min-width:50%;max-width:100%;padding:.375em .625em;background:inherit;color:inherit;font-size:1.125em}.swal2-checkbox,.swal2-radio{align-items:center;justify-content:center;background:inherit;color:inherit}.swal2-checkbox label,.swal2-radio label{margin:0 .6em;font-size:1.125em}.swal2-checkbox input,.swal2-radio input{margin:0 .4em}.swal2-validation-message{display:none;align-items:center;justify-content:center;padding:.625em;overflow:hidden;background:#f0f0f0;color:#666;font-size:1em;font-weight:300}.swal2-validation-message::before{content:\"!\";display:inline-block;width:1.5em;min-width:1.5em;height:1.5em;margin:0 .625em;zoom:normal;border-radius:50%;background-color:#f27474;color:#fff;font-weight:600;line-height:1.5em;text-align:center}@supports (-ms-accelerator:true){.swal2-range input{width:100%!important}.swal2-range output{display:none}}@media all and (-ms-high-contrast:none),(-ms-high-contrast:active){.swal2-range input{width:100%!important}.swal2-range output{display:none}}@-moz-document url-prefix(){.swal2-close:focus{outline:2px solid rgba(50,100,150,.4)}}.swal2-icon{position:relative;box-sizing:content-box;justify-content:center;width:5em;height:5em;margin:1.25em auto 1.875em;zoom:normal;border:.25em solid transparent;border-radius:50%;font-family:inherit;line-height:5em;cursor:default;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.swal2-icon::before{display:flex;align-items:center;height:92%;font-size:3.75em}.swal2-icon.swal2-error{border-color:#f27474}.swal2-icon.swal2-error .swal2-x-mark{position:relative;flex-grow:1}.swal2-icon.swal2-error [class^=swal2-x-mark-line]{display:block;position:absolute;top:2.3125em;width:2.9375em;height:.3125em;border-radius:.125em;background-color:#f27474}.swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=left]{left:1.0625em;transform:rotate(45deg)}.swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=right]{right:1em;transform:rotate(-45deg)}.swal2-icon.swal2-warning{border-color:#facea8;color:#f8bb86}.swal2-icon.swal2-warning::before{content:\"!\"}.swal2-icon.swal2-info{border-color:#9de0f6;color:#3fc3ee}.swal2-icon.swal2-info::before{content:\"i\"}.swal2-icon.swal2-question{border-color:#c9dae1;color:#87adbd}.swal2-icon.swal2-question::before{content:\"?\"}.swal2-icon.swal2-question.swal2-arabic-question-mark::before{content:\"؟\"}.swal2-icon.swal2-success{border-color:#a5dc86}.swal2-icon.swal2-success [class^=swal2-success-circular-line]{position:absolute;width:3.75em;height:7.5em;transform:rotate(45deg);border-radius:50%}.swal2-icon.swal2-success [class^=swal2-success-circular-line][class$=left]{top:-.4375em;left:-2.0635em;transform:rotate(-45deg);transform-origin:3.75em 3.75em;border-radius:7.5em 0 0 7.5em}.swal2-icon.swal2-success [class^=swal2-success-circular-line][class$=right]{top:-.6875em;left:1.875em;transform:rotate(-45deg);transform-origin:0 3.75em;border-radius:0 7.5em 7.5em 0}.swal2-icon.swal2-success .swal2-success-ring{position:absolute;z-index:2;top:-.25em;left:-.25em;box-sizing:content-box;width:100%;height:100%;border:.25em solid rgba(165,220,134,.3);border-radius:50%}.swal2-icon.swal2-success .swal2-success-fix{position:absolute;z-index:1;top:.5em;left:1.625em;width:.4375em;height:5.625em;transform:rotate(-45deg)}.swal2-icon.swal2-success [class^=swal2-success-line]{display:block;position:absolute;z-index:2;height:.3125em;border-radius:.125em;background-color:#a5dc86}.swal2-icon.swal2-success [class^=swal2-success-line][class$=tip]{top:2.875em;left:.875em;width:1.5625em;transform:rotate(45deg)}.swal2-icon.swal2-success [class^=swal2-success-line][class$=long]{top:2.375em;right:.5em;width:2.9375em;transform:rotate(-45deg)}.swal2-progress-steps{align-items:center;margin:0 0 1.25em;padding:0;background:inherit;font-weight:600}.swal2-progress-steps li{display:inline-block;position:relative}.swal2-progress-steps .swal2-progress-step{z-index:20;width:2em;height:2em;border-radius:2em;background:#3085d6;color:#fff;line-height:2em;text-align:center}.swal2-progress-steps .swal2-progress-step.swal2-active-progress-step{background:#3085d6}.swal2-progress-steps .swal2-progress-step.swal2-active-progress-step~.swal2-progress-step{background:#add8e6;color:#fff}.swal2-progress-steps .swal2-progress-step.swal2-active-progress-step~.swal2-progress-step-line{background:#add8e6}.swal2-progress-steps .swal2-progress-step-line{z-index:10;width:2.5em;height:.4em;margin:0 -1px;background:#3085d6}[class^=swal2]{-webkit-tap-highlight-color:transparent}.swal2-show{-webkit-animation:swal2-show .3s;animation:swal2-show .3s}.swal2-show.swal2-noanimation{-webkit-animation:none;animation:none}.swal2-hide{-webkit-animation:swal2-hide .15s forwards;animation:swal2-hide .15s forwards}.swal2-hide.swal2-noanimation{-webkit-animation:none;animation:none}.swal2-rtl .swal2-close{right:auto;left:0}.swal2-animate-success-icon .swal2-success-line-tip{-webkit-animation:swal2-animate-success-line-tip .75s;animation:swal2-animate-success-line-tip .75s}.swal2-animate-success-icon .swal2-success-line-long{-webkit-animation:swal2-animate-success-line-long .75s;animation:swal2-animate-success-line-long .75s}.swal2-animate-success-icon .swal2-success-circular-line-right{-webkit-animation:swal2-rotate-success-circular-line 4.25s ease-in;animation:swal2-rotate-success-circular-line 4.25s ease-in}.swal2-animate-error-icon{-webkit-animation:swal2-animate-error-icon .5s;animation:swal2-animate-error-icon .5s}.swal2-animate-error-icon .swal2-x-mark{-webkit-animation:swal2-animate-error-x-mark .5s;animation:swal2-animate-error-x-mark .5s}@-webkit-keyframes swal2-rotate-loading{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}@keyframes swal2-rotate-loading{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}@media print{body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown){overflow-y:scroll!important}body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown)>[aria-hidden=true]{display:none}body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown) .swal2-container{position:static!important}}");
+
+/***/ }),
+
+/***/ "./node_modules/sweetalert2/dist/sweetalert2.min.css":
+/*!***********************************************************!*\
+  !*** ./node_modules/sweetalert2/dist/sweetalert2.min.css ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../css-loader??ref--6-1!../../postcss-loader/src??ref--6-2!./sweetalert2.min.css */ "./node_modules/css-loader/index.js?!./node_modules/postcss-loader/src/index.js?!./node_modules/sweetalert2/dist/sweetalert2.min.css");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
 
 /***/ }),
 
@@ -63078,6 +67471,227 @@ var render = function() {
             _c("FormPenjualan", { attrs: { mode: _vm.mode } })
           ],
           1
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "modal modal-fixed-footer", attrs: { id: "modal1" } },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _c("h5", [_vm._v("Form Tambah Data Pelanggan")]),
+              _vm._v(" "),
+              _c("div", { staticClass: "row" }, [
+                _c("form", { staticClass: "col s12" }, [
+                  _c("div", { staticClass: "row" }, [
+                    _c("div", { staticClass: "input-field col s6" }, [
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.$v.customer.$model,
+                            expression: "$v.customer.$model"
+                          }
+                        ],
+                        staticClass: "validate",
+                        attrs: { id: "customer", type: "text" },
+                        domProps: { value: _vm.$v.customer.$model },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.$set(
+                              _vm.$v.customer,
+                              "$model",
+                              $event.target.value
+                            )
+                          }
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("label", { attrs: { for: "customer" } }, [
+                        _vm._v("Nama Pelanggan")
+                      ]),
+                      _vm._v(" "),
+                      !_vm.$v.customer.required
+                        ? _c("span", { staticClass: "red-text helper-text" }, [
+                            _vm._v("Tidak boleh kosong!")
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      !_vm.$v.customer.minLength
+                        ? _c("span", { staticClass: "red-text helper-text" }, [
+                            _vm._v("Minimal 5 karakter!")
+                          ])
+                        : _vm._e()
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "input-field col s6" }, [
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.$v.company.$model,
+                            expression: "$v.company.$model"
+                          }
+                        ],
+                        staticClass: "validate",
+                        attrs: { id: "company", type: "text" },
+                        domProps: { value: _vm.$v.company.$model },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.$set(
+                              _vm.$v.company,
+                              "$model",
+                              $event.target.value
+                            )
+                          }
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("label", { attrs: { for: "company" } }, [
+                        _vm._v("Nama Perushaan")
+                      ]),
+                      _vm._v(" "),
+                      !_vm.$v.company.required
+                        ? _c("span", { staticClass: "red-text helper-text" }, [
+                            _vm._v("Tidak boleh kosong!")
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      !_vm.$v.company.minLength
+                        ? _c("span", { staticClass: "red-text helper-text" }, [
+                            _vm._v("Minimal 5 karakter!")
+                          ])
+                        : _vm._e()
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "row" }, [
+                    _c("div", { staticClass: "input-field col s6" }, [
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.$v.telpon.$model,
+                            expression: "$v.telpon.$model"
+                          }
+                        ],
+                        staticClass: "validate",
+                        attrs: { id: "telpon", type: "text" },
+                        domProps: { value: _vm.$v.telpon.$model },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.$set(
+                              _vm.$v.telpon,
+                              "$model",
+                              $event.target.value
+                            )
+                          }
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("label", { attrs: { for: "telpon" } }, [
+                        _vm._v("Telephone")
+                      ]),
+                      _vm._v(" "),
+                      !_vm.$v.telpon.required
+                        ? _c("span", { staticClass: "red-text helper-text" }, [
+                            _vm._v(_vm._s(_vm.errTelpon))
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      !_vm.$v.telpon.minLength
+                        ? _c("span", { staticClass: "red-text helper-text" }, [
+                            _vm._v("Minimal 8 karakter!")
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      !_vm.$v.telpon.maxLength
+                        ? _c("span", { staticClass: "red-text helper-text" }, [
+                            _vm._v("Maksimal 12 karakter!")
+                          ])
+                        : _vm._e()
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "input-field col s6" }, [
+                      _c("textarea", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.$v.alamat.$model,
+                            expression: "$v.alamat.$model"
+                          }
+                        ],
+                        staticClass: "materialize-textarea",
+                        attrs: { id: "alamat" },
+                        domProps: { value: _vm.$v.alamat.$model },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.$set(
+                              _vm.$v.alamat,
+                              "$model",
+                              $event.target.value
+                            )
+                          }
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("label", { attrs: { for: "alamat" } }, [
+                        _vm._v("Alamat")
+                      ]),
+                      _vm._v(" "),
+                      !_vm.$v.alamat.required
+                        ? _c("span", { staticClass: "red-text helper-text" }, [
+                            _vm._v("Tidak boleh kosong!")
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      !_vm.$v.alamat.minLength
+                        ? _c("span", { staticClass: "red-text helper-text" }, [
+                            _vm._v("Minimal 5 karakter!")
+                          ])
+                        : _vm._e()
+                    ])
+                  ])
+                ])
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "modal-footer" }, [
+              _c(
+                "a",
+                {
+                  staticClass: "waves-effect waves-green btn",
+                  class: { "modal-close": _vm.close },
+                  attrs: {
+                    href: "#!",
+                    disabled: _vm.$v.validationGroup.$invalid || _vm.disabled
+                  },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      return _vm.saveDataCustomer($event)
+                    }
+                  }
+                },
+                [_vm._v(_vm._s(_vm.btn))]
+              )
+            ])
+          ]
         )
       ])
     : _vm._e()
@@ -63111,7 +67725,7 @@ var render = function() {
             _c("div", { staticClass: "row" }, [
               _c(
                 "div",
-                { staticClass: "col s12" },
+                { staticClass: "col s8" },
                 [
                   _c("label", { staticClass: "typo__label" }, [
                     _vm._v("Nama Customer")
@@ -63165,7 +67779,9 @@ var render = function() {
                   )
                 ],
                 1
-              )
+              ),
+              _vm._v(" "),
+              _vm._m(0)
             ]),
             _vm._v(" "),
             !_vm.loadingDisplay
@@ -63254,7 +67870,358 @@ var render = function() {
       : _vm._e()
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col s4" }, [
+      _c(
+        "a",
+        {
+          staticClass: "waves-effect waves-light btn modal-trigger",
+          staticStyle: { "margin-top": "25px" },
+          attrs: { href: "#modal1" }
+        },
+        [_vm._v("Add Customer")]
+      )
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/page/dasboard/items/AddItems.vue?vue&type=template&id=4afd5850&scoped=true&":
+/*!*******************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/page/dasboard/items/AddItems.vue?vue&type=template&id=4afd5850&scoped=true& ***!
+  \*******************************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c("Navbar"),
+      _vm._v(" "),
+      _c("br"),
+      _c("br"),
+      _vm._v(" "),
+      _c("div", { staticClass: "container" }, [
+        _c("div", { staticClass: "row" }, [
+          _c("div", { staticClass: "col s12" }, [
+            _vm._m(0),
+            _vm._v(" "),
+            _c(
+              "div",
+              { staticClass: "col s12", attrs: { id: "test-swipe-1" } },
+              [
+                _c("div", { staticClass: "row" }, [
+                  _c("div", { staticClass: "input-field col s12" }, [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.$v.product.$model,
+                          expression: "$v.product.$model"
+                        }
+                      ],
+                      attrs: { id: "product", type: "text" },
+                      domProps: { value: _vm.$v.product.$model },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(
+                            _vm.$v.product,
+                            "$model",
+                            $event.target.value
+                          )
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("label", { attrs: { for: "product" } }, [
+                      _vm._v("Product")
+                    ]),
+                    _vm._v(" "),
+                    !_vm.$v.product.required
+                      ? _c("span", { staticClass: "red-text helper-text" }, [
+                          _vm._v("Tidak boleh kosong!")
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    !_vm.$v.product.minLength
+                      ? _c("span", { staticClass: "red-text helper-text" }, [
+                          _vm._v("Minimal 5 karakter!")
+                        ])
+                      : _vm._e()
+                  ])
+                ]),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  {
+                    staticClass: "row",
+                    staticStyle: { "margin-top": "-20px" }
+                  },
+                  [
+                    _c("div", { staticClass: "input-field col s6" }, [
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.$v.price.$model,
+                            expression: "$v.price.$model"
+                          }
+                        ],
+                        attrs: { id: "price", type: "text" },
+                        domProps: { value: _vm.$v.price.$model },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.$set(
+                              _vm.$v.price,
+                              "$model",
+                              $event.target.value
+                            )
+                          }
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("label", { attrs: { for: "price" } }, [
+                        _vm._v("Price")
+                      ]),
+                      _vm._v(" "),
+                      !_vm.$v.price.required
+                        ? _c("span", { staticClass: "red-text helper-text" }, [
+                            _vm._v(_vm._s(_vm.errPrice))
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      !_vm.$v.price.minLength
+                        ? _c("span", { staticClass: "red-text helper-text" }, [
+                            _vm._v("Minimal 3 karakter!")
+                          ])
+                        : _vm._e()
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "input-field col s6" }, [
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.$v.stock.$model,
+                            expression: "$v.stock.$model"
+                          }
+                        ],
+                        attrs: { id: "stock", type: "text" },
+                        domProps: { value: _vm.$v.stock.$model },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.$set(
+                              _vm.$v.stock,
+                              "$model",
+                              $event.target.value
+                            )
+                          }
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("label", { attrs: { for: "stock" } }, [
+                        _vm._v("Stock")
+                      ]),
+                      _vm._v(" "),
+                      !_vm.$v.stock.required
+                        ? _c("span", { staticClass: "red-text helper-text" }, [
+                            _vm._v(_vm._s(_vm.errStock))
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      !_vm.$v.stock.minLength
+                        ? _c("span", { staticClass: "red-text helper-text" }, [
+                            _vm._v("Minimal 1 karakter!")
+                          ])
+                        : _vm._e()
+                    ])
+                  ]
+                ),
+                _vm._v(" "),
+                _c(
+                  "a",
+                  {
+                    staticClass:
+                      "modal-close waves-effect waves-green btn-small right",
+                    attrs: {
+                      href: "#!",
+                      disabled: _vm.$v.validationGroup.$invalid || _vm.disabled
+                    },
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        return _vm.saveDataItems($event)
+                      }
+                    }
+                  },
+                  [
+                    _vm._v(
+                      "\n                        Save data\n                    "
+                    )
+                  ]
+                )
+              ]
+            ),
+            _vm._v(" "),
+            _c(
+              "div",
+              { staticClass: "col s12", attrs: { id: "test-swipe-2" } },
+              [
+                _c("form", { attrs: { action: "#" } }, [
+                  _c("br"),
+                  _vm._v(" "),
+                  _c("div", [
+                    _vm._m(1),
+                    _vm._v(" "),
+                    _c("p", [
+                      _vm._v(
+                        "\n                                Silahkan anda "
+                      ),
+                      _c(
+                        "a",
+                        {
+                          attrs: { href: "#" },
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              return _vm.downloadFile($event)
+                            }
+                          }
+                        },
+                        [_vm._v("unduh")]
+                      ),
+                      _vm._v(
+                        " file ini, lalu anda inputkan data - data items (product tinta) \n                                yang akan anda jual ke dalam file tersebut, kemudian silahkan anda upload \n                                kembali melalui form dibawah ini.\n                            "
+                      )
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("br"),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "row" }, [
+                    _c(
+                      "form",
+                      { attrs: { action: "", enctype: "multipart/form-data" } },
+                      [
+                        _c("div", { staticClass: "col s9 m9 l9" }, [
+                          _c("div", { staticClass: "file-field input-field" }, [
+                            _c("div", { staticClass: "btn" }, [
+                              _c("span", [_vm._v("File")]),
+                              _vm._v(" "),
+                              _c("input", {
+                                ref: "file",
+                                attrs: { type: "file", name: "file" },
+                                on: { change: _vm.getFile }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "file-path-wrapper" }, [
+                              _c("input", {
+                                ref: "files",
+                                staticClass: "file-path validate",
+                                attrs: {
+                                  type: "text",
+                                  placeholder: "Upload one or more files excel"
+                                }
+                              })
+                            ])
+                          ])
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "col s3 m3 l3" }, [
+                          _c(
+                            "a",
+                            {
+                              staticClass: "btn waves-block red upload",
+                              attrs: { href: "#", disabled: _vm.loadingUpload },
+                              on: {
+                                click: function($event) {
+                                  $event.preventDefault()
+                                  return _vm.importFile($event)
+                                }
+                              }
+                            },
+                            [_vm._v("Upload")]
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _vm.loadingUpload
+                          ? _c("div", { staticClass: "col s12" }, [
+                              _c("div", { staticClass: "progress" }, [
+                                _c("div", {
+                                  staticClass: "determinate",
+                                  style: { width: _vm.progressBar + "%" }
+                                })
+                              ])
+                            ])
+                          : _vm._e()
+                      ]
+                    )
+                  ])
+                ])
+              ]
+            )
+          ])
+        ])
+      ])
+    ],
+    1
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("ul", { staticClass: "tabs", attrs: { id: "tabs-swipe-demo" } }, [
+      _c("li", { staticClass: "tab col s6" }, [
+        _c("a", { staticClass: "active", attrs: { href: "#test-swipe-1" } }, [
+          _vm._v("Add Items")
+        ])
+      ]),
+      _vm._v(" "),
+      _c("li", { staticClass: "tab col s6" }, [
+        _c("a", { attrs: { href: "#test-swipe-2" } }, [_vm._v("Upload Items")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("p", { staticClass: "green-text" }, [
+      _c("strong", [_vm._v("Perhatian!")])
+    ])
+  }
+]
 render._withStripped = true
 
 
@@ -63372,11 +68339,114 @@ var render = function() {
           [
             _c("form", { staticClass: "col s12" }, [
               _c("div", { staticClass: "row" }, [
-                _vm._m(0),
+                _c("div", { staticClass: "input-field col s12 m6 lg6" }, [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.$v.order.$model,
+                        expression: "$v.order.$model"
+                      }
+                    ],
+                    staticClass: "validate",
+                    attrs: { id: "order", type: "text" },
+                    domProps: { value: _vm.$v.order.$model },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(_vm.$v.order, "$model", $event.target.value)
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "label",
+                    { staticClass: "active", attrs: { for: "order" } },
+                    [_vm._v("No. order (invoice)")]
+                  ),
+                  _vm._v(" "),
+                  !_vm.$v.order.required
+                    ? _c("span", { staticClass: "red-text helper-text" }, [
+                        _vm._v(_vm._s(_vm.errOrder))
+                      ])
+                    : _vm._e(),
+                  _vm._v(" "),
+                  !_vm.$v.order.minLength
+                    ? _c("span", { staticClass: "red-text helper-text" }, [
+                        _vm._v("Minimal 4 karakter!")
+                      ])
+                    : _vm._e()
+                ]),
                 _vm._v(" "),
+                _c("div", { staticClass: "input-field col s12 m6 lg6" }, [
+                  _c(
+                    "select",
+                    {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.$v.metode.$model,
+                          expression: "$v.metode.$model"
+                        }
+                      ],
+                      on: {
+                        change: function($event) {
+                          var $$selectedVal = Array.prototype.filter
+                            .call($event.target.options, function(o) {
+                              return o.selected
+                            })
+                            .map(function(o) {
+                              var val = "_value" in o ? o._value : o.value
+                              return val
+                            })
+                          _vm.$set(
+                            _vm.$v.metode,
+                            "$model",
+                            $event.target.multiple
+                              ? $$selectedVal
+                              : $$selectedVal[0]
+                          )
+                        }
+                      }
+                    },
+                    [
+                      _c(
+                        "option",
+                        {
+                          attrs: { value: "", disabled: "" },
+                          domProps: { selected: _vm.selected }
+                        },
+                        [_vm._v("Choose your payment")]
+                      ),
+                      _vm._v(" "),
+                      _c("option", { attrs: { value: "tunai" } }, [
+                        _vm._v("Tunai")
+                      ]),
+                      _vm._v(" "),
+                      _c("option", { attrs: { value: "bank" } }, [
+                        _vm._v("Bank")
+                      ])
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c("label", [_vm._v("Metode Bayar")]),
+                  _vm._v(" "),
+                  !_vm.$v.metode.required
+                    ? _c("span", { staticClass: "red-text helper-text" }, [
+                        _vm._v("Tidak boleh kosong!")
+                      ])
+                    : _vm._e()
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "row" }, [
                 _c(
                   "div",
-                  { staticClass: "col s12 m6 lg6" },
+                  { staticClass: "col s12 m12 lg12" },
                   [
                     _c("label", { staticClass: "typo__label" }, [
                       _vm._v("Nama Bank")
@@ -63385,50 +68455,136 @@ var render = function() {
                     _c("multiselect", {
                       attrs: { options: _vm.bank, placeholder: "pilih bank" },
                       model: {
-                        value: _vm.valueBank,
+                        value: _vm.$v.valueBank.$model,
                         callback: function($$v) {
-                          _vm.valueBank = $$v
+                          _vm.$set(_vm.$v.valueBank, "$model", $$v)
                         },
-                        expression: "valueBank"
+                        expression: "$v.valueBank.$model"
                       }
-                    })
+                    }),
+                    _vm._v(" "),
+                    !_vm.$v.valueBank.isRequired
+                      ? _c("span", { staticClass: "red-text helper-text" }, [
+                          _vm._v("Tidak boleh kosong!")
+                        ])
+                      : _vm._e()
                   ],
                   1
                 )
               ]),
               _vm._v(" "),
               _c("div", { staticClass: "row" }, [
-                _c(
-                  "div",
-                  { staticClass: "col s12 m6 lg6" },
-                  [
-                    _c("label", { staticClass: "typo__label" }, [
-                      _vm._v("Nama Customer")
-                    ]),
-                    _vm._v(" "),
-                    _c("multiselect", {
-                      attrs: {
-                        options: _vm.customer,
-                        placeholder: "pilih customer"
-                      },
-                      model: {
-                        value: _vm.valueCust,
-                        callback: function($$v) {
-                          _vm.valueCust = $$v
-                        },
-                        expression: "valueCust"
+                _c("div", { staticClass: "input-field col s12 m6 lg6" }, [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.$v.bayar.$model,
+                        expression: "$v.bayar.$model"
                       }
-                    })
-                  ],
-                  1
-                ),
+                    ],
+                    staticClass: "validate",
+                    attrs: { id: "bayar", type: "text" },
+                    domProps: { value: _vm.$v.bayar.$model },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(_vm.$v.bayar, "$model", $event.target.value)
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "label",
+                    { staticClass: "active", attrs: { for: "bayar" } },
+                    [_vm._v("Jumlah Bayar")]
+                  ),
+                  _vm._v(" "),
+                  !_vm.$v.bayar.required
+                    ? _c("span", { staticClass: "red-text helper-text" }, [
+                        _vm._v(_vm._s(_vm.errBayar))
+                      ])
+                    : _vm._e(),
+                  _vm._v(" "),
+                  !_vm.$v.bayar.minLength
+                    ? _c("span", { staticClass: "red-text helper-text" }, [
+                        _vm._v("Minimal 5 karakter!")
+                      ])
+                    : _vm._e()
+                ]),
                 _vm._v(" "),
-                _vm._m(1)
+                _c("div", { staticClass: "input-field col s6 m6 lg6" }, [
+                  _c("textarea", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.$v.keterangan.$model,
+                        expression: "$v.keterangan.$model"
+                      }
+                    ],
+                    staticClass: "materialize-textarea",
+                    attrs: { id: "textarea1" },
+                    domProps: { value: _vm.$v.keterangan.$model },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(
+                          _vm.$v.keterangan,
+                          "$model",
+                          $event.target.value
+                        )
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "label",
+                    { staticClass: "active", attrs: { for: "textarea1" } },
+                    [_vm._v("Keterangan (opsional)")]
+                  ),
+                  _vm._v(" "),
+                  !_vm.$v.keterangan.minLength
+                    ? _c("span", { staticClass: "red-text helper-text" }, [
+                        _vm._v("Minimal 5 karakter!")
+                      ])
+                    : _vm._e()
+                ])
               ]),
               _vm._v(" "),
-              _vm._m(2),
-              _vm._v(" "),
-              _vm._m(3)
+              _c("div", { staticClass: "row" }, [
+                _c("div", { staticClass: "input-field col s12" }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass:
+                        "btn-small white-text btn-small waves-effect orange",
+                      attrs: {
+                        disabled:
+                          _vm.$v.validationGroup.$invalid || _vm.disabled
+                      },
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          return _vm.saveDataCash($event)
+                        }
+                      }
+                    },
+                    [
+                      _vm._v(
+                        "\n                            " +
+                          _vm._s(_vm.btn) +
+                          "\n                        "
+                      )
+                    ]
+                  )
+                ])
+              ])
             ])
           ]
         )
@@ -63437,72 +68593,7 @@ var render = function() {
     1
   )
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "input-field col s12 m6 lg6" }, [
-      _c("select", [
-        _c("option", { attrs: { value: "", disabled: "", selected: "" } }, [
-          _vm._v("Choose your payment")
-        ]),
-        _vm._v(" "),
-        _c("option", { attrs: { value: "1" } }, [_vm._v("Tunai")]),
-        _vm._v(" "),
-        _c("option", { attrs: { value: "2" } }, [_vm._v("Bank")])
-      ]),
-      _vm._v(" "),
-      _c("label", [_vm._v("Metode Bayar")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "input-field col s12 m6 lg6" }, [
-      _c("input", {
-        staticClass: "validate",
-        attrs: { id: "bayar", type: "text" }
-      }),
-      _vm._v(" "),
-      _c("label", { attrs: { for: "bayar" } }, [_vm._v("Jumlah Bayar")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "input-field col s12" }, [
-        _c("textarea", {
-          staticClass: "materialize-textarea",
-          attrs: { id: "textarea1" }
-        }),
-        _vm._v(" "),
-        _c("label", { attrs: { for: "textarea1" } }, [
-          _vm._v("Keterangan (opsional)")
-        ])
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "input-field col s12" }, [
-        _c(
-          "button",
-          {
-            staticClass: "btn btn-flat white-text btn-small waves-effect orange"
-          },
-          [_vm._v("Simpan")]
-        )
-      ])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -63866,13 +68957,30 @@ var render = function() {
                             _c(
                               "tbody",
                               [
+                                !_vm.loadingModal && _vm.ordersModal.length < 1
+                                  ? _c("tr", [
+                                      _c(
+                                        "td",
+                                        {
+                                          staticClass: "center-align",
+                                          attrs: { colspan: "4" }
+                                        },
+                                        [
+                                          _vm._v(
+                                            "\n                                        Data belum tersedia\n                                    "
+                                          )
+                                        ]
+                                      )
+                                    ])
+                                  : _vm._e(),
+                                _vm._v(" "),
                                 _vm.loadingModal
                                   ? _c("tr", [
                                       _c(
                                         "td",
                                         {
                                           staticClass: "center-align",
-                                          attrs: { colspan: "3" }
+                                          attrs: { colspan: "4" }
                                         },
                                         [
                                           _vm._v(
@@ -64117,7 +69225,11 @@ var render = function() {
                       "a",
                       {
                         staticClass: "waves-effect waves-green btn",
-                        attrs: { href: "#!", disabled: _vm.loadingModal },
+                        attrs: {
+                          href: "#!",
+                          disabled:
+                            _vm.loadingModal || _vm.ordersModal.length < 1
+                        },
                         on: {
                           click: function($event) {
                             return _vm.printSuratJalan(_vm.customerModal.order)
@@ -64188,9 +69300,23 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("thead", [
       _c("tr", [
-        _c("th", { staticClass: "left-align" }, [_vm._v("Product")]),
+        _c("th", { staticClass: "left-align" }, [
+          _vm._v("Product "),
+          _c("span", [
+            _c("i", { staticClass: "tiny material-icons red-text" }, [
+              _vm._v("edit")
+            ])
+          ])
+        ]),
         _vm._v(" "),
-        _c("th", { staticClass: "center-align" }, [_vm._v("Qty")]),
+        _c("th", { staticClass: "center-align" }, [
+          _vm._v("Qty "),
+          _c("span", [
+            _c("i", { staticClass: "tiny material-icons red-text" }, [
+              _vm._v("edit")
+            ])
+          ])
+        ]),
         _vm._v(" "),
         _c("th", { staticClass: "right-align" }, [_vm._v("Price")]),
         _vm._v(" "),
@@ -64424,7 +69550,7 @@ var render = function() {
                   on: {
                     click: function($event) {
                       $event.preventDefault()
-                      return _vm.show($event)
+                      return _vm.$router.push({ name: "ADD" })
                     }
                   }
                 },
@@ -64475,28 +69601,523 @@ var render = function() {
                 _vm._v(" "),
                 !_vm.loadingManage
                   ? _c("tr", [_vm._m(2)])
-                  : _vm._l(_vm.manageItems, function(item) {
+                  : _vm._l(_vm.manageItems, function(item, index) {
                       return _c("tr", { key: item.uniqid }, [
-                        _c("td", [_vm._v(_vm._s(item.branch))]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v(_vm._s(item.product))]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v(_vm._s(item.type))]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v(_vm._s(item.category))]),
-                        _vm._v(" "),
                         _c("td", [
                           _vm._v(
-                            "Rp. " +
-                              _vm._s(parseInt(item.price).toLocaleString("id"))
+                            "\n                    " +
+                              _vm._s(item.branch) +
+                              "\n                "
                           )
                         ]),
                         _vm._v(" "),
-                        _c("td", [_vm._v(_vm._s(item.stock) + " item")]),
+                        _c("td", [
+                          !item.productEdit
+                            ? _c(
+                                "span",
+                                {
+                                  on: {
+                                    dblclick: function($event) {
+                                      return _vm.changeEdit(
+                                        item.uniqid,
+                                        "product"
+                                      )
+                                    }
+                                  }
+                                },
+                                [_vm._v(_vm._s(item.product))]
+                              )
+                            : _c(
+                                "div",
+                                {
+                                  staticClass: "input-field col s12",
+                                  on: {
+                                    dblclick: function($event) {
+                                      return _vm.cancelEdit(
+                                        item.uniqid,
+                                        "product"
+                                      )
+                                    }
+                                  }
+                                },
+                                [
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.$v.product.$model,
+                                        expression: "$v.product.$model"
+                                      }
+                                    ],
+                                    staticClass: "validate",
+                                    attrs: { id: "product", type: "text" },
+                                    domProps: { value: _vm.$v.product.$model },
+                                    on: {
+                                      keyup: function($event) {
+                                        if (
+                                          !$event.type.indexOf("key") &&
+                                          _vm._k(
+                                            $event.keyCode,
+                                            "enter",
+                                            13,
+                                            $event.key,
+                                            "Enter"
+                                          )
+                                        ) {
+                                          return null
+                                        }
+                                        return _vm.editDataProduct(
+                                          item.uniqid,
+                                          "product"
+                                        )
+                                      },
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.$set(
+                                          _vm.$v.product,
+                                          "$model",
+                                          $event.target.value
+                                        )
+                                      }
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c("label", { attrs: { for: "product" } }, [
+                                    _vm._v("Product")
+                                  ]),
+                                  _vm._v(" "),
+                                  !_vm.$v.product.required
+                                    ? _c(
+                                        "span",
+                                        { staticClass: "red-text helper-text" },
+                                        [_vm._v("Tidak boleh kosong!")]
+                                      )
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  !_vm.$v.product.minLength
+                                    ? _c(
+                                        "span",
+                                        { staticClass: "red-text helper-text" },
+                                        [_vm._v("Minimal 5 karakter!")]
+                                      )
+                                    : _vm._e()
+                                ]
+                              )
+                        ]),
                         _vm._v(" "),
-                        _c("td", [_vm._v(_vm._s(item.sales) + " Item")]),
+                        _c("td", [
+                          !item.typeEdit
+                            ? _c(
+                                "span",
+                                {
+                                  on: {
+                                    dblclick: function($event) {
+                                      return _vm.changeEdit(item.uniqid, "type")
+                                    }
+                                  }
+                                },
+                                [_vm._v(_vm._s(item.type))]
+                              )
+                            : _c(
+                                "div",
+                                {
+                                  staticClass: "input-field col s12",
+                                  on: {
+                                    dblclick: function($event) {
+                                      return _vm.cancelEdit(item.uniqid, "type")
+                                    }
+                                  }
+                                },
+                                [
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.$v.type.$model,
+                                        expression: "$v.type.$model"
+                                      }
+                                    ],
+                                    staticClass: "validate",
+                                    attrs: { id: "type", type: "text" },
+                                    domProps: { value: _vm.$v.type.$model },
+                                    on: {
+                                      keyup: function($event) {
+                                        if (
+                                          !$event.type.indexOf("key") &&
+                                          _vm._k(
+                                            $event.keyCode,
+                                            "enter",
+                                            13,
+                                            $event.key,
+                                            "Enter"
+                                          )
+                                        ) {
+                                          return null
+                                        }
+                                        return _vm.editDataProduct(
+                                          item.uniqid,
+                                          "type"
+                                        )
+                                      },
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.$set(
+                                          _vm.$v.type,
+                                          "$model",
+                                          $event.target.value
+                                        )
+                                      }
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c("label", { attrs: { for: "type" } }, [
+                                    _vm._v("Type")
+                                  ]),
+                                  _vm._v(" "),
+                                  !_vm.$v.type.required
+                                    ? _c(
+                                        "span",
+                                        { staticClass: "red-text helper-text" },
+                                        [_vm._v("Tidak boleh kosong!")]
+                                      )
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  !_vm.$v.type.minLength
+                                    ? _c(
+                                        "span",
+                                        { staticClass: "red-text helper-text" },
+                                        [_vm._v("Minimal 5 karakter!")]
+                                      )
+                                    : _vm._e()
+                                ]
+                              )
+                        ]),
                         _vm._v(" "),
-                        _vm._m(3, true)
+                        _c("td", [
+                          !item.categoryEdit
+                            ? _c(
+                                "span",
+                                {
+                                  on: {
+                                    dblclick: function($event) {
+                                      return _vm.changeEdit(
+                                        item.uniqid,
+                                        "category"
+                                      )
+                                    }
+                                  }
+                                },
+                                [_vm._v(_vm._s(item.category))]
+                              )
+                            : _c(
+                                "div",
+                                {
+                                  staticClass: "input-field col s12",
+                                  on: {
+                                    dblclick: function($event) {
+                                      return _vm.cancelEdit(
+                                        item.uniqid,
+                                        "category"
+                                      )
+                                    }
+                                  }
+                                },
+                                [
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.$v.category.$model,
+                                        expression: "$v.category.$model"
+                                      }
+                                    ],
+                                    staticClass: "validate",
+                                    attrs: { id: "category", type: "text" },
+                                    domProps: { value: _vm.$v.category.$model },
+                                    on: {
+                                      keyup: function($event) {
+                                        if (
+                                          !$event.type.indexOf("key") &&
+                                          _vm._k(
+                                            $event.keyCode,
+                                            "enter",
+                                            13,
+                                            $event.key,
+                                            "Enter"
+                                          )
+                                        ) {
+                                          return null
+                                        }
+                                        return _vm.editDataProduct(
+                                          item.uniqid,
+                                          "category"
+                                        )
+                                      },
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.$set(
+                                          _vm.$v.category,
+                                          "$model",
+                                          $event.target.value
+                                        )
+                                      }
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c("label", { attrs: { for: "category" } }, [
+                                    _vm._v("Category")
+                                  ]),
+                                  _vm._v(" "),
+                                  !_vm.$v.category.required
+                                    ? _c(
+                                        "span",
+                                        { staticClass: "red-text helper-text" },
+                                        [_vm._v("Tidak boleh kosong!")]
+                                      )
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  !_vm.$v.category.minLength
+                                    ? _c(
+                                        "span",
+                                        { staticClass: "red-text helper-text" },
+                                        [_vm._v("Minimal 5 karakter!")]
+                                      )
+                                    : _vm._e()
+                                ]
+                              )
+                        ]),
+                        _vm._v(" "),
+                        _c("td", [
+                          !item.priceEdit
+                            ? _c(
+                                "span",
+                                {
+                                  on: {
+                                    dblclick: function($event) {
+                                      return _vm.changeEdit(
+                                        item.uniqid,
+                                        "price"
+                                      )
+                                    }
+                                  }
+                                },
+                                [
+                                  _vm._v(
+                                    "Rp. " +
+                                      _vm._s(
+                                        parseInt(item.price).toLocaleString(
+                                          "id"
+                                        )
+                                      )
+                                  )
+                                ]
+                              )
+                            : _c(
+                                "div",
+                                {
+                                  staticClass: "input-field col s12",
+                                  on: {
+                                    dblclick: function($event) {
+                                      return _vm.cancelEdit(
+                                        item.uniqid,
+                                        "price"
+                                      )
+                                    }
+                                  }
+                                },
+                                [
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.$v.price.$model,
+                                        expression: "$v.price.$model"
+                                      }
+                                    ],
+                                    staticClass: "validate",
+                                    attrs: { id: "price", type: "text" },
+                                    domProps: { value: _vm.$v.price.$model },
+                                    on: {
+                                      keyup: function($event) {
+                                        if (
+                                          !$event.type.indexOf("key") &&
+                                          _vm._k(
+                                            $event.keyCode,
+                                            "enter",
+                                            13,
+                                            $event.key,
+                                            "Enter"
+                                          )
+                                        ) {
+                                          return null
+                                        }
+                                        return _vm.editDataProduct(
+                                          item.uniqid,
+                                          "price"
+                                        )
+                                      },
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.$set(
+                                          _vm.$v.price,
+                                          "$model",
+                                          $event.target.value
+                                        )
+                                      }
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c("label", { attrs: { for: "price" } }, [
+                                    _vm._v("Price")
+                                  ]),
+                                  _vm._v(" "),
+                                  !_vm.$v.price.required
+                                    ? _c(
+                                        "span",
+                                        { staticClass: "red-text helper-text" },
+                                        [_vm._v(_vm._s(_vm.errPrice))]
+                                      )
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  !_vm.$v.price.minLength
+                                    ? _c(
+                                        "span",
+                                        { staticClass: "red-text helper-text" },
+                                        [_vm._v("Minimal 3 karakter!")]
+                                      )
+                                    : _vm._e()
+                                ]
+                              )
+                        ]),
+                        _vm._v(" "),
+                        _c("td", [
+                          !item.stockEdit
+                            ? _c(
+                                "span",
+                                {
+                                  on: {
+                                    dblclick: function($event) {
+                                      return _vm.changeEdit(
+                                        item.uniqid,
+                                        "stock"
+                                      )
+                                    }
+                                  }
+                                },
+                                [_vm._v(_vm._s(item.stock) + " item")]
+                              )
+                            : _c(
+                                "div",
+                                {
+                                  staticClass: "input-field col s12",
+                                  on: {
+                                    dblclick: function($event) {
+                                      return _vm.cancelEdit(
+                                        item.uniqid,
+                                        "stock"
+                                      )
+                                    }
+                                  }
+                                },
+                                [
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.$v.stock.$model,
+                                        expression: "$v.stock.$model"
+                                      }
+                                    ],
+                                    staticClass: "validate",
+                                    attrs: { id: "stock", type: "text" },
+                                    domProps: { value: _vm.$v.stock.$model },
+                                    on: {
+                                      keyup: function($event) {
+                                        if (
+                                          !$event.type.indexOf("key") &&
+                                          _vm._k(
+                                            $event.keyCode,
+                                            "enter",
+                                            13,
+                                            $event.key,
+                                            "Enter"
+                                          )
+                                        ) {
+                                          return null
+                                        }
+                                        return _vm.editDataProduct(
+                                          item.uniqid,
+                                          "stock"
+                                        )
+                                      },
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.$set(
+                                          _vm.$v.stock,
+                                          "$model",
+                                          $event.target.value
+                                        )
+                                      }
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c("label", { attrs: { for: "stock" } }, [
+                                    _vm._v("Stock")
+                                  ]),
+                                  _vm._v(" "),
+                                  !_vm.$v.stock.required
+                                    ? _c(
+                                        "span",
+                                        { staticClass: "red-text helper-text" },
+                                        [_vm._v(_vm._s(_vm.errStock))]
+                                      )
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  !_vm.$v.stock.minLength
+                                    ? _c(
+                                        "span",
+                                        { staticClass: "red-text helper-text" },
+                                        [_vm._v("Minimal 1 karakter!")]
+                                      )
+                                    : _vm._e()
+                                ]
+                              )
+                        ]),
+                        _vm._v(" "),
+                        _c("td", [
+                          _c("span", [_vm._v(_vm._s(item.sales) + " Item")])
+                        ]),
+                        _vm._v(" "),
+                        _c("td", [
+                          _c(
+                            "i",
+                            {
+                              staticClass: "tiny material-icons red-text",
+                              on: {
+                                click: function($event) {
+                                  $event.preventDefault()
+                                  return _vm.deleteProduct(item.uniqid, index)
+                                }
+                              }
+                            },
+                            [_vm._v("delete")]
+                          )
+                        ])
                       ])
                     })
               ],
@@ -64506,261 +70127,7 @@ var render = function() {
           _vm._v(" "),
           _vm.loadingManage && _vm.manageItems.length > 0
             ? _c("FooterItem")
-            : _vm._e(),
-          _vm._v(" "),
-          _c(
-            "div",
-            {
-              staticClass: "modal modal-fixed-footer",
-              attrs: { id: "modal1" }
-            },
-            [
-              _c("div", { staticClass: "modal-content" }, [
-                _c("div", { staticClass: "row" }, [
-                  _c("div", { staticClass: "col s12" }, [
-                    _vm._m(4),
-                    _vm._v(" "),
-                    _c(
-                      "div",
-                      { staticClass: "col s12", attrs: { id: "test-swipe-1" } },
-                      [
-                        _c("form", { staticClass: "col s12" }, [
-                          _c("div", { staticClass: "row" }, [
-                            _c("div", { staticClass: "input-field col s12" }, [
-                              _c("input", {
-                                directives: [
-                                  {
-                                    name: "model",
-                                    rawName: "v-model",
-                                    value: _vm.$v.product.$model,
-                                    expression: "$v.product.$model"
-                                  }
-                                ],
-                                attrs: { id: "product", type: "text" },
-                                domProps: { value: _vm.$v.product.$model },
-                                on: {
-                                  input: function($event) {
-                                    if ($event.target.composing) {
-                                      return
-                                    }
-                                    _vm.$set(
-                                      _vm.$v.product,
-                                      "$model",
-                                      $event.target.value
-                                    )
-                                  }
-                                }
-                              }),
-                              _vm._v(" "),
-                              _c("label", { attrs: { for: "product" } }, [
-                                _vm._v("Product")
-                              ]),
-                              _vm._v(" "),
-                              !_vm.$v.product.required
-                                ? _c(
-                                    "span",
-                                    { staticClass: "red-text helper-text" },
-                                    [_vm._v("Tidak boleh kosong!")]
-                                  )
-                                : _vm._e(),
-                              _vm._v(" "),
-                              !_vm.$v.product.minLength
-                                ? _c(
-                                    "span",
-                                    { staticClass: "red-text helper-text" },
-                                    [_vm._v("Minimal 5 karakter!")]
-                                  )
-                                : _vm._e()
-                            ])
-                          ]),
-                          _vm._v(" "),
-                          _c(
-                            "div",
-                            {
-                              staticClass: "row",
-                              staticStyle: { "margin-top": "-20px" }
-                            },
-                            [
-                              _c("div", { staticClass: "input-field col s6" }, [
-                                _c("input", {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value: _vm.$v.price.$model,
-                                      expression: "$v.price.$model"
-                                    }
-                                  ],
-                                  attrs: { id: "price", type: "text" },
-                                  domProps: { value: _vm.$v.price.$model },
-                                  on: {
-                                    input: function($event) {
-                                      if ($event.target.composing) {
-                                        return
-                                      }
-                                      _vm.$set(
-                                        _vm.$v.price,
-                                        "$model",
-                                        $event.target.value
-                                      )
-                                    }
-                                  }
-                                }),
-                                _vm._v(" "),
-                                _c("label", { attrs: { for: "price" } }, [
-                                  _vm._v("Price")
-                                ]),
-                                _vm._v(" "),
-                                !_vm.$v.price.required
-                                  ? _c(
-                                      "span",
-                                      { staticClass: "red-text helper-text" },
-                                      [_vm._v(_vm._s(_vm.errPrice))]
-                                    )
-                                  : _vm._e(),
-                                _vm._v(" "),
-                                !_vm.$v.price.minLength
-                                  ? _c(
-                                      "span",
-                                      { staticClass: "red-text helper-text" },
-                                      [_vm._v("Minimal 3 karakter!")]
-                                    )
-                                  : _vm._e()
-                              ]),
-                              _vm._v(" "),
-                              _c("div", { staticClass: "input-field col s6" }, [
-                                _c("input", {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value: _vm.$v.stock.$model,
-                                      expression: "$v.stock.$model"
-                                    }
-                                  ],
-                                  attrs: { id: "stock", type: "text" },
-                                  domProps: { value: _vm.$v.stock.$model },
-                                  on: {
-                                    input: function($event) {
-                                      if ($event.target.composing) {
-                                        return
-                                      }
-                                      _vm.$set(
-                                        _vm.$v.stock,
-                                        "$model",
-                                        $event.target.value
-                                      )
-                                    }
-                                  }
-                                }),
-                                _vm._v(" "),
-                                _c("label", { attrs: { for: "stock" } }, [
-                                  _vm._v("Stock")
-                                ]),
-                                _vm._v(" "),
-                                !_vm.$v.stock.required
-                                  ? _c(
-                                      "span",
-                                      { staticClass: "red-text helper-text" },
-                                      [_vm._v("Tidak boleh kosong!")]
-                                    )
-                                  : _vm._e(),
-                                _vm._v(" "),
-                                !_vm.$v.stock.minLength
-                                  ? _c(
-                                      "span",
-                                      { staticClass: "red-text helper-text" },
-                                      [_vm._v("Minimal 1 karakter!")]
-                                    )
-                                  : _vm._e()
-                              ])
-                            ]
-                          )
-                        ])
-                      ]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "div",
-                      { staticClass: "col s12", attrs: { id: "test-swipe-2" } },
-                      [
-                        _c("form", { attrs: { action: "#" } }, [
-                          _c("br"),
-                          _vm._v(" "),
-                          _vm._m(5),
-                          _vm._v(" "),
-                          _c("br"),
-                          _vm._v(" "),
-                          _c("div", { staticClass: "row" }, [
-                            _c(
-                              "form",
-                              {
-                                attrs: {
-                                  action: "",
-                                  enctype: "multipart/form-data"
-                                }
-                              },
-                              [
-                                _c("div", { staticClass: "col s9 m9 l9" }, [
-                                  _c(
-                                    "div",
-                                    { staticClass: "file-field input-field" },
-                                    [
-                                      _c("div", { staticClass: "btn" }, [
-                                        _c("span", [_vm._v("File")]),
-                                        _vm._v(" "),
-                                        _c("input", {
-                                          ref: "file",
-                                          attrs: { type: "file", name: "file" }
-                                        })
-                                      ]),
-                                      _vm._v(" "),
-                                      _c(
-                                        "div",
-                                        { staticClass: "file-path-wrapper" },
-                                        [
-                                          _c("input", {
-                                            ref: "files",
-                                            staticClass: "file-path validate",
-                                            attrs: {
-                                              type: "text",
-                                              placeholder:
-                                                "Upload one or more files excel"
-                                            }
-                                          })
-                                        ]
-                                      )
-                                    ]
-                                  )
-                                ]),
-                                _vm._v(" "),
-                                _vm._m(6)
-                              ]
-                            )
-                          ])
-                        ])
-                      ]
-                    )
-                  ])
-                ])
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "modal-footer" }, [
-                _c(
-                  "a",
-                  {
-                    staticClass:
-                      "modal-close waves-effect waves-green btn-flat",
-                    attrs: {
-                      href: "#!",
-                      disabled: _vm.$v.validationGroup.$invalid || _vm.disabled
-                    }
-                  },
-                  [_vm._v("Save data")]
-                )
-              ])
-            ]
-          )
+            : _vm._e()
         ],
         1
       )
@@ -64775,15 +70142,50 @@ var staticRenderFns = [
       _c("tr", [
         _c("th", [_vm._v("Branches")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Product")]),
+        _c("th", [
+          _vm._v("Product "),
+          _c("span", [
+            _c("i", { staticClass: "tiny material-icons red-text" }, [
+              _vm._v("edit")
+            ])
+          ])
+        ]),
         _vm._v(" "),
-        _c("th", [_vm._v("Type")]),
+        _c("th", [
+          _vm._v("Type "),
+          _c("span", [
+            _c("i", { staticClass: "tiny material-icons red-text" }, [
+              _vm._v("edit")
+            ])
+          ])
+        ]),
         _vm._v(" "),
-        _c("th", [_vm._v("Category")]),
+        _c("th", [
+          _vm._v("Category "),
+          _c("span", [
+            _c("i", { staticClass: "tiny material-icons red-text" }, [
+              _vm._v("edit")
+            ])
+          ])
+        ]),
         _vm._v(" "),
-        _c("th", [_vm._v("Price")]),
+        _c("th", [
+          _vm._v("Price "),
+          _c("span", [
+            _c("i", { staticClass: "tiny material-icons red-text" }, [
+              _vm._v("edit")
+            ])
+          ])
+        ]),
         _vm._v(" "),
-        _c("th", [_vm._v("Stock")]),
+        _c("th", [
+          _vm._v("Stock "),
+          _c("span", [
+            _c("i", { staticClass: "tiny material-icons red-text" }, [
+              _vm._v("edit")
+            ])
+          ])
+        ]),
         _vm._v(" "),
         _c("th", [_vm._v("Sales")])
       ])
@@ -64809,66 +70211,6 @@ var staticRenderFns = [
       _c("div", { staticClass: "center-align animated flash loader" }, [
         _vm._v("\n                        Loading...\n                    ")
       ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("td", [
-      _c("i", { staticClass: "tiny material-icons blue-text" }, [
-        _vm._v("edit")
-      ]),
-      _vm._v("  \n                    "),
-      _c("i", { staticClass: "tiny material-icons red-text" }, [
-        _vm._v("delete")
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("ul", { staticClass: "tabs", attrs: { id: "tabs-swipe-demo" } }, [
-      _c("li", { staticClass: "tab col s6" }, [
-        _c("a", { staticClass: "active", attrs: { href: "#test-swipe-1" } }, [
-          _vm._v("Add Items")
-        ])
-      ]),
-      _vm._v(" "),
-      _c("li", { staticClass: "tab col s6" }, [
-        _c("a", { attrs: { href: "#test-swipe-2" } }, [_vm._v("Upload Items")])
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", [
-      _c("p", { staticClass: "green-text" }, [
-        _c("strong", [_vm._v("Perhatian!")])
-      ]),
-      _vm._v(" "),
-      _c("p", [
-        _vm._v("\n                                    Silahkan anda "),
-        _c("a", { attrs: { href: "#" } }, [_vm._v("unduh")]),
-        _vm._v(
-          " file ini, lalu anda inputkan data - data items (product tinta) \n                                    yang akan anda jual ke dalam file tersebut, kemudian silahkan anda upload \n                                    kembali melalui form dibawah ini.\n                                "
-        )
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col s3 m3 l3" }, [
-      _c(
-        "a",
-        { staticClass: "btn waves-block red upload", attrs: { href: "#" } },
-        [_vm._v("Upload")]
-      )
     ])
   }
 ]
@@ -68031,6 +73373,59 @@ if (inBrowser && window.Vue) {
 
 /* harmony default export */ __webpack_exports__["default"] = (VueRouter);
 
+
+/***/ }),
+
+/***/ "./node_modules/vue-sweetalert2/dist/index.js":
+/*!****************************************************!*\
+  !*** ./node_modules/vue-sweetalert2/dist/index.js ***!
+  \****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var sweetalert2__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! sweetalert2 */ "./node_modules/sweetalert2/dist/sweetalert2.all.js");
+/* harmony import */ var sweetalert2__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(sweetalert2__WEBPACK_IMPORTED_MODULE_0__);
+
+var VueSweetalert2 = (function () {
+    function VueSweetalert2() {
+    }
+    VueSweetalert2.install = function (vue, options) {
+        var _swal = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i] = arguments[_i];
+            }
+            if (options) {
+                var mixed = sweetalert2__WEBPACK_IMPORTED_MODULE_0___default.a.mixin(options);
+                return mixed.fire.apply(mixed, args);
+            }
+            return sweetalert2__WEBPACK_IMPORTED_MODULE_0___default.a.fire.apply(sweetalert2__WEBPACK_IMPORTED_MODULE_0___default.a, args);
+        };
+        var _loop_1 = function (k) {
+            if (sweetalert2__WEBPACK_IMPORTED_MODULE_0___default.a.hasOwnProperty(k) && typeof sweetalert2__WEBPACK_IMPORTED_MODULE_0___default.a[k] === 'function') {
+                _swal[k] = function () {
+                    var args = [];
+                    for (var _i = 0; _i < arguments.length; _i++) {
+                        args[_i] = arguments[_i];
+                    }
+                    return sweetalert2__WEBPACK_IMPORTED_MODULE_0___default.a[k].apply(sweetalert2__WEBPACK_IMPORTED_MODULE_0___default.a, args);
+                };
+            }
+        };
+        for (var k in sweetalert2__WEBPACK_IMPORTED_MODULE_0___default.a) {
+            _loop_1(k);
+        }
+        vue['swal'] = _swal;
+        if (!vue.prototype.hasOwnProperty('$swal')) {
+            vue.prototype.$swal = _swal;
+        }
+    };
+    return VueSweetalert2;
+}());
+/* harmony default export */ __webpack_exports__["default"] = (VueSweetalert2);
+//# sourceMappingURL=index.js.map
 
 /***/ }),
 
@@ -83085,11 +88480,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm.js");
 /* harmony import */ var vue_number_animation__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vue-number-animation */ "./node_modules/vue-number-animation/index.js");
 /* harmony import */ var _components_MainApp_vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/MainApp.vue */ "./resources/js/components/MainApp.vue");
-/* harmony import */ var materialize_css_dist_js_materialize_min__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! materialize-css/dist/js/materialize.min */ "./node_modules/materialize-css/dist/js/materialize.min.js");
-/* harmony import */ var materialize_css_dist_js_materialize_min__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(materialize_css_dist_js_materialize_min__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var _routes__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./routes */ "./resources/js/routes.js");
-/* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./store */ "./resources/js/store.js");
+/* harmony import */ var vue_sweetalert2__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! vue-sweetalert2 */ "./node_modules/vue-sweetalert2/dist/index.js");
+/* harmony import */ var materialize_css_dist_js_materialize_min__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! materialize-css/dist/js/materialize.min */ "./node_modules/materialize-css/dist/js/materialize.min.js");
+/* harmony import */ var materialize_css_dist_js_materialize_min__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(materialize_css_dist_js_materialize_min__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var sweetalert2_dist_sweetalert2_min_css__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! sweetalert2/dist/sweetalert2.min.css */ "./node_modules/sweetalert2/dist/sweetalert2.min.css");
+/* harmony import */ var sweetalert2_dist_sweetalert2_min_css__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(sweetalert2_dist_sweetalert2_min_css__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var _routes__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./routes */ "./resources/js/routes.js");
+/* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./store */ "./resources/js/store.js");
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
+
+
 
 
 
@@ -83103,18 +88503,19 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_router__WEBPACK_IMPORTED_MODULE_3__["default"]);
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_number_animation__WEBPACK_IMPORTED_MODULE_4__["default"]);
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuelidate__WEBPACK_IMPORTED_MODULE_2___default.a);
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_sweetalert2__WEBPACK_IMPORTED_MODULE_6__["default"]);
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.filter('dateformat', function (value) {
   return moment__WEBPACK_IMPORTED_MODULE_1___default()(value).format('D MMMM, Y');
 });
 var Bus = new vue__WEBPACK_IMPORTED_MODULE_0___default.a();
 var router = new vue_router__WEBPACK_IMPORTED_MODULE_3__["default"]({
   mode: 'history',
-  routes: _routes__WEBPACK_IMPORTED_MODULE_7__["routes"]
+  routes: _routes__WEBPACK_IMPORTED_MODULE_9__["routes"]
 });
 var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
   el: '#app',
   router: router,
-  store: _store__WEBPACK_IMPORTED_MODULE_8__["store"],
+  store: _store__WEBPACK_IMPORTED_MODULE_10__["store"],
   components: {
     MainApp: _components_MainApp_vue__WEBPACK_IMPORTED_MODULE_5__["default"]
   }
@@ -84032,6 +89433,93 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/page/dasboard/items/AddItems.vue":
+/*!******************************************************************!*\
+  !*** ./resources/js/components/page/dasboard/items/AddItems.vue ***!
+  \******************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _AddItems_vue_vue_type_template_id_4afd5850_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AddItems.vue?vue&type=template&id=4afd5850&scoped=true& */ "./resources/js/components/page/dasboard/items/AddItems.vue?vue&type=template&id=4afd5850&scoped=true&");
+/* harmony import */ var _AddItems_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AddItems.vue?vue&type=script&lang=js& */ "./resources/js/components/page/dasboard/items/AddItems.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _AddItems_vue_vue_type_style_index_0_id_4afd5850_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./AddItems.vue?vue&type=style&index=0&id=4afd5850&scoped=true&lang=css& */ "./resources/js/components/page/dasboard/items/AddItems.vue?vue&type=style&index=0&id=4afd5850&scoped=true&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _AddItems_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _AddItems_vue_vue_type_template_id_4afd5850_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _AddItems_vue_vue_type_template_id_4afd5850_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "4afd5850",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/page/dasboard/items/AddItems.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/page/dasboard/items/AddItems.vue?vue&type=script&lang=js&":
+/*!*******************************************************************************************!*\
+  !*** ./resources/js/components/page/dasboard/items/AddItems.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AddItems_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../../node_modules/vue-loader/lib??vue-loader-options!./AddItems.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/page/dasboard/items/AddItems.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AddItems_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/page/dasboard/items/AddItems.vue?vue&type=style&index=0&id=4afd5850&scoped=true&lang=css&":
+/*!***************************************************************************************************************************!*\
+  !*** ./resources/js/components/page/dasboard/items/AddItems.vue?vue&type=style&index=0&id=4afd5850&scoped=true&lang=css& ***!
+  \***************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_AddItems_vue_vue_type_style_index_0_id_4afd5850_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../../node_modules/style-loader!../../../../../../node_modules/css-loader??ref--6-1!../../../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../../../node_modules/postcss-loader/src??ref--6-2!../../../../../../node_modules/vue-loader/lib??vue-loader-options!./AddItems.vue?vue&type=style&index=0&id=4afd5850&scoped=true&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/page/dasboard/items/AddItems.vue?vue&type=style&index=0&id=4afd5850&scoped=true&lang=css&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_AddItems_vue_vue_type_style_index_0_id_4afd5850_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_AddItems_vue_vue_type_style_index_0_id_4afd5850_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_AddItems_vue_vue_type_style_index_0_id_4afd5850_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_AddItems_vue_vue_type_style_index_0_id_4afd5850_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_AddItems_vue_vue_type_style_index_0_id_4afd5850_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+
+/***/ "./resources/js/components/page/dasboard/items/AddItems.vue?vue&type=template&id=4afd5850&scoped=true&":
+/*!*************************************************************************************************************!*\
+  !*** ./resources/js/components/page/dasboard/items/AddItems.vue?vue&type=template&id=4afd5850&scoped=true& ***!
+  \*************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AddItems_vue_vue_type_template_id_4afd5850_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../../node_modules/vue-loader/lib??vue-loader-options!./AddItems.vue?vue&type=template&id=4afd5850&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/page/dasboard/items/AddItems.vue?vue&type=template&id=4afd5850&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AddItems_vue_vue_type_template_id_4afd5850_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AddItems_vue_vue_type_template_id_4afd5850_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
 /***/ "./resources/js/components/page/dasboard/items/PreLoad.vue":
 /*!*****************************************************************!*\
   !*** ./resources/js/components/page/dasboard/items/PreLoad.vue ***!
@@ -84831,7 +90319,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_Login_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/Login.vue */ "./resources/js/components/Login.vue");
 /* harmony import */ var _components_page_Home_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/page/Home.vue */ "./resources/js/components/page/Home.vue");
 /* harmony import */ var _components_page_kas_Cash__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/page/kas/Cash */ "./resources/js/components/page/kas/Cash.vue");
-/* harmony import */ var _components_page_pos_PosManagement_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/page/pos/PosManagement.vue */ "./resources/js/components/page/pos/PosManagement.vue");
+/* harmony import */ var _components_page_dasboard_items_AddItems__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/page/dasboard/items/AddItems */ "./resources/js/components/page/dasboard/items/AddItems.vue");
+/* harmony import */ var _components_page_pos_PosManagement_vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/page/pos/PosManagement.vue */ "./resources/js/components/page/pos/PosManagement.vue");
+
 
 
 
@@ -84851,7 +90341,11 @@ var routes = [{
 }, {
   path: '/management',
   name: 'POS',
-  component: _components_page_pos_PosManagement_vue__WEBPACK_IMPORTED_MODULE_3__["default"]
+  component: _components_page_pos_PosManagement_vue__WEBPACK_IMPORTED_MODULE_4__["default"]
+}, {
+  path: '/addItems',
+  name: 'ADD',
+  component: _components_page_dasboard_items_AddItems__WEBPACK_IMPORTED_MODULE_3__["default"]
 }];
 
 /***/ }),
@@ -84934,7 +90428,9 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
     items: {
       product: '',
       price: '',
-      stock: ''
+      stock: '',
+      loadingUpload: false,
+      progressBar: 0
     }
   },
   getters: {
@@ -85050,6 +90546,12 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
     },
     stock: function stock(state) {
       return state.items.stock;
+    },
+    loadingUpload: function loadingUpload(state) {
+      return state.items.loadingUpload;
+    },
+    progressBar: function progressBar(state) {
+      return state.items.progressBar;
     }
   },
   mutations: {
@@ -85233,6 +90735,16 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
           stock: val.detail_stock.last_stock
         }, {
           branch: val.detail_branch.branch
+        }, {
+          productEdit: false
+        }, {
+          typeEdit: false
+        }, {
+          categoryEdit: false
+        }, {
+          priceEdit: false
+        }, {
+          stockEdit: false
         }));
       });
       var pagination = {
@@ -85248,6 +90760,13 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
     SET_DATA_MANAGEMENT_PAGINATION: function SET_DATA_MANAGEMENT_PAGINATION(state, payloadUrlManage) {
       state.management.loadingManage = !state.management.loadingManage;
       store.dispatch('getItemManagement', payloadUrlManage);
+    },
+    SET_DATA_PRODUCTS_AFTER_CREATE: function SET_DATA_PRODUCTS_AFTER_CREATE(state) {
+      state.items.product = state.items.price = state.items.stock = '';
+    },
+    FINISH_UPLOAD_FILE: function FINISH_UPLOAD_FILE(state) {
+      state.items.loadingUpload = !state.items.loadingUpload;
+      state.items.progressBar = 0;
     },
     SET_DATA_SEARCH_ITEM_MANAGEMENT: function SET_DATA_SEARCH_ITEM_MANAGEMENT(state, payloadSearchItem) {
       var url;
@@ -85379,7 +90898,6 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
     getItemManagement: function getItemManagement(_ref13, url) {
       var commit = _ref13.commit;
       axios__WEBPACK_IMPORTED_MODULE_2___default.a.get(url).then(function (res) {
-        console.log(res.data);
         commit('SET_DATA_ITEM_MANAGEMENT', res.data);
       })["catch"](function (err) {
         console.log(err);
@@ -85393,17 +90911,87 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
       var commit = _ref15.commit;
       commit('SET_DATA_SEARCH_ITEM_MANAGEMENT', value);
     },
-    // data customer
-    getDataCustomer: function getDataCustomer(_ref16, url) {
+    saveDataItems: function saveDataItems(_ref16, data) {
       var commit = _ref16.commit;
+      return new Promise(function (resolve, reject) {
+        axios__WEBPACK_IMPORTED_MODULE_2___default.a.post(data.url, {
+          product: data.product,
+          price: data.price,
+          stock: data.stock
+        }).then(function (res) {
+          resolve(res.data);
+          commit('SET_DATA_PRODUCTS_AFTER_CREATE');
+        })["catch"](function (err) {
+          reject(err.response);
+        });
+      });
+    },
+    updateProductsItemsManagement: function updateProductsItemsManagement(_ref17, data) {
+      var commit = _ref17.commit;
+      return new Promise(function (resolve, reject) {
+        axios__WEBPACK_IMPORTED_MODULE_2___default.a.put(data.url, {
+          mode: data.mode,
+          id: data.id,
+          item: data.item
+        }).then(function (res) {
+          resolve(res);
+        })["catch"](function (err) {
+          reject(err);
+        });
+      });
+    },
+    deleteItemProduct: function deleteItemProduct(_ref18, url) {
+      var commit = _ref18.commit;
+      return new Promise(function (resolve, reject) {
+        axios__WEBPACK_IMPORTED_MODULE_2___default.a["delete"](url).then(function (res) {
+          resolve(res.data);
+        })["catch"](function (err) {
+          reject(err);
+        });
+      });
+    },
+    importFile: function importFile(context, excel) {
+      return new Promise(function (resolve, reject) {
+        var data = new FormData();
+        data.append('file', excel);
+        axios__WEBPACK_IMPORTED_MODULE_2___default()({
+          method: 'post',
+          url: 'api/products/file/importFile',
+          data: data,
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          },
+          onUploadProgress: function onUploadProgress(progressEvent) {
+            store.state.items.loadingUpload = true;
+            setTimeout(function () {
+              store.state.items.progressBar = parseInt(Math.round(progressEvent.loaded * 100 / progressEvent.total));
+            }, 1000);
+          }
+        }).then(function (res) {
+          resolve(res.data.status);
+          setTimeout(function () {
+            context.commit("FINISH_UPLOAD_FILE");
+            M.toast({
+              html: res.data.msg
+            });
+          }, 2000);
+        })["catch"](function (err) {
+          context.commit("FINISH_UPLOAD_FILE");
+          reject(false);
+        });
+      });
+    },
+    // data customer
+    getDataCustomer: function getDataCustomer(_ref19, url) {
+      var commit = _ref19.commit;
       axios__WEBPACK_IMPORTED_MODULE_2___default.a.get(url).then(function (res) {
         commit('SET_DATA_CUSTOMER_SALES', res.data);
       })["catch"](function (err) {
         console.log(err.response);
       });
     },
-    detailDataCustomer: function detailDataCustomer(_ref17, data) {
-      var commit = _ref17.commit;
+    detailDataCustomer: function detailDataCustomer(_ref20, data) {
+      var commit = _ref20.commit;
       store.state.customers.loadingDisplay = false;
       axios__WEBPACK_IMPORTED_MODULE_2___default.a.post(data).then(function (res) {
         commit('SET_DATA_CUSTOMER_AFTER_SEARCH', res.data);
@@ -85411,20 +90999,20 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
         console.log(err.response);
       });
     },
-    customerOrderModal: function customerOrderModal(_ref18, id) {
-      var commit = _ref18.commit;
+    customerOrderModal: function customerOrderModal(_ref21, id) {
+      var commit = _ref21.commit;
       commit('SET_DATA_CUSTOMER_MODAL', id);
     },
-    getDetailSalesCustomer: function getDetailSalesCustomer(_ref19, url) {
-      var commit = _ref19.commit;
+    getDetailSalesCustomer: function getDetailSalesCustomer(_ref22, url) {
+      var commit = _ref22.commit;
       axios__WEBPACK_IMPORTED_MODULE_2___default.a.get(url).then(function (res) {
         commit('SET_DATA_CUSTOMER_ORDERS', res.data.data);
       })["catch"](function (err) {
         console.log(err);
       });
     },
-    saveDataCustomerSales: function saveDataCustomerSales(_ref20, url) {
-      var commit = _ref20.commit;
+    saveDataCustomerSales: function saveDataCustomerSales(_ref23, url) {
+      var commit = _ref23.commit;
       return new Promise(function (resolve, reject) {
         axios__WEBPACK_IMPORTED_MODULE_2___default.a.post(url, {
           order: store.state.checkout.order,
@@ -85433,6 +91021,37 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
           branch: store.state.checkout.items
         }).then(function (res) {
           commit('CLEAR_ITEM_PRODUCT_TO_CHECKOUT');
+          resolve(res);
+        })["catch"](function (err) {
+          reject(err);
+        });
+      });
+    },
+    saveDataPenerimaanCash: function saveDataPenerimaanCash(_ref24, data) {
+      var commit = _ref24.commit;
+      return new Promise(function (resolve, reject) {
+        axios__WEBPACK_IMPORTED_MODULE_2___default.a.post(data.url, {
+          order: data.order,
+          metode: data.metode,
+          bank: data.bank,
+          bayar: data.bayar,
+          ket: data.keterangan
+        }).then(function (res) {
+          resolve(res.data);
+        })["catch"](function (err) {
+          reject(err.response);
+        });
+      });
+    },
+    saveDataNewCustomer: function saveDataNewCustomer(_ref25, data) {
+      var commit = _ref25.commit;
+      return new Promise(function (resolve, reject) {
+        axios__WEBPACK_IMPORTED_MODULE_2___default.a.post(data.url, {
+          customer: data.customer,
+          company: data.company,
+          telpon: data.telpon,
+          alamat: data.alamat
+        }).then(function (res) {
           resolve(res);
         })["catch"](function (err) {
           reject(err);

@@ -66,7 +66,9 @@ export const store = new Vuex.Store({
         items: {
             product: '',
             price: '',
-            stock: ''
+            stock: '',
+            loadingUpload: false,
+            progressBar: 0
         }
     },
     getters: {
@@ -217,6 +219,14 @@ export const store = new Vuex.Store({
 
         stock(state){
             return state.items.stock
+        },
+
+        loadingUpload(state){
+            return state.items.loadingUpload
+        },
+
+        progressBar(state){
+            return state.items.progressBar
         }
     },
     mutations: {
@@ -408,7 +418,15 @@ export const store = new Vuex.Store({
         SET_DATA_ITEM_MANAGEMENT(state, payloadItemManagement){
             const item = []
             payloadItemManagement.data.map(val => {
-                item.push(Object.assign({}, val.detail_product, {stock:val.detail_stock.last_stock},{branch: val.detail_branch.branch}))
+                item.push(Object.assign({}, val.detail_product, 
+                    {stock:val.detail_stock.last_stock},
+                    {branch: val.detail_branch.branch},
+                    {productEdit: false},
+                    {typeEdit: false},
+                    {categoryEdit: false},
+                    {priceEdit: false},
+                    {stockEdit: false},
+                ))
             })
 
             const pagination = {
@@ -426,6 +444,15 @@ export const store = new Vuex.Store({
         SET_DATA_MANAGEMENT_PAGINATION(state, payloadUrlManage){
             state.management.loadingManage = !state.management.loadingManage
             store.dispatch('getItemManagement', payloadUrlManage)
+        },
+
+        SET_DATA_PRODUCTS_AFTER_CREATE(state){
+            state.items.product = state.items.price = state.items.stock = ''
+        },
+
+        FINISH_UPLOAD_FILE(state){
+            state.items.loadingUpload = !state.items.loadingUpload
+            state.items.progressBar = 0
         },
 
         SET_DATA_SEARCH_ITEM_MANAGEMENT(state, payloadSearchItem){
@@ -575,7 +602,6 @@ export const store = new Vuex.Store({
         getItemManagement({commit}, url){
             axios.get(url)
                 .then(res => {
-                    console.log(res.data)
                     commit('SET_DATA_ITEM_MANAGEMENT', res.data)
                 }).catch(err => {
                     console.log(err)
@@ -588,6 +614,93 @@ export const store = new Vuex.Store({
 
         searchDataItemManagement({commit}, value){
             commit('SET_DATA_SEARCH_ITEM_MANAGEMENT', value)
+        },
+
+        saveDataItems({commit}, data){
+           return new Promise((resolve, reject) => {
+                axios.post(data.url, {
+                    product: data.product,
+                    price: data.price,
+                    stock: data.stock
+                }).then(res => {
+                    
+                    resolve(res.data)
+                    commit('SET_DATA_PRODUCTS_AFTER_CREATE')
+
+                }).catch(err => {
+                    reject(err.response)
+                })
+           })
+        },
+
+        updateProductsItemsManagement({commit}, data){
+            return new Promise((resolve, reject) => {
+                axios.put(data.url, {
+                    mode: data.mode,
+                    id: data.id,
+                    item: data.item
+                }).then(res => {
+                    
+                    resolve(res)
+
+                }).catch(err => {
+                    
+                    reject(err)
+
+                })
+            })
+        },
+
+        deleteItemProduct({commit}, url){
+            return new Promise((resolve, reject) => {
+                axios.delete(url)
+                    .then(res => {
+
+                        resolve(res.data)
+
+                    }).catch(err => {
+
+                        reject(err)
+
+                    })
+            })
+        },
+
+        importFile(context, excel){
+            return new Promise((resolve,reject) => {
+                let data = new FormData()
+                data.append('file', excel);
+
+                axios({
+                    method: 'post',
+                    url: 'api/products/file/importFile',
+                    data,
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    },
+                    onUploadProgress: (progressEvent) => {
+                        store.state.items.loadingUpload = true
+                        
+                        setTimeout(() => {
+                            store.state.items.progressBar = parseInt(Math.round((progressEvent.loaded * 100) / progressEvent.total))
+                        }, 1000);
+                    }
+                }).then(res => {
+
+                    resolve(res.data.status)
+
+                    setTimeout(() => {
+                        context.commit("FINISH_UPLOAD_FILE")
+                        M.toast({html: res.data.msg})
+                    }, 2000)
+
+                }).catch(err => {
+
+                    context.commit("FINISH_UPLOAD_FILE")
+                    reject(false)
+
+                })
+            })
         },
 
         // data customer
@@ -644,6 +757,43 @@ export const store = new Vuex.Store({
                     
                     reject(err)
 
+                })
+            })
+        },
+
+        saveDataPenerimaanCash({commit}, data){
+            return new Promise((resolve, reject) => {
+                axios.post(data.url, {
+                    order: data.order,
+                    metode: data.metode,
+                    bank: data.bank,
+                    bayar: data.bayar,
+                    ket: data.keterangan
+                }).then(res => {
+                    
+                    resolve(res.data)
+
+                }).catch(err => {
+                    
+                    reject(err.response)
+
+                })
+            })
+        },
+
+        saveDataNewCustomer({commit}, data){
+            return new Promise((resolve, reject) => {
+                axios.post(data.url, {
+                    customer: data.customer,
+                    company: data.company,
+                    telpon: data.telpon,
+                    alamat: data.alamat,
+                }).then(res => {
+                    
+                    resolve(res)
+
+                }).catch(err => {
+                    reject(err)
                 })
             })
         }

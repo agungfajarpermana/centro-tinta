@@ -4,8 +4,10 @@ namespace App\Http\Controllers\API;
 
 use DB;
 use App\Model\Order;
+use App\Model\Branch;
 use App\Model\Product;
 use App\Model\OrderDetail;
+use App\Model\BranchProduct;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Order\OrderCollection as Orders;
@@ -23,7 +25,7 @@ class OrderController extends Controller
     {
         if(!$search){
             $data = Order::where('branch_id', 1)->orderBy('id', 'ASC')->get();
-            $group = collect($data)->groupBy('no_order')->paginate(8);
+            // $group = collect($data)->groupBy('no_order')->paginate(8);
 
             // return response()->json(['data' => $group]);
             return Orders::collection(Order::where('branch_id', 1)->orderBy('id','DESC')->paginate(8));
@@ -129,25 +131,93 @@ class OrderController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        $data = Order::findOrFail($id);
-        $delete = $data->delete();
+        if(!$request->ajax()) dd('Woow, hayo mau ngapain!');
 
-        return response()->json([
-            'status' => true,
-            'msg' => 'Data berhasil di hapus!'
-        ]);
+        try {
+            DB::connection()->getPdo();
+            DB::beginTransaction();
+
+            try {
+                $data   = Order::findOrFail($id);
+                $order  = $data->order_detail()->where('order_id', $id)->get();
+                $orders = collect($order);
+
+                $branch = Branch::where('id', $data->branch_id)->first();
+                
+                $orders->each(function ($item, $key) use ($data, $branch) {
+                    $stock = $branch->branch_product()->where('product_id', $item->product_id)->first();
+                    return BranchProduct::where('branch_id', $data->branch_id)->where('product_id', $item->product_id)->update([
+                        'stok_keluar'   => ($stock->stok_keluar - $item->qty),
+                        'stok_akhir'    => ($stock->stok_akhir + $item->qty)
+                    ]);
+                });
+
+                $delete = $data->delete();
+
+                DB::commit();
+
+                return response()->json([
+                    'status' => true,
+                    'msg' => 'Data berhasil di hapus!'
+                ]);
+            } catch (\Exception $e) {
+                DB::rollback();
+                return response()->json([
+                    'status' => false,
+                    'msg'    => 'Ada masalah saat melakukan delete data',
+                    'error'  => $e->getMessage()
+                ]);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'status'    => false,
+                'msg'       => 'Koneksi ke database terputus',
+                'error'     => $e->getMessage()
+            ]);
+        }
     }
 
     public function orderDelete(Request $request)
     {
-        $data = OrderDetail::findOrFail($request->id);
-        $delete =  $data->delete();
+        if(!$request->ajax()) dd('Woow, Hayo mau ngapain!');
 
-        return response()->json([
-            'status' => true,
-            'msg'  => 'Data berhasil di hapus!'
-        ]);
+        try {
+            DB::connection()->getPdo();
+            DB::beginTransaction();
+
+            try {
+                $data    = OrderDetail::findOrFail($request->id);
+                $product = BranchProduct::where('product_id', $data->product_id)->first();
+
+                $branch = BranchProduct::where('id', $data->product_id)->update([
+                    'stok_keluar'=> ($product->stok_keluar - $data->qty),
+                    'stok_akhir' => ($product->stok_akhir - $data->qty)
+                ]);
+                
+                $delete =  $data->delete();
+
+                DB::commit();
+
+                return response()->json([
+                    'status' => true,
+                    'msg'  => 'Data berhasil di hapus!'
+                ]);
+            } catch (\Exception $e) {
+                DB::rollback();
+                return response()->json([
+                    'status' => false,
+                    'msg'    => 'Ada masalah saat melakukan delete data',
+                    'error'  => $e->getMessage()
+                ]);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'status'  => false,
+                'msg'     => 'Koneksi ke database terputus!',
+                'error'   => $e->getMessage()
+            ]);
+        }
     }
 }

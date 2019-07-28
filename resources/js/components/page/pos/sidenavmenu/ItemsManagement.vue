@@ -4,7 +4,7 @@
             <div class="col s8 m8 l8">
                 <span class="card-title">Items Management</span>
                 <a href="#modal1" class="waves-effect waves-light btn-small modal-trigger"
-                    @click.prevent="show">Add Items</a>
+                    @click.prevent="$router.push({name: 'ADD'})">Add Items</a>
             </div>
 
             <div class="input-field col s4 m4 l4" style="margin-top:-15px;">
@@ -15,11 +15,11 @@
             <thead>
                 <tr>
                     <th>Branches</th>
-                    <th>Product</th>
-                    <th>Type</th>
-                    <th>Category</th>
-                    <th>Price</th>
-                    <th>Stock</th>
+                    <th>Product <span><i class="tiny material-icons red-text">edit</i></span></th>
+                    <th>Type <span><i class="tiny material-icons red-text">edit</i></span></th>
+                    <th>Category <span><i class="tiny material-icons red-text">edit</i></span></th>
+                    <th>Price <span><i class="tiny material-icons red-text">edit</i></span></th>
+                    <th>Stock <span><i class="tiny material-icons red-text">edit</i></span></th>
                     <th>Sales</th>
                 </tr>
             </thead>
@@ -41,109 +41,67 @@
                     </td>
                 </tr>
 
-                <tr v-else v-for="item in manageItems" :key="item.uniqid">
-                    <td>{{ item.branch }}</td>
-                    <td>{{ item.product }}</td>
-                    <td>{{ item.type }}</td>
-                    <td>{{ item.category }}</td>
-                    <td>Rp. {{ parseInt(item.price).toLocaleString('id') }}</td>
-                    <td>{{ item.stock }} item</td>
-                    <td>{{ item.sales }} Item</td>
+                <tr v-else v-for="(item, index) in manageItems" :key="item.uniqid">
                     <td>
-                        <i class="tiny material-icons blue-text">edit</i> &nbsp;
-                        <i class="tiny material-icons red-text">delete</i>
+                        {{ item.branch }}
+                    </td>
+                    <td>
+                        <span v-if="!item.productEdit" @dblclick="changeEdit(item.uniqid, 'product')">{{ item.product }}</span>
+                        <div v-else @dblclick="cancelEdit(item.uniqid, 'product')" class="input-field col s12">
+                            <input id="product" type="text" class="validate" v-model="$v.product.$model" @keyup.enter="editDataProduct(item.uniqid, 'product')">
+                            <label for="product">Product</label>
+                            <span class="red-text helper-text" v-if="!$v.product.required">Tidak boleh kosong!</span>
+                            <span class="red-text helper-text" v-if="!$v.product.minLength">Minimal 5 karakter!</span>
+                        </div>
+                    </td>
+                    <td>
+                        <span v-if="!item.typeEdit" @dblclick="changeEdit(item.uniqid, 'type')">{{ item.type }}</span>
+                        <div v-else @dblclick="cancelEdit(item.uniqid, 'type')" class="input-field col s12">
+                            <input id="type" type="text" class="validate" v-model="$v.type.$model" @keyup.enter="editDataProduct(item.uniqid, 'type')">
+                            <label for="type">Type</label>
+                            <span class="red-text helper-text" v-if="!$v.type.required">Tidak boleh kosong!</span>
+                            <span class="red-text helper-text" v-if="!$v.type.minLength">Minimal 5 karakter!</span>
+                        </div>
+                    </td>
+                    <td>
+                        <span v-if="!item.categoryEdit" @dblclick="changeEdit(item.uniqid, 'category')">{{ item.category }}</span>
+                        <div v-else @dblclick="cancelEdit(item.uniqid, 'category')" class="input-field col s12">
+                            <input id="category" type="text" class="validate" v-model="$v.category.$model" @keyup.enter="editDataProduct(item.uniqid, 'category')">
+                            <label for="category">Category</label>
+                            <span class="red-text helper-text" v-if="!$v.category.required">Tidak boleh kosong!</span>
+                            <span class="red-text helper-text" v-if="!$v.category.minLength">Minimal 5 karakter!</span>
+                        </div>
+                    </td>
+                    <td>
+                        <span v-if="!item.priceEdit" @dblclick="changeEdit(item.uniqid, 'price')">Rp. {{ parseInt(item.price).toLocaleString('id') }}</span>
+                        <div v-else @dblclick="cancelEdit(item.uniqid, 'price')" class="input-field col s12">
+                            <input id="price" type="text" class="validate" v-model="$v.price.$model" @keyup.enter="editDataProduct(item.uniqid, 'price')">
+                            <label for="price">Price</label>
+                            <span class="red-text helper-text" v-if="!$v.price.required">{{ errPrice }}</span>
+                            <span class="red-text helper-text" v-if="!$v.price.minLength">Minimal 3 karakter!</span>
+                        </div> 
+                    </td>
+                    <td>
+                        <span v-if="!item.stockEdit" @dblclick="changeEdit(item.uniqid, 'stock')">{{ item.stock }} item</span>
+                        <div v-else @dblclick="cancelEdit(item.uniqid, 'stock')" class="input-field col s12">
+                            <input id="stock" type="text" class="validate" v-model="$v.stock.$model" @keyup.enter="editDataProduct(item.uniqid, 'stock')">
+                            <label for="stock">Stock</label>
+                            <span class="red-text helper-text" v-if="!$v.stock.required">{{ errStock }}</span>
+                            <span class="red-text helper-text" v-if="!$v.stock.minLength">Minimal 1 karakter!</span>
+                        </div>
+                    </td>
+                    <td>
+                        <span>{{ item.sales }} Item</span>
+                    </td>
+                    <td>
+                        <i class="tiny material-icons red-text" @click.prevent="deleteProduct(item.uniqid, index)">delete</i>
                     </td>
                 </tr>
             </tbody>
         </table>
 
         <FooterItem v-if="loadingManage && manageItems.length > 0" />
-         <!-- Modal Structure -->
-        <div id="modal1" class="modal modal-fixed-footer">
-            <div class="modal-content">
-                <div class="row">
-                    <div class="col s12">
-                        <ul id="tabs-swipe-demo" class="tabs">
-                            <li class="tab col s6"><a href="#test-swipe-1" class="active">Add Items</a></li>
-                            <li class="tab col s6"><a href="#test-swipe-2">Upload Items</a></li>
-                        </ul>
-                        <div id="test-swipe-1" class="col s12">
-                            <form class="col s12">
-                                <div class="row">
-                                    <div class="input-field col s12">
-                                        <input id="product" type="text" v-model="$v.product.$model">
-                                        <label for="product">Product</label>
-                                        <span class="red-text helper-text" v-if="!$v.product.required">Tidak boleh kosong!</span>
-                                        <span class="red-text helper-text" v-if="!$v.product.minLength">Minimal 5 karakter!</span>
-                                    </div>
-                                </div>
-                                <div class="row" style="margin-top:-20px;">
-                                    <div class="input-field col s6">
-                                        <input id="price" type="text" v-model="$v.price.$model">
-                                        <label for="price">Price</label>
-                                        <span class="red-text helper-text" v-if="!$v.price.required">{{ errPrice }}</span>
-                                        <span class="red-text helper-text" v-if="!$v.price.minLength">Minimal 3 karakter!</span>
-                                    </div>
-                                    <div class="input-field col s6">
-                                        <input id="stock" type="text" v-model="$v.stock.$model">
-                                        <label for="stock">Stock</label>
-                                        <span class="red-text helper-text" v-if="!$v.stock.required">Tidak boleh kosong!</span>
-                                        <span class="red-text helper-text" v-if="!$v.stock.minLength">Minimal 1 karakter!</span>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div id="test-swipe-2" class="col s12">
-                            <form action="#">
-                                <br>
 
-                                <div>
-                                    <p class="green-text">
-                                        <strong>Perhatian!</strong>
-                                    </p>
-                                    <p>
-                                        Silahkan anda <a href="#">unduh</a> file ini, lalu anda inputkan data - data items (product tinta) 
-                                        yang akan anda jual ke dalam file tersebut, kemudian silahkan anda upload 
-                                        kembali melalui form dibawah ini.
-                                    </p>
-                                </div>
-                                
-                                <br>
-
-                                <div class="row">
-                                    <form action="" enctype="multipart/form-data">
-                                        <div class="col s9 m9 l9">
-                                            <div class="file-field input-field">
-                                                <div class="btn">
-                                                    <span>File</span>
-                                                    <input type="file" ref="file" name="file">
-                                                </div>
-                                                <div class="file-path-wrapper">
-                                                    <input class="file-path validate" type="text" ref="files" placeholder="Upload one or more files excel">
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="col s3 m3 l3">
-                                            <a href="#" class="btn waves-block red upload">Upload</a>
-                                        </div>
-
-                                        <!-- <div class="col s12" v-if="loadingUpload">
-                                            <div class="progress">
-                                                <div class="determinate" :style="{'width': progressBar + '%'}"></div>
-                                            </div>
-                                        </div> -->
-                                    </form>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <a href="#!" class="modal-close waves-effect waves-green btn-flat" :disabled="$v.validationGroup.$invalid || disabled">Save data</a>
-            </div>
-        </div>  
     </div>
 </template>
 
@@ -163,8 +121,13 @@ export default {
     data(){
         return {
             searchItems: '',
-            disabled: false,
-            errPrice: 'Tidak boleh kosong!'
+            product: '',
+            type: '',
+            category: '',
+            price: '',
+            stock: '',
+            errPrice: 'Tidak boleh kosong!',
+            errStock: 'Tidak boleh kosong!'
         }
     },
     components: {
@@ -181,59 +144,223 @@ export default {
         manageItems(){
             return this.$store.getters.manageItems
         },
-
-        product: {
-            get(){
-                return this.$store.getters.product
-            },
-
-            set(value){
-                this.$store.state.items.product = value
-            }
-        },
-
-        price: {
-            get(){
-                return this.$store.getters.price
-            },
-
-            set(value){
-                this.$store.state.items.price = value
-            }
-        },
-
-        stock: {
-            get(){
-                return this.$store.getters.stock
-            },
-
-            set(value){
-                this.$store.state.items.stock = value
-            }
-        }
     },
     watch:{
         searchItems: _.debounce((event) => {
             Bus.$emit('searchItemManagement', event.trim())
         }, 800),
-
+        
         price(valuePrice){
-            const result = this.$store.state.items.price = valuePrice.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+            const result = this.price = valuePrice.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".")
             if(result == '') this.errPrice = 'Harus berupa angka!';
             else this.errPrice = 'Tidak boleh kosong!';
         },
+
+        stock(valueStock){
+            const result = this.stock = valueStock.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+            if(result == '') this.errStock = 'Harus berupa angka!';
+            else this.errStock = 'Tidak boleh kosong!';
+        },
     },
     methods: {
-        show(){
-            M.AutoInit()
+        changeEdit(id, mode){
+            const items  = this.manageItems.find(item => item.uniqid == id);
+            // active edit
+            const activeProduct     = this.manageItems.find(item => item.productEdit);
+            const activeType        = this.manageItems.find(item => item.typeEdit);
+            const activeCategory    = this.manageItems.find(item => item.categoryEdit);
+            const activePrice       = this.manageItems.find(item => item.priceEdit);
+            const activeStock       = this.manageItems.find(item => item.stockEdit);
+
+            switch (mode) {
+                case 'product':
+                    items.productEdit = true
+                    break;
+
+                case 'type':
+                    items.typeEdit = true
+                    break;
+                
+                case 'category':
+                    items.categoryEdit = true
+                    break;
+
+                case 'price':
+                    items.priceEdit = true
+                    break;
+            
+                default:
+                    items.stockEdit = true
+                    break;
+            }
+
+            if(activeProduct){
+
+                activeProduct.productEdit = false 
+
+            }else if(activeType){
+
+                activeType.typeEdit = false 
+
+            }else if(activeCategory){
+
+                activeCategory.categoryEdit = false 
+
+            }else if(activePrice){
+
+                activePrice.priceEdit = false 
+
+            }else if(activeStock){
+
+                activeStock.stockEdit = false
+
+            }
+
+        },
+
+        cancelEdit(id, mode){
+            const items = this.manageItems.find(item => item.uniqid == id);
+
+            switch (mode) {
+                case 'product':
+                    items.productEdit = false
+                    this.product = ''
+                    break;
+
+                case 'type':
+                    items.typeEdit = false
+                    this.type = ''
+                    break;
+                
+                case 'category':
+                    items.categoryEdit = false
+                    this.category = ''
+                    break;
+
+                case 'price':
+                    items.priceEdit = false
+                    this.price = ''
+                    break;
+            
+                default:
+                    items.stockEdit = false
+                    this.stock = ''
+                    break;
+            }
+
+        },
+
+        editDataProduct(id, mode){
+            let item = ''
+            const items = this.manageItems.find(item => item.uniqid == id);
+
+            switch (mode) {
+                case 'product':
+                    item = this.product
+                    break;
+
+                case 'type':
+                    item = this.type
+                    break;
+                
+                case 'category':
+                    item = this.category
+                    break;
+
+                case 'price':
+                    item = this.price
+                    break;
+            
+                default:
+                    item = this.stock
+                    break;
+            }
+
+            if(!this.$v.product.$invalid || !this.$v.type.$invalid || !this.$v.category.$invalid || !this.$v.price.$invalid || !this.$v.stock.$invalid){
+                this.$store.dispatch('updateProductsItemsManagement', {
+                    mode: mode,
+                    id: id,
+                    item: item,
+                    url: `api/products/${id}`
+                }).then(res => {
+                    switch (mode) {
+                        case 'product':
+                            items.product = this.product
+                            items.productEdit = false
+                            this.product = ''
+                            break;
+
+                        case 'type':
+                            items.type = this.type
+                            items.typeEdit = false
+                            this.type = ''
+                            break;
+                        
+                        case 'category':
+                            items.category = this.category
+                            items.categoryEdit = false
+                            this.category = ''
+                            break;
+
+                        case 'price':
+                            items.price = this.price
+                            items.priceEdit = false
+                            this.price = ''
+                            break;
+                    
+                        default:
+                            items.stock = this.stock
+                            items.stockEdit = false
+                            this.stock = ''
+                            break;
+                    }
+
+                }).catch(err => {
+
+                    console.log(err.response)
+
+                })
+            }else{
+                alert('error')
+            }
+        },
+
+        deleteProduct(id, key){
+            this.$swal({
+                title: 'Anda Yakin?',
+                text: 'Ingin menghapus data ini!',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Jangan, nanti saja!',
+                showCloseButton: true,
+                showLoaderOnConfirm: true
+            }).then((result) => {
+                if(result.value) {
+
+                    this.$store.dispatch('deleteItemProduct', `api/products/${id}`)
+                        .then(res => {
+                            
+                            if(res.status == true){
+                                this.manageItems.splice(1, key)
+                                this.$swal('Deleted', res.msg, 'success')
+                            }
+                        })
+                    
+                } else {
+                    this.$swal('Cancelled', 'Your file is still intact', 'info')
+                }
+            })
+            
         }
     },
 
     validations: {
         product: { required, minLength: minLength(5) },
+        type: { required, minLength: minLength(5) },
+        category: { required, minLength: minLength(5) },
         price: { required, minLength: minLength(3) },
         stock: { required, minLength: minLength(1) },
-        validationGroup: ['product','price','stock']
     }
 }
 </script>
@@ -241,8 +368,5 @@ export default {
 <style scoped>
 i:hover{
     cursor: pointer;
-}
-.upload{
-    margin-top: 18px;
 }
 </style>

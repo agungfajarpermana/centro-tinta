@@ -2,6 +2,7 @@
 
 namespace App\Model;
 
+use App\Model\Order;
 use App\Model\Product;
 use Illuminate\Database\Eloquent\Model;
 
@@ -13,5 +14,10 @@ class OrderDetail extends Model
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function products()
+    {
+        return $this->hasMany(Product::class);
     }
 }

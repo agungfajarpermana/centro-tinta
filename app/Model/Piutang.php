@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Piutang extends Model
 {
+    protected $guarded = ['created_at','updated_at'];
+    protected $hidden = ['created_at','updated_at'];
+    
     public function orders()
     {
         return $this->belongsTo(Order::class, 'order_id')
