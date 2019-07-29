@@ -6,6 +6,7 @@ use DB;
 use App\Model\Order;
 use App\Model\Branch;
 use App\Model\Product;
+use App\Model\Piutang;
 use App\Model\OrderDetail;
 use App\Model\BranchProduct;
 use Illuminate\Http\Request;
@@ -140,28 +141,37 @@ class OrderController extends Controller
             DB::beginTransaction();
 
             try {
-                $data   = Order::findOrFail($id);
-                $order  = $data->order_detail()->where('order_id', $id)->get();
-                $orders = collect($order);
-
-                $branch = Branch::where('id', $data->branch_id)->first();
+                $piutang = Piutang::where('order_id', $id)->where('jenis', 'K')->first();
                 
-                $orders->each(function ($item, $key) use ($data, $branch) {
-                    $stock = $branch->branch_product()->where('product_id', $item->product_id)->first();
-                    return BranchProduct::where('branch_id', $data->branch_id)->where('product_id', $item->product_id)->update([
-                        'stok_keluar'   => ($stock->stok_keluar - $item->qty),
-                        'stok_akhir'    => ($stock->stok_akhir + $item->qty)
+                if(!$piutang){
+                    $data   = Order::findOrFail($id);
+                    $order  = $data->order_detail()->where('order_id', $id)->get();
+                    $orders = collect($order);
+
+                    $branch = Branch::where('id', $data->branch_id)->first();
+                    
+                    $orders->each(function ($item, $key) use ($data, $branch) {
+                        $stock = $branch->branch_product()->where('product_id', $item->product_id)->first();
+                        return BranchProduct::where('branch_id', $data->branch_id)->where('product_id', $item->product_id)->update([
+                            'stok_keluar'   => ($stock->stok_keluar - $item->qty),
+                            'stok_akhir'    => ($stock->stok_akhir + $item->qty)
+                        ]);
+                    });
+
+                    $delete = $data->delete();
+
+                    DB::commit();
+                    return response()->json([
+                        'status' => true,
+                        'msg' => 'Data berhasil di hapus!'
                     ]);
-                });
+                }else{
+                    return response()->json([
+                        'status' => false,
+                        'msg' => 'Data GAGAL dihapus, Karena pelanggan ini sudah melakukan pembayaran!'
+                    ]);
+                }
 
-                $delete = $data->delete();
-
-                DB::commit();
-
-                return response()->json([
-                    'status' => true,
-                    'msg' => 'Data berhasil di hapus!'
-                ]);
             } catch (\Exception $e) {
                 DB::rollback();
                 return response()->json([

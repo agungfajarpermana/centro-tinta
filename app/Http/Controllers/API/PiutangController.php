@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use DB;
 use PDF;
 use Carbon\Carbon;
 use App\Model\Order;
@@ -106,7 +107,7 @@ class PiutangController extends Controller
                     'kode'          => $kode,
                     'jenis'         => 'K',
                     'ket'           => $request->ket.' '.'('.($request->bank ? $request->bank : $request->metode).')' ?? null,
-                    'saldo'         => ($piutang ? $piutang->saldo - str_replace('.','',$request->bayar) : str_replace('.','',$request->bayar))
+                    'saldo'         => ($piutang ? ($piutang->saldo - str_replace('.','',$request->bayar)) : str_replace('.','',$request->bayar))
                 ]);
     
                 if($create){
@@ -135,9 +136,73 @@ class PiutangController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        //
+        if(!$request->ajax()) dd('Woow, Hayo mau ngapain!');
+
+        try {
+            DB::connection()->getPdo();
+            DB::beginTransaction();
+
+            try {
+                $order = Order::where('id', $id)->with(['order_detail' => function ($query) {
+                    $query->select('id','order_id','product_id','qty','total_pembelian');
+                }]);
+        
+                $data = $order->get()->map(function ($item, $key) {
+                    return $item['order_detail']->map(function ($product, $key) {
+                        return ($product['qty'] * $product['total_pembelian']);
+                    });
+                });
+        
+                $total = $data[0]->reduce(function ($carry, $item) {
+                    return $carry + $item;
+                });
+        
+                $piutang = Piutang::create([
+                    'tgl'           => Carbon::now()->format('Y-m-d'),
+                    'order_id'      => $id,
+                    'customer_id'   => $order->first()->customer_id,
+                    'nominal'       => $total,
+                    'kode'          => '12000001',
+                    'jenis'         => 'D',
+                    'ket'           => 'piutang',
+                    'saldo'         => $total
+                ]);
+
+                DB::commit();
+
+                return response()->json([
+                    'status' => true,
+                    'msg'    => 'Konfirmasi barang telah diterima pelanggan berhasil!',
+                    'data' => $piutang
+                ]);
+
+            } catch (\Exception $e) {
+                DB::rollback();
+                return response()->json([
+                    'status' => false,
+                    'msg'    => 'Ada masalah saat konfirmasi barang',
+                    'error'  => $e->getMessage()
+                ]);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'status'    => false,
+                'msg'       => 'Koneksi ke database terputus',
+                'error'     => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function getDataCofirmSales()
+    {
+        $piutang = Piutang::select('order_id')->where('kode', '12000001')->where('jenis', 'D')->get();
+
+        return response()->json([
+            'status' => true,
+            'piutang'=> $piutang
+        ]);
     }
 
     /**
@@ -171,6 +236,21 @@ class PiutangController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $data = Piutang::where('order_id', $id)->where('jenis', 'K')->first();
+
+        if(!$data){
+            $piutang = Piutang::where('order_id', $id)->first();
+            $piutang->delete();
+
+            return response()->json([
+                'status' => true,
+                'msg'    => 'Konfirmasi barang diterima pelanggan berhasil dibatalkan!'
+            ]);
+        }else{
+            return response()->json([
+                'status' => false,
+                'msg'    => 'Konfirmasi batal barang diterima GAGAL, Karena pelanggan ini sudah melakukan pembayaran!'
+            ]);
+        }
     }
 }

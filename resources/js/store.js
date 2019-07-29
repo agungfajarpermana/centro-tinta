@@ -69,6 +69,10 @@ export const store = new Vuex.Store({
             stock: '',
             loadingUpload: false,
             progressBar: 0
+        },
+
+        piutang: {
+            confirm: []
         }
     },
     getters: {
@@ -227,6 +231,10 @@ export const store = new Vuex.Store({
 
         progressBar(state){
             return state.items.progressBar
+        },
+
+        confirm(state){
+            return state.piutang.confirm
         }
     },
     mutations: {
@@ -365,6 +373,7 @@ export const store = new Vuex.Store({
                 state.checkout.subtotal = (subtotal ? subtotal - (state.checkout.items[i].detail_product.price * state.checkout.items[i].numberOfPurchases) : 0)
                 state.checkout.ppn = (10 * state.checkout.subtotal)/100
                 state.checkout.total = state.checkout.subtotal - state.checkout.ppn
+                state.checkout.order = new Date().getTime().toString().slice(-8,10)
                 
                 state.checkout.items.splice(i, 1)
             }
@@ -374,18 +383,6 @@ export const store = new Vuex.Store({
 
             state.customer.loadingOrder = true
             state.customer.orders = payloadOrder.data
-            
-            // remove twice data
-            // function getUnique(arr, comp) {
-
-            //     let unique = arr.map(e => e.customer_order[comp])
-            //                     .map((e, i, final) => final.indexOf(e) === i && i)
-            //                     .filter(e => arr[e]).map(e => arr[e]);
-            
-            //     return unique;
-
-            // }
-            // state.customer.orders = getUnique(state.customer.orders,'order')
 
             const pagination = {
                 current_page : payloadOrder.meta.current_page,
@@ -484,7 +481,7 @@ export const store = new Vuex.Store({
 
         SET_DATA_CUSTOMER_MODAL(state, id){
             let order = state.customer.orders.find(x => x.customer_order.uniqid == id);
-            state.modal.customerModal = order.customer_order
+            state.modal.customerModal = Object.assign({}, order.customer_order,{confirm:false})
 
             store.dispatch('getDetailSalesCustomer', `api/order/${order.customer_order.uniqid}/customers`)
         },
@@ -497,6 +494,25 @@ export const store = new Vuex.Store({
 
             state.modal.loadingModal = false
             state.modal.ordersModal = order
+        },
+
+        SET_DATA_PIUTANG_AFTER_CONFIRM(state, data){
+            state.modal.customerModal.confirm = true
+            state.piutang.confirm.push(data.data.data)
+        },
+
+        SET_DATA_PIUTANG_AFTER_CANCEL_CONFIRM(state, data){
+            if(data.status == true){
+                state.modal.customerModal.confirm = false
+            }
+        },
+
+        CHECK_DATA_CONFIRM(state, data){
+            data.map(val => {
+                if(state.modal.customerModal.uniqid == val.order_id){
+                    state.modal.customerModal.confirm = true
+                }
+            })
         }
     },
     actions: {
@@ -758,6 +774,51 @@ export const store = new Vuex.Store({
                     reject(err)
 
                 })
+            })
+        },
+
+        confirmProductSales({commit}, data){
+            return new Promise((resolve, reject) => {
+                axios.get(data.url)
+                    .then(res => {
+
+                        resolve(res)
+                        commit('SET_DATA_PIUTANG_AFTER_CONFIRM', res)
+
+                    }).catch(err => {
+                        reject(err)
+                    })
+            })
+        },
+
+        cancelConfirmProductSales({commit}, data){
+            return new Promise((resolve, reject) => {
+                axios.delete(data.url)
+                    .then(res => {
+                        
+                        resolve(res.data)
+                        commit('SET_DATA_PIUTANG_AFTER_CANCEL_CONFIRM', res.data)
+
+                    }).catch(err => {
+
+                        console.log(err)
+
+                    })
+            })
+        },
+
+        getDataKonfirmasiSales({commit}){
+            return new Promise((resolve, reject) => {
+                axios.get('api/piutang/confirm/sales')
+                    .then(res => {
+                        
+                        commit('CHECK_DATA_CONFIRM', res.data.piutang)
+                        resolve(res.data.piutang)
+
+                    }).catch(err => {
+                        console.log(err)
+                        reject(err)
+                    })
             })
         },
 

@@ -7,7 +7,7 @@ use App\Model\Piutang;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class laporanPiutangController extends Controller
+class laporanCashController extends Controller
 {
     public function index($dates, $customer = null)
     {
@@ -24,6 +24,7 @@ class laporanPiutangController extends Controller
                                             }
                                        }]);
                              }])
+                             ->where('jenis', 'K')
                              ->orderBy('tgl', 'ASC')
                              ->get();
         }
@@ -42,17 +43,6 @@ class laporanPiutangController extends Controller
             return $item['saldo'];
         });
 
-        $filter_kredit = $data->map(function ($item, $key) {
-            if($item['jenis'] == 'K'){
-                return $item['saldo'];
-            }
-        });
-
-        // total pembayaran dengan jenis (K)
-        $kredit = $filter_kredit->reduce(function($carry, $item) {
-            return $carry + $item;
-        });
-
         //  total utang seluruh data
         $total = $all->reduce(function($carry, $item) {
             return $carry + $item;
@@ -62,10 +52,10 @@ class laporanPiutangController extends Controller
             'data' => $filter,
             'from' => $date[0],
             'to'   => $date[1],
-            'total'=> ($total - $kredit)
+            'total'=> ($total)
         ];
         // dd($kredit);
-        $pdf = PDF::loadView('print.laporan_piutang', $options);
+        $pdf = PDF::loadView('print.laporan_cash', $options);
         return $pdf->setOption('page-size', 'A4')
                     ->setOrientation('landscape')
                     ->setOption('margin-bottom', '1cm')

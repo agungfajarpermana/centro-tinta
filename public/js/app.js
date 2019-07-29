@@ -3394,6 +3394,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -3412,7 +3422,9 @@ __webpack_require__.r(__webpack_exports__);
       productQty: 0,
       qty: null,
       id: 0,
-      isLoading: false
+      isLoading: false,
+      btn: 'Konfirmasi barang diterima',
+      btnCancel: 'batal konfirmasi barang diterima'
     };
   },
   components: {
@@ -3437,6 +3449,9 @@ __webpack_require__.r(__webpack_exports__);
     },
     productEdit: function productEdit() {
       return this.$store.getters.productEdit;
+    },
+    confirm: function confirm() {
+      return this.$store.getters.confirm;
     }
   },
   mounted: function mounted() {
@@ -3466,6 +3481,7 @@ __webpack_require__.r(__webpack_exports__);
       M.AutoInit();
       this.productQty = 0;
       this.$store.state.modal.loadingModal = true;
+      this.$store.dispatch('getDataKonfirmasiSales');
       this.$store.dispatch('customerOrderModal', id);
     },
     printSuratJalan: function printSuratJalan(order) {
@@ -3583,11 +3599,22 @@ __webpack_require__.r(__webpack_exports__);
         showLoaderOnConfirm: true
       }).then(function (result) {
         if (result.value) {
+          M.toast({
+            html: 'Loading..',
+            displayLength: 800
+          });
+
           _this3.$store.dispatch('deleteOrder', "api/order/".concat(id)).then(function (res) {
             if (res.status == true) {
               _this3.orders.splice(key, 1);
 
               _this3.$swal('Deleted', res.msg, 'success');
+            } else {
+              _this3.$swal({
+                title: 'Oops!',
+                text: res.msg,
+                type: 'error'
+              });
             }
           })["catch"](function (err) {
             console.log(err);
@@ -3625,6 +3652,84 @@ __webpack_require__.r(__webpack_exports__);
           });
         } else {
           _this4.$swal('Cancelled', 'Your file is still intact', 'info');
+        }
+      });
+    },
+    confirmProduct: function confirmProduct(id) {
+      var _this5 = this;
+
+      this.isLoading = true;
+      this.btn = 'Loading...';
+      this.$swal({
+        title: 'Anda Yakin?',
+        text: 'Ingin mengkofirmasi No. order ini!',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, konfirmasi!',
+        cancelButtonText: 'Jangan, nanti saja!',
+        showCloseButton: true,
+        showLoaderOnConfirm: true
+      }).then(function (result) {
+        if (result.value) {
+          _this5.$store.dispatch('confirmProductSales', {
+            url: "api/piutang/".concat(id)
+          }).then(function (res) {
+            if (res.data.status == true) {
+              _this5.$swal({
+                title: 'Success',
+                text: res.data.msg,
+                type: 'success'
+              });
+
+              _this5.isLoading = false;
+            } else {
+              _this5.$swal({
+                title: 'Opps!',
+                text: res.data.msg,
+                type: 'error'
+              });
+
+              _this5.isLoading = false;
+            }
+          })["catch"](function (err) {
+            console.log(err.response);
+            _this5.isLoading = false;
+          });
+        } else {
+          _this5.$swal('Cancelled', 'Your file is still intact', 'info');
+
+          _this5.isLoading = false;
+          _this5.btn = 'Konfirmasi barang diterima';
+        }
+      });
+    },
+    batalConfirm: function batalConfirm(id) {
+      var _this6 = this;
+
+      this.isLoading = true;
+      this.btnCancel = 'Loading..';
+      this.$store.dispatch('cancelConfirmProductSales', {
+        url: "api/piutang/".concat(id)
+      }).then(function (res) {
+        if (res.status == true) {
+          _this6.$swal({
+            title: 'Success',
+            text: res.msg,
+            type: 'success'
+          });
+
+          _this6.isLoading = false;
+          _this6.btn = 'Konfirmasi barang diterima';
+          _this6.btnCancel = 'batal konfirmasi barang diterima';
+        } else {
+          _this6.$swal({
+            title: 'Opps!',
+            text: res.msg,
+            type: 'error'
+          });
+
+          _this6.isLoading = false;
+          _this6.btnCancel = 'batal konfirmasi barang diterima';
         }
       });
     }
@@ -4278,7 +4383,13 @@ __webpack_require__.r(__webpack_exports__);
         console.log('empty');
       }
     },
-    printCash: function printCash() {}
+    printCash: function printCash() {
+      if (this.cashDate[0]) {
+        window.open("/api/laporan/".concat(this.cashDate, "/").concat(this.cashSearch || null, "/cash"), '_blank');
+      } else {
+        console.log('empty');
+      }
+    }
   }
 });
 
@@ -68952,7 +69063,49 @@ var render = function() {
                       _c("div", { staticClass: "container-fluid" }, [
                         _c("div", { staticClass: "col s12 m12 l12" }, [
                           _c("table", { attrs: { width: "100%" } }, [
-                            _vm._m(4),
+                            _c("thead", [
+                              _c("tr", [
+                                _c("th", { staticClass: "left-align" }, [
+                                  _vm._v("Product "),
+                                  !_vm.customerModal.confirm &&
+                                  !_vm.loadingModal
+                                    ? _c("span", [
+                                        _c(
+                                          "i",
+                                          {
+                                            staticClass:
+                                              "tiny material-icons red-text"
+                                          },
+                                          [_vm._v("edit")]
+                                        )
+                                      ])
+                                    : _vm._e()
+                                ]),
+                                _vm._v(" "),
+                                _c("th", { staticClass: "center-align" }, [
+                                  _vm._v("Qty "),
+                                  !_vm.customerModal.confirm &&
+                                  !_vm.loadingModal
+                                    ? _c("span", [
+                                        _c(
+                                          "i",
+                                          {
+                                            staticClass:
+                                              "tiny material-icons red-text"
+                                          },
+                                          [_vm._v("edit")]
+                                        )
+                                      ])
+                                    : _vm._e()
+                                ]),
+                                _vm._v(" "),
+                                _c("th", { staticClass: "right-align" }, [
+                                  _vm._v("Price")
+                                ]),
+                                _vm._v(" "),
+                                _c("th", { staticClass: "right-align" })
+                              ])
+                            ]),
                             _vm._v(" "),
                             _c(
                               "tbody",
@@ -69189,23 +69342,27 @@ var render = function() {
                                           { staticClass: "right-align" },
                                           [
                                             _c("span", [
-                                              _c(
-                                                "i",
-                                                {
-                                                  staticClass:
-                                                    "tiny material-icons red-text",
-                                                  on: {
-                                                    click: function($event) {
-                                                      $event.preventDefault()
-                                                      return _vm.deleteOrderModal(
-                                                        order.uniqid,
-                                                        index
-                                                      )
-                                                    }
-                                                  }
-                                                },
-                                                [_vm._v("delete")]
-                                              )
+                                              !_vm.customerModal.confirm
+                                                ? _c(
+                                                    "i",
+                                                    {
+                                                      staticClass:
+                                                        "tiny material-icons red-text",
+                                                      on: {
+                                                        click: function(
+                                                          $event
+                                                        ) {
+                                                          $event.preventDefault()
+                                                          return _vm.deleteOrderModal(
+                                                            order.uniqid,
+                                                            index
+                                                          )
+                                                        }
+                                                      }
+                                                    },
+                                                    [_vm._v("delete")]
+                                                  )
+                                                : _vm._e()
                                             ])
                                           ]
                                         )
@@ -69221,6 +69378,53 @@ var render = function() {
                   ]),
                   _vm._v(" "),
                   _c("div", { staticClass: "modal-footer" }, [
+                    _vm.customerModal.confirm
+                      ? _c(
+                          "a",
+                          {
+                            staticClass: "waves-effect waves-red red btn",
+                            attrs: {
+                              href: "#!",
+                              disabled:
+                                _vm.loadingModal ||
+                                _vm.ordersModal.length < 1 ||
+                                _vm.isLoading
+                            },
+                            on: {
+                              click: function($event) {
+                                $event.preventDefault()
+                                return _vm.batalConfirm(
+                                  _vm.customerModal.uniqid
+                                )
+                              }
+                            }
+                          },
+                          [_vm._v(_vm._s(_vm.btnCancel))]
+                        )
+                      : _c(
+                          "a",
+                          {
+                            staticClass: "waves-effect waves-orange orange btn",
+                            attrs: {
+                              href: "#!",
+                              disabled:
+                                _vm.loadingModal ||
+                                _vm.ordersModal.length < 1 ||
+                                _vm.isLoading ||
+                                _vm.customerModal.confirm
+                            },
+                            on: {
+                              click: function($event) {
+                                $event.preventDefault()
+                                return _vm.confirmProduct(
+                                  _vm.customerModal.uniqid
+                                )
+                              }
+                            }
+                          },
+                          [_vm._v(_vm._s(_vm.btn))]
+                        ),
+                    _vm._v(" "),
                     _c(
                       "a",
                       {
@@ -69291,36 +69495,6 @@ var staticRenderFns = [
     return _c("td", { attrs: { colspan: "14" } }, [
       _c("div", { staticClass: "center-align animated flash loader" }, [
         _vm._v("\n                        Loading...\n                    ")
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("thead", [
-      _c("tr", [
-        _c("th", { staticClass: "left-align" }, [
-          _vm._v("Product "),
-          _c("span", [
-            _c("i", { staticClass: "tiny material-icons red-text" }, [
-              _vm._v("edit")
-            ])
-          ])
-        ]),
-        _vm._v(" "),
-        _c("th", { staticClass: "center-align" }, [
-          _vm._v("Qty "),
-          _c("span", [
-            _c("i", { staticClass: "tiny material-icons red-text" }, [
-              _vm._v("edit")
-            ])
-          ])
-        ]),
-        _vm._v(" "),
-        _c("th", { staticClass: "right-align" }, [_vm._v("Price")]),
-        _vm._v(" "),
-        _c("th", { staticClass: "right-align" })
       ])
     ])
   }
@@ -70244,7 +70418,7 @@ var render = function() {
             _c("div", { staticClass: "card" }, [
               _c("div", { staticClass: "card-content black-text" }, [
                 _c("span", { staticClass: "card-title" }, [
-                  _vm._v("Laporan Cash")
+                  _vm._v("Laporan Pembayaran Customer")
                 ]),
                 _vm._v(" "),
                 _c("div", { staticClass: "row" }, [
@@ -70262,7 +70436,7 @@ var render = function() {
                       attrs: {
                         id: "last_name",
                         type: "text",
-                        placeholder: "Cari berdasarkan nama product"
+                        placeholder: "Cari berdasarkan nama customer"
                       },
                       domProps: { value: _vm.cashSearch },
                       on: {
@@ -70326,7 +70500,7 @@ var render = function() {
                       attrs: {
                         id: "last_name",
                         type: "text",
-                        placeholder: "Cari berdasarkan nama product"
+                        placeholder: "Cari berdasarkan nama customer"
                       },
                       domProps: { value: _vm.piutangSearch },
                       on: {
@@ -70376,34 +70550,6 @@ var render = function() {
                 ]),
                 _vm._v(" "),
                 _c("div", { staticClass: "row" }, [
-                  _c("div", { staticClass: "input-field col s12" }, [
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.penjualanSearch,
-                          expression: "penjualanSearch"
-                        }
-                      ],
-                      staticClass: "validate",
-                      attrs: {
-                        id: "last_name",
-                        type: "text",
-                        placeholder: "Cari berdasarkan nama product"
-                      },
-                      domProps: { value: _vm.penjualanSearch },
-                      on: {
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.penjualanSearch = $event.target.value
-                        }
-                      }
-                    })
-                  ]),
-                  _vm._v(" "),
                   _c(
                     "div",
                     { staticClass: "input-field col s12" },
@@ -90431,6 +90577,9 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
       stock: '',
       loadingUpload: false,
       progressBar: 0
+    },
+    piutang: {
+      confirm: []
     }
   },
   getters: {
@@ -90552,6 +90701,9 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
     },
     progressBar: function progressBar(state) {
       return state.items.progressBar;
+    },
+    confirm: function confirm(state) {
+      return state.piutang.confirm;
     }
   },
   mutations: {
@@ -90690,20 +90842,13 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
         state.checkout.subtotal = subtotal ? subtotal - state.checkout.items[i].detail_product.price * state.checkout.items[i].numberOfPurchases : 0;
         state.checkout.ppn = 10 * state.checkout.subtotal / 100;
         state.checkout.total = state.checkout.subtotal - state.checkout.ppn;
+        state.checkout.order = new Date().getTime().toString().slice(-8, 10);
         state.checkout.items.splice(i, 1);
       }
     },
     SET_DATA_ORDER_CUSTOMER: function SET_DATA_ORDER_CUSTOMER(state, payloadOrder) {
       state.customer.loadingOrder = true;
-      state.customer.orders = payloadOrder.data; // remove twice data
-      // function getUnique(arr, comp) {
-      //     let unique = arr.map(e => e.customer_order[comp])
-      //                     .map((e, i, final) => final.indexOf(e) === i && i)
-      //                     .filter(e => arr[e]).map(e => arr[e]);
-      //     return unique;
-      // }
-      // state.customer.orders = getUnique(state.customer.orders,'order')
-
+      state.customer.orders = payloadOrder.data;
       var pagination = {
         current_page: payloadOrder.meta.current_page,
         last_page: payloadOrder.meta.last_page,
@@ -90795,7 +90940,9 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
       var order = state.customer.orders.find(function (x) {
         return x.customer_order.uniqid == id;
       });
-      state.modal.customerModal = order.customer_order;
+      state.modal.customerModal = Object.assign({}, order.customer_order, {
+        confirm: false
+      });
       store.dispatch('getDetailSalesCustomer', "api/order/".concat(order.customer_order.uniqid, "/customers"));
     },
     SET_DATA_CUSTOMER_ORDERS: function SET_DATA_CUSTOMER_ORDERS(state, data) {
@@ -90809,6 +90956,22 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
       });
       state.modal.loadingModal = false;
       state.modal.ordersModal = order;
+    },
+    SET_DATA_PIUTANG_AFTER_CONFIRM: function SET_DATA_PIUTANG_AFTER_CONFIRM(state, data) {
+      state.modal.customerModal.confirm = true;
+      state.piutang.confirm.push(data.data.data);
+    },
+    SET_DATA_PIUTANG_AFTER_CANCEL_CONFIRM: function SET_DATA_PIUTANG_AFTER_CANCEL_CONFIRM(state, data) {
+      if (data.status == true) {
+        state.modal.customerModal.confirm = false;
+      }
+    },
+    CHECK_DATA_CONFIRM: function CHECK_DATA_CONFIRM(state, data) {
+      data.map(function (val) {
+        if (state.modal.customerModal.uniqid == val.order_id) {
+          state.modal.customerModal.confirm = true;
+        }
+      });
     }
   },
   actions: {
@@ -91027,8 +91190,42 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
         });
       });
     },
-    saveDataPenerimaanCash: function saveDataPenerimaanCash(_ref24, data) {
+    confirmProductSales: function confirmProductSales(_ref24, data) {
       var commit = _ref24.commit;
+      return new Promise(function (resolve, reject) {
+        axios__WEBPACK_IMPORTED_MODULE_2___default.a.get(data.url).then(function (res) {
+          resolve(res);
+          commit('SET_DATA_PIUTANG_AFTER_CONFIRM', res);
+        })["catch"](function (err) {
+          reject(err);
+        });
+      });
+    },
+    cancelConfirmProductSales: function cancelConfirmProductSales(_ref25, data) {
+      var commit = _ref25.commit;
+      return new Promise(function (resolve, reject) {
+        axios__WEBPACK_IMPORTED_MODULE_2___default.a["delete"](data.url).then(function (res) {
+          resolve(res.data);
+          commit('SET_DATA_PIUTANG_AFTER_CANCEL_CONFIRM', res.data);
+        })["catch"](function (err) {
+          console.log(err);
+        });
+      });
+    },
+    getDataKonfirmasiSales: function getDataKonfirmasiSales(_ref26) {
+      var commit = _ref26.commit;
+      return new Promise(function (resolve, reject) {
+        axios__WEBPACK_IMPORTED_MODULE_2___default.a.get('api/piutang/confirm/sales').then(function (res) {
+          commit('CHECK_DATA_CONFIRM', res.data.piutang);
+          resolve(res.data.piutang);
+        })["catch"](function (err) {
+          console.log(err);
+          reject(err);
+        });
+      });
+    },
+    saveDataPenerimaanCash: function saveDataPenerimaanCash(_ref27, data) {
+      var commit = _ref27.commit;
       return new Promise(function (resolve, reject) {
         axios__WEBPACK_IMPORTED_MODULE_2___default.a.post(data.url, {
           order: data.order,
@@ -91043,8 +91240,8 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
         });
       });
     },
-    saveDataNewCustomer: function saveDataNewCustomer(_ref25, data) {
-      var commit = _ref25.commit;
+    saveDataNewCustomer: function saveDataNewCustomer(_ref28, data) {
+      var commit = _ref28.commit;
       return new Promise(function (resolve, reject) {
         axios__WEBPACK_IMPORTED_MODULE_2___default.a.post(data.url, {
           customer: data.customer,

@@ -43,7 +43,7 @@
                     <td colspan="5">{{ order.customer_order.customer }}</td>
                     <td>
                         <a href="#modal1" class="modal-trigger"
-                            @click.prevent="customerOrderModal(index, order.customer_order.uniqid)"    
+                            @click.prevent="customerOrderModal(index, order.customer_order.uniqid)"   
                         >
                             <i class="tiny material-icons teal-text">remove_red_eye</i>
                         </a> &nbsp;
@@ -82,8 +82,8 @@
                             <table width="100%">
                                 <thead>
                                     <tr>
-                                        <th class="left-align">Product <span><i class="tiny material-icons red-text">edit</i></span></th>
-                                        <th class="center-align">Qty <span><i class="tiny material-icons red-text">edit</i></span></th>
+                                        <th class="left-align">Product <span v-if="!customerModal.confirm && !loadingModal"><i class="tiny material-icons red-text">edit</i></span></th>
+                                        <th class="center-align">Qty <span v-if="!customerModal.confirm && !loadingModal"><i class="tiny material-icons red-text">edit</i></span></th>
                                         <th class="right-align">Price</th>
                                         <th class="right-align"></th>
                                     </tr>
@@ -127,6 +127,7 @@
                                         </td>
                                         <td class="right-align">
                                             <span><i class="tiny material-icons red-text" 
+                                                v-if="!customerModal.confirm"
                                                 @click.prevent="deleteOrderModal(order.uniqid, index)"
                                             >delete</i>
                                             </span>
@@ -139,6 +140,15 @@
                 </div>
             </div>
             <div class="modal-footer">
+                <a href="#!" v-if="customerModal.confirm" 
+                    :disabled="loadingModal || ordersModal.length < 1 || isLoading"
+                    class="waves-effect waves-red red btn"
+                    @click.prevent="batalConfirm(customerModal.uniqid)">{{ btnCancel }}</a>
+
+                <a href="#!" v-else :disabled="loadingModal || ordersModal.length < 1 || isLoading || customerModal.confirm" 
+                    class="waves-effect waves-orange orange btn"
+                    @click.prevent="confirmProduct(customerModal.uniqid)">{{ btn }}</a>
+
                 <a href="#!" :disabled="loadingModal || ordersModal.length < 1" class="waves-effect waves-green btn"
                     @click="printSuratJalan(customerModal.order)">Surat Jalan</a>
             </div>
@@ -166,7 +176,9 @@ export default {
             productQty: 0,
             qty: null,
             id: 0,
-            isLoading: false
+            isLoading: false,
+            btn: 'Konfirmasi barang diterima',
+            btnCancel: 'batal konfirmasi barang diterima'
         }
     },
     components: {
@@ -196,6 +208,10 @@ export default {
 
         productEdit(){
             return this.$store.getters.productEdit
+        },
+
+        confirm(){
+            return this.$store.getters.confirm
         }
     },
     mounted(){
@@ -226,6 +242,7 @@ export default {
             M.AutoInit()
             this.productQty = 0;
             this.$store.state.modal.loadingModal = true
+            this.$store.dispatch('getDataKonfirmasiSales')
             this.$store.dispatch('customerOrderModal', id)
         },
 
@@ -323,6 +340,7 @@ export default {
                 showLoaderOnConfirm: true
             }).then((result) => {
                 if(result.value) {
+                    M.toast({html: 'Loading..', displayLength: 800})
 
                     this.$store.dispatch('deleteOrder', `api/order/${id}`)
                     .then(res => {
@@ -330,6 +348,12 @@ export default {
                         if(res.status == true){
                             this.orders.splice(key, 1)
                             this.$swal('Deleted', res.msg, 'success')
+                        }else{
+                            this.$swal({
+                                title: 'Oops!',
+                                text: res.msg,
+                                type: 'error',
+                            });
                         }
 
                     }).catch(err => {
@@ -371,6 +395,87 @@ export default {
 
                 } else {
                     this.$swal('Cancelled', 'Your file is still intact', 'info')
+                }
+            })
+        },
+
+        confirmProduct(id){
+            this.isLoading = true
+            this.btn = 'Loading...'
+
+            this.$swal({
+                title: 'Anda Yakin?',
+                text: 'Ingin mengkofirmasi No. order ini!',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, konfirmasi!',
+                cancelButtonText: 'Jangan, nanti saja!',
+                showCloseButton: true,
+                showLoaderOnConfirm: true
+            }).then((result) => {
+                if(result.value) {
+
+                    this.$store.dispatch('confirmProductSales', {
+                        url: `api/piutang/${id}`
+                    }).then(res => {
+                
+                        if(res.data.status == true){
+
+                            this.$swal({
+                                title: 'Success',
+                                text: res.data.msg,
+                                type: 'success',
+                            });
+                            this.isLoading = false
+
+                        }else{
+
+                            this.$swal({
+                                title: 'Opps!',
+                                text: res.data.msg,
+                                type: 'error',
+                            });
+                            this.isLoading = false
+
+                        }
+                    }).catch(err => {
+                        console.log(err.response)
+                        this.isLoading = false
+                    })
+
+                } else {
+                    this.$swal('Cancelled', 'Your file is still intact', 'info')
+                    this.isLoading = false
+                    this.btn = 'Konfirmasi barang diterima'
+                }
+            })
+        },
+
+        batalConfirm(id){
+            this.isLoading = true
+            this.btnCancel = 'Loading..'
+
+            this.$store.dispatch('cancelConfirmProductSales', {
+                url: `api/piutang/${id}`
+            }).then(res => {
+
+                if(res.status == true){
+                    this.$swal({
+                        title: 'Success',
+                        text: res.msg,
+                        type: 'success',
+                    });
+                    this.isLoading = false
+                    this.btn = 'Konfirmasi barang diterima'
+                    this.btnCancel = 'batal konfirmasi barang diterima' 
+                }else{
+                    this.$swal({
+                        title: 'Opps!',
+                        text: res.msg,
+                        type: 'error',
+                    });
+                    this.isLoading = false
+                    this.btnCancel = 'batal konfirmasi barang diterima'
                 }
             })
         }

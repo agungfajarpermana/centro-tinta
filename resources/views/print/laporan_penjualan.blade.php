@@ -130,9 +130,9 @@
 
 				<div class="row">
 					<div id="table-container" class="col-12 d-flex justify-content-between">
-						@forelse($data as $key => $print)
+						@forelse($data as $keys => $print)
                         <table id="tableGL" class="table table-border-black print-border-0" cellspacing="0.5" width="100%">
-							<h5>{{ Carbon::parse($key)->format('d, M Y') }}</h5>
+							<h5>{{ Carbon::parse($keys)->format('d, M Y') }}</h5>
                             <thead style="font-size:20px;">
                                 <tr>
                                     <th class="td-border" nowrap="nowrap">No</th>
@@ -146,14 +146,14 @@
 								</tr>
                             </thead>
                             <tbody>
-							   @foreach($print as $key => $value)
+							   @foreach($print as $index => $value)
 									@foreach($value->order_detail as $key => $deep)
 										<tr class="tr">
-											<td class="td-border py-2" style="text-align:center;">{{ $key+1 }}</td>
+											<td class="td-border py-2" style="text-align:center;">{{ ($key+1) }}</td>
 											<td class="td-border py-2" style="text-align:center;">{{ Carbon::parse($value->tanggal)->format('d, M Y') }}</td>
 											<td class="td-border py-2" style="text-align:center;">INV-{{ $value->no_order }}</td>
 											<td class="td-border py-2" style="text-align:left;">{{ $value->customer->nama_customer }}</td>
-											<td class="td-border py-2" nowarp="nowrap" style="text-align:left;">{{ $deep->product->nama_product }}</td> 
+											<td class="td-border py-2" nowarp="nowrap" style="text-align:left;">{{ ($deep->product ? $deep->product->nama_product : '') }}</td> 
 											<td class="td-border py-2" nowrap="nowrap" style="text-align:center;">{{ $deep->qty }}</td>
 											<td class="td-border py-2" nowrap="nowrap" style="text-align:right;">{{ number_format($deep->product->productDetail->harga,0,'','.') }}</td>
 											<td class="td-border py-2" nowrap="nowrap" style="text-align:right;">{{ number_format($deep->total_pembelian,0,'','.') }}</td>
@@ -169,7 +169,7 @@
                                     <td class="border-0 print-border-0">&nbsp;</td>
                                     <td class="td-border" nowrap="nowrap"><b>S U B T O T A L</b></td>
                                     <td class="td-border" style="text-align:right;"><b></b></td>
-                                    <td class="td-border" style="text-align:right;"><b>{{ number_format(100000,0,'','.') }}</b></td>
+                                    <td class="td-border" style="text-align:right;"><b>{{ number_format($subtotal[$no++],0,'','.') }}</b></td>
                                 </tr>
                             </footer>
 						</table>
@@ -215,7 +215,7 @@
                                     <td class="border-0 print-border-0">&nbsp;</td>
                                     <td class="td-border" nowrap="nowrap"><b>T O T A L</b></td>
                                     <td class="td-border" style="text-align:right;"><b></b></td>
-                                    <td class="td-border" style="text-align:right;"><b>120000</b></td>
+                                    <td class="td-border" style="text-align:right;"><b>{{ number_format($total,0,'','.') }}</b></td>
                                 </tr>
                             </footer>
 						</table>

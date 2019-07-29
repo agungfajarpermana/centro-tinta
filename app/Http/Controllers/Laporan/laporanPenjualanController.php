@@ -16,15 +16,9 @@ class laporanPenjualanController extends Controller
         $date = collect($data)->flatten();
         
         $data = Order::whereBetween('tanggal', [$date[0], $date[1]])
-                        ->with(['order_detail' => function ($query) use ($product) {
+                        ->with(['order_detail' => function ($query) {
                             $query->select('id','order_id','product_id','qty','total_pembelian')
-                                ->with(['product' => function ($query) use ($product) {
-                                    if($product !== 'null'){
-                                        $query->where('nama_product', 'LIKE', '%'.$product.'%')
-                                                ->with(['productDetail' => function ($query) {
-                                                    $query->select('id','product_id','harga','penjualan');
-                                                }]);
-                                    }
+                                ->with(['product' => function ($query) {
                                     $query->select('id','nama_product')
                                                 ->with(['productDetail' => function ($query) {
                                                     $query->select('id','product_id','harga','penjualan');
@@ -34,19 +28,45 @@ class laporanPenjualanController extends Controller
                         ->orderBy('tanggal', 'ASC')
                         ->orderBy('no_order', 'ASC')
                         ->get();
-        
+        // dd($data);
         $laporan = collect($data);
         
         $penjualan = $laporan->groupBy(function($item, $key){
             return $item['tanggal'];
         });
-        // dd($penjualan);
+        
+        $sub = $data->map(function($item, $key) {
+            return $item['order_detail']->map(function($value, $index) {
+                return $value['total_pembelian'];
+            });
+        });
+
+        $total = collect($sub)->flatten()->reduce(function($carry, $item) {
+            return $carry + $item;
+        });
+        
+        foreach($penjualan as $key => $value){
+            $subtotal[] = $value->map(function($item, $key) {
+                return $item['order_detail']->map(function($value,$key) {
+                    return $value['total_pembelian'];
+                });
+            });
+        }
+
+        foreach(collect($subtotal) as $key => $value){
+            $substotal[] = collect($value)->flatten()->sum();
+        }
+
+        // dump($test);
         $option = [
             'data' => $penjualan,
             'from' => $date[0],
-            'to'   => $date[1]
+            'to'   => $date[1],
+            'subtotal' => $substotal,
+            'total' => $total,
+            'no' => 0,
         ];
-        // dd($option);
+        
         $pdf = PDF::LoadView('print.laporan_penjualan', $option);
         return $pdf->setOption('page-size', 'A4')
                     ->setOrientation('landscape')

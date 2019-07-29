@@ -153,9 +153,9 @@
                                     <td class="td-border py-2" style="text-align:center;">INV-{{ $value->orders->no_order }}</td>
 									<td class="td-border py-2" wrap="wrap" style="text-align:left;">{{ $value->orders->customer->nama_customer }}</td>
                                     <td class="td-border py-2">{{ $value->ket }}</td>
-                                    <td class="td-border py-2" nowarp="nowrap" style="text-align:right;">100.000</td>
-                                    <td class="td-border py-2" nowrap="nowrap" style="text-align:right;">80.000</td>
-                                    <td class="td-border py-2" nowrap="nowrap" style="text-align:right;">20.000</td>
+                                    <td class="td-border py-2" nowarp="nowrap" style="text-align:right;">{{ number_format(($value->jenis == 'D' ? $value->nominal : 0),0,'','.') }}</td>
+                                    <td class="td-border py-2" nowrap="nowrap" style="text-align:right;">{{ number_format(($value->jenis == 'K' ? $value->nominal : 0),0,'','.') }}</td>
+                                    <td class="td-border py-2" nowrap="nowrap" style="text-align:right;">{{ number_format($value->saldo,0,'','.') }}</td>
                                 </tr>
                                @endforeach
 							</tbody>
@@ -202,7 +202,7 @@
                                     <td class="border-0 print-border-0">&nbsp;</td>
                                     <td class="td-border" nowrap="nowrap"><b>T O T A L</b></td>
                                     <td class="td-border" style="text-align:right;"><b></b></td>
-                                    <td class="td-border" style="text-align:right;"><b>120000</b></td>
+                                    <td class="td-border" style="text-align:right;"><b>{{ number_format($total,0,'','.') }}</b></td>
                                 </tr>
                             </footer>
 						</table>

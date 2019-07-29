@@ -10,11 +10,11 @@
             <div class="col s12 m6">
                 <div class="card">
                     <div class="card-content black-text">
-                        <span class="card-title">Laporan Cash</span>
+                        <span class="card-title">Laporan Pembayaran Customer</span>
 
                         <div class="row">
                             <div class="input-field col s12">
-                                <input id="last_name" v-model="cashSearch" type="text" class="validate" placeholder="Cari berdasarkan nama product">
+                                <input id="last_name" v-model="cashSearch" type="text" class="validate" placeholder="Cari berdasarkan nama customer">
                             </div>
                             
                             <div class="input-field col s12">
@@ -32,7 +32,7 @@
 
                         <div class="row">
                             <div class="input-field col s12">
-                                <input id="last_name" v-model="piutangSearch" type="text" class="validate" placeholder="Cari berdasarkan nama product">
+                                <input id="last_name" v-model="piutangSearch" type="text" class="validate" placeholder="Cari berdasarkan nama customer">
                             </div>
                             
                             <div class="input-field col s12">
@@ -49,9 +49,9 @@
                         <span class="card-title">Laporan penjualan</span>
 
                         <div class="row">
-                            <div class="input-field col s12">
+                            <!-- <div class="input-field col s12">
                                 <input id="last_name" v-model="penjualanSearch" type="text" class="validate" placeholder="Cari berdasarkan nama product">
-                            </div>
+                            </div> -->
                             
                             <div class="input-field col s12">
                                 <date-picker v-model="penjualanDate" valueType="format" range confirm :lang="lang" @change="printPenjualan"></date-picker>
@@ -171,7 +171,11 @@ export default {
         },
 
         printCash(){
-
+            if(this.cashDate[0]){
+                window.open(`/api/laporan/${this.cashDate}/${this.cashSearch || null}/cash`, '_blank');
+            }else{
+                console.log('empty')
+            }
         }
     }
 }

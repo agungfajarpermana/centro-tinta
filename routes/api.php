@@ -38,10 +38,12 @@ Route::get('/order/{orders}/customers', 'API\OrderController@customerSales');
 
 Route::Resource('/piutang', 'API\PiutangController');
 Route::get('/piutang/{dates}/order', 'API\PiutangController@index');
+Route::get('/piutang/confirm/sales', 'API\PiutangController@getDataCofirmSales');
 
 // Route Laporan
 Route::get('/laporan/{dates}/{product?}/penjualan', 'Laporan\laporanPenjualanController@index');
 Route::get('/laporan/{dates}/{customer?}/piutang', 'Laporan\laporanPiutangController@index');
+Route::get('/laporan/{dates}/{customer?}/cash', 'Laporan\laporanCashController@index');
 Route::get('/laporan/{order}/customer', 'Laporan\laporanOrdersController@index');
 
 // Route::group(['prefix' => 'branch'], function(){
