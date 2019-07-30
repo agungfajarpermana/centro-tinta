@@ -303,7 +303,7 @@ export default {
                             break;
 
                         case 'price':
-                            items.price = this.price
+                            items.price = this.price.replace('.','')
                             items.priceEdit = false
                             this.price = ''
                             break;

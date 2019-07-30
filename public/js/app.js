@@ -2865,11 +2865,13 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _Navbar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Navbar */ "./resources/js/components/page/Navbar.vue");
-/* harmony import */ var vue_multiselect__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue-multiselect */ "./node_modules/vue-multiselect/dist/vue-multiselect.min.js");
-/* harmony import */ var vue_multiselect__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(vue_multiselect__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vuelidate/lib/validators */ "./node_modules/vuelidate/lib/validators/index.js");
-/* harmony import */ var vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _Navbar__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Navbar */ "./resources/js/components/page/Navbar.vue");
+/* harmony import */ var vue_multiselect__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vue-multiselect */ "./node_modules/vue-multiselect/dist/vue-multiselect.min.js");
+/* harmony import */ var vue_multiselect__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(vue_multiselect__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vuelidate/lib/validators */ "./node_modules/vuelidate/lib/validators/index.js");
+/* harmony import */ var vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_4__);
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -2947,6 +2949,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2965,13 +2968,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     };
   },
   components: {
-    Navbar: _Navbar__WEBPACK_IMPORTED_MODULE_1__["default"],
-    Multiselect: vue_multiselect__WEBPACK_IMPORTED_MODULE_2___default.a
+    Navbar: _Navbar__WEBPACK_IMPORTED_MODULE_2__["default"],
+    Multiselect: vue_multiselect__WEBPACK_IMPORTED_MODULE_3___default.a
   },
   watch: {
     order: function order(valueOrder) {
       var result = this.order = valueOrder.replace(/\D/g, "");
-      if (result == '') this.errOrder = 'Harus berupa angka!';else this.errOrder = 'Tidak boleh kosong!';
+      if (result == '') this.errOrder = 'Harus berupa angka!';else console.log(valueOrder);
     },
     bayar: function bayar(valueBayar) {
       var result = this.bayar = valueBayar.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -3019,7 +3022,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   },
   validations: {
     metode: {
-      required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_3__["required"]
+      required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_4__["required"]
     },
     valueBank: {
       isRequired: function () {
@@ -3080,15 +3083,15 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }()
     },
     order: {
-      required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_3__["required"],
-      minLength: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_3__["minLength"])(4)
+      required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_4__["required"],
+      minLength: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_4__["minLength"])(4)
     },
     bayar: {
-      required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_3__["required"],
-      minLength: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_3__["minLength"])(3)
+      required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_4__["required"],
+      minLength: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_4__["minLength"])(3)
     },
     keterangan: {
-      minLength: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_3__["minLength"])(5)
+      minLength: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_4__["minLength"])(5)
     },
     validationGroup: ['metode', 'valueBank', 'order', 'bayar', 'keterangan']
   }
@@ -4147,7 +4150,7 @@ __webpack_require__.r(__webpack_exports__);
               break;
 
             case 'price':
-              items.price = _this.price;
+              items.price = _this.price.replace('.', '');
               items.priceEdit = false;
               _this.price = '';
               break;

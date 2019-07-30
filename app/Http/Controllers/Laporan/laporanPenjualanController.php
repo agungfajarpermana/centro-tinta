@@ -45,6 +45,7 @@ class laporanPenjualanController extends Controller
             return $carry + $item;
         });
         
+        $subtotal = [];
         foreach($penjualan as $key => $value){
             $subtotal[] = $value->map(function($item, $key) {
                 return $item['order_detail']->map(function($value,$key) {
@@ -53,6 +54,7 @@ class laporanPenjualanController extends Controller
             });
         }
 
+        $substotal = [];
         foreach(collect($subtotal) as $key => $value){
             $substotal[] = collect($value)->flatten()->sum();
         }
@@ -76,6 +78,6 @@ class laporanPenjualanController extends Controller
                     ->setOption('margin-top', '1cm')
                     ->setOption('footer-right', 'Hal : [page] / [toPage]')
                     ->setOption('footer-font-size', 8)
-                    ->stream();
+                    ->stream('dompdf.pdf', array("attachment" => false));
     }
 }

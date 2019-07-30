@@ -25,6 +25,7 @@ class laporanPiutangController extends Controller
                                        }]);
                              }])
                              ->orderBy('tgl', 'ASC')
+                             ->orderBy('jenis', 'ASC')
                              ->get();
         }
 
@@ -39,15 +40,18 @@ class laporanPiutangController extends Controller
         });
 
         $all = $data->map(function ($item, $key) {
-            return $item['saldo'];
-        });
-
-        $filter_kredit = $data->map(function ($item, $key) {
-            if($item['jenis'] == 'K'){
+            if($item['jenis'] == 'D'){
                 return $item['saldo'];
             }
         });
 
+        $filter_kredit = $data->map(function ($item, $key) {
+            if($item['jenis'] == 'K'){
+                return $item['nominal'];
+            }
+        });
+
+        // dd($piutang);
         // total pembayaran dengan jenis (K)
         $kredit = $filter_kredit->reduce(function($carry, $item) {
             return $carry + $item;
@@ -57,12 +61,12 @@ class laporanPiutangController extends Controller
         $total = $all->reduce(function($carry, $item) {
             return $carry + $item;
         });
-
+        // dd($all);
         $options = [
             'data' => $filter,
             'from' => $date[0],
             'to'   => $date[1],
-            'total'=> ($total - $kredit)
+            'total'=> (!$customer ? ($total - $kredit) : 0)
         ];
         // dd($kredit);
         $pdf = PDF::loadView('print.laporan_piutang', $options);

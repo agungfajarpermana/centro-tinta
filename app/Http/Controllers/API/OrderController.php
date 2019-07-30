@@ -135,7 +135,7 @@ class OrderController extends Controller
     public function destroy(Request $request, $id)
     {
         if(!$request->ajax()) dd('Woow, hayo mau ngapain!');
-
+        
         try {
             DB::connection()->getPdo();
             DB::beginTransaction();
@@ -192,7 +192,7 @@ class OrderController extends Controller
     public function orderDelete(Request $request)
     {
         if(!$request->ajax()) dd('Woow, Hayo mau ngapain!');
-
+        
         try {
             DB::connection()->getPdo();
             DB::beginTransaction();
@@ -201,9 +201,9 @@ class OrderController extends Controller
                 $data    = OrderDetail::findOrFail($request->id);
                 $product = BranchProduct::where('product_id', $data->product_id)->first();
 
-                $branch = BranchProduct::where('id', $data->product_id)->update([
+                $branch = BranchProduct::where('product_id', $data->product_id)->update([
                     'stok_keluar'=> ($product->stok_keluar - $data->qty),
-                    'stok_akhir' => ($product->stok_akhir - $data->qty)
+                    'stok_akhir' => ($product->stok_akhir + $data->qty)
                 ]);
                 
                 $delete =  $data->delete();

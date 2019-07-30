@@ -96,18 +96,42 @@ class PiutangController extends Controller
             }
             
             $piutang = Piutang::where('order_id', $order->id)->where('customer_id', $order->customer_id)
-                                ->where('jenis', 'D')->first();
+                                ->whereIn('jenis', ['D','K'])->get();
+
+            $debet = $piutang->map(function($item, $key) {
+                if($item['jenis'] == 'D'){
+                    return $item['saldo'];
+                }
+            });
+            $total_debet = collect($debet)->flatten()->reduce(function($carry, $item) {
+                return $carry + $item;
+            });
+
+            $kredit = $piutang->map(function($item, $kye) {
+                if($item['jenis'] == 'K'){
+                    return $item['nominal'];
+                }
+            });
+            $total_kredit = collect($kredit)->flatten()->reduce(function($carry, $item) {
+                return $carry + $item;
+            });
+            
+            if(!$kredit){
+                $total = $total_debet + ('-'.str_replace('.','',$request->bayar));
+            }else{
+                $total = ($total_debet + $total_kredit);
+            }
 
             if($piutang){
                 $create = Piutang::create([
                     'tgl'           => Carbon::now()->format('Y-m-d'),
                     'order_id'      => $order->id,
                     'customer_id'   => $order->customer_id,
-                    'nominal'       => str_replace('.','',$request->bayar),
+                    'nominal'       => '-'.str_replace('.','',$request->bayar),
                     'kode'          => $kode,
                     'jenis'         => 'K',
                     'ket'           => $request->ket.' '.'('.($request->bank ? $request->bank : $request->metode).')' ?? null,
-                    'saldo'         => ($piutang ? ($piutang->saldo - str_replace('.','',$request->bayar)) : str_replace('.','',$request->bayar))
+                    'saldo'         => $total
                 ]);
     
                 if($create){
@@ -148,10 +172,10 @@ class PiutangController extends Controller
                 $order = Order::where('id', $id)->with(['order_detail' => function ($query) {
                     $query->select('id','order_id','product_id','qty','total_pembelian');
                 }]);
-        
+
                 $data = $order->get()->map(function ($item, $key) {
                     return $item['order_detail']->map(function ($product, $key) {
-                        return ($product['qty'] * $product['total_pembelian']);
+                        return ($product['total_pembelian']);
                     });
                 });
         

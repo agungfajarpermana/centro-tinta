@@ -67,6 +67,7 @@
 </template>
 
 <script>
+import _ from 'lodash'
 import Navbar from '../Navbar'
 import Multiselect from 'vue-multiselect'
 import { required, minLength } from 'vuelidate/lib/validators';
@@ -96,7 +97,7 @@ export default {
         order(valueOrder){
             const result = this.order = valueOrder.replace(/\D/g, "")
             if(result == '') this.errOrder = 'Harus berupa angka!';
-            else this.errOrder = 'Tidak boleh kosong!';
+            else console.log(valueOrder);
         },
 
         bayar(valueBayar){

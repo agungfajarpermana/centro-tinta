@@ -68,7 +68,7 @@ class ProductController extends Controller
                     'kategori_product'  => 'Tinta',
                     'detail_product'    => 'ini dekripsi tentang product'
                 ]);
-        
+               
                 $product->productDetail()->create([
                     'harga'     => str_replace('.','',$request->price),
                     'penjualan' => 0
@@ -170,7 +170,7 @@ class ProductController extends Controller
 
             case 'price':
                 $data = ProductDetails::where('product_id', $product->id)->update([
-                    'harga' => $request->item
+                    'harga' => str_replace('.','',$request->item)
                 ]);
 
                 return $data;
