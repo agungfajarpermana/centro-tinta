@@ -69162,10 +69162,13 @@ var render = function() {
                                                       dblclick: function(
                                                         $event
                                                       ) {
-                                                        return _vm.changeEdit(
-                                                          order.uniqid,
-                                                          "product"
-                                                        )
+                                                        !_vm.customerModal
+                                                          .confirm
+                                                          ? _vm.changeEdit(
+                                                              order.uniqid,
+                                                              "product"
+                                                            )
+                                                          : ""
                                                       }
                                                     }
                                                   },
@@ -69187,10 +69190,13 @@ var render = function() {
                                                       dblclick: function(
                                                         $event
                                                       ) {
-                                                        return _vm.cancelEdit(
-                                                          order.uniqid,
-                                                          "product"
-                                                        )
+                                                        !_vm.customerModal
+                                                          .confirm
+                                                          ? _vm.cancelEdit(
+                                                              order.uniqid,
+                                                              "product"
+                                                            )
+                                                          : ""
                                                       }
                                                     }
                                                   },
@@ -69243,10 +69249,13 @@ var render = function() {
                                                       dblclick: function(
                                                         $event
                                                       ) {
-                                                        return _vm.changeEdit(
-                                                          order.uniqid,
-                                                          "qty"
-                                                        )
+                                                        !_vm.customerModal
+                                                          .confirm
+                                                          ? _vm.changeEdit(
+                                                              order.uniqid,
+                                                              "qty"
+                                                            )
+                                                          : ""
                                                       }
                                                     }
                                                   },
@@ -69261,10 +69270,13 @@ var render = function() {
                                                       dblclick: function(
                                                         $event
                                                       ) {
-                                                        return _vm.cancelEdit(
-                                                          order.uniqid,
-                                                          "qty"
-                                                        )
+                                                        !_vm.customerModal
+                                                          .confirm
+                                                          ? _vm.cancelEdit(
+                                                              order.uniqid,
+                                                              "qty"
+                                                            )
+                                                          : ""
                                                       }
                                                     }
                                                   },
@@ -88656,6 +88668,9 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_sweetalert2__WEBPACK_IMPORTED
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.filter('dateformat', function (value) {
   return moment__WEBPACK_IMPORTED_MODULE_1___default()(value).format('D MMMM, Y');
 });
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.config.devtools = false;
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.config.debug = false;
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.config.silent = true;
 var Bus = new vue__WEBPACK_IMPORTED_MODULE_0___default.a();
 var router = new vue_router__WEBPACK_IMPORTED_MODULE_3__["default"]({
   mode: 'history',

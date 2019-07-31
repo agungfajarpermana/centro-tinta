@@ -20,29 +20,29 @@ class PiutangController extends Controller
      */
     public function index($dates = null)
     {
-        $dates = explode(",",$dates);
+        // $dates = explode(",",$dates);
         
-        if($dates[0]){
-            $collect = collect($dates)->flatten();
+        // if($dates[0]){
+        //     $collect = collect($dates)->flatten();
             
-            $data = Piutangs::collection(
-                    Piutang::whereBetween('tgl', [$collect[0], $collect[1]])
-                             ->where('kode', '12000001')->get()
-            );
-        }else{
-            $data = Piutangs::collection(Piutang::all());
-        }
+        //     $data = Piutangs::collection(
+        //             Piutang::whereBetween('tgl', [$collect[0], $collect[1]])
+        //                      ->where('kode', '12000001')->get()
+        //     );
+        // }else{
+        //     $data = Piutangs::collection(Piutang::all());
+        // }
 
-        $pdf = PDF::loadView('print.laporan_piutang', compact('data'));
-        return $pdf->setOption('page-size', 'A4')
-                    ->setOrientation('landscape')
-                    ->setOption('margin-bottom', '1cm')
-                    ->setOption('margin-left', '2cm')
-                    ->setOption('margin-right', '2cm')
-                    ->setOption('margin-top', '1cm')
-                    ->setOption('footer-right', 'Hal : [page] / [toPage]')
-                    ->setOption('footer-font-size', 8)
-                    ->stream();
+        // $pdf = PDF::loadView('print.laporan_piutang', compact('data'));
+        // return $pdf->setOption('page-size', 'A4')
+        //             ->setOrientation('landscape')
+        //             ->setOption('margin-bottom', '1cm')
+        //             ->setOption('margin-left', '2cm')
+        //             ->setOption('margin-right', '2cm')
+        //             ->setOption('margin-top', '1cm')
+        //             ->setOption('footer-right', 'Hal : [page] / [toPage]')
+        //             ->setOption('footer-font-size', 8)
+        //             ->stream();
     }
 
     /**
@@ -72,6 +72,7 @@ class PiutangController extends Controller
             // 11500003 (BCA)
             // 11500004 (MANDIRI)
             // K = Kredit
+            // D = Debet
 
             if($request->bank){
                 switch ($request->bank) {
@@ -100,7 +101,7 @@ class PiutangController extends Controller
 
             $debet = $piutang->map(function($item, $key) {
                 if($item['jenis'] == 'D'){
-                    return $item['saldo'];
+                    return $item['nominal'];
                 }
             });
             $total_debet = collect($debet)->flatten()->reduce(function($carry, $item) {
@@ -116,12 +117,12 @@ class PiutangController extends Controller
                 return $carry + $item;
             });
             
-            if(!$kredit){
+            if($total_kredit == 0){
                 $total = $total_debet + ('-'.str_replace('.','',$request->bayar));
             }else{
-                $total = ($total_debet + $total_kredit);
+                $total = ($total_debet + $total_kredit) + ('-'.str_replace('.','',$request->bayar));
             }
-
+            // dd($total);
             if($piutang){
                 $create = Piutang::create([
                     'tgl'           => Carbon::now()->format('Y-m-d'),
@@ -131,7 +132,7 @@ class PiutangController extends Controller
                     'kode'          => $kode,
                     'jenis'         => 'K',
                     'ket'           => $request->ket.' '.'('.($request->bank ? $request->bank : $request->metode).')' ?? null,
-                    'saldo'         => $total
+                    'saldo'         => -$total
                 ]);
     
                 if($create){

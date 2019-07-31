@@ -17,7 +17,7 @@ class CustomerPiutangResource extends JsonResource
         // dd($this->orders->product);
 
         return [
-            'uniqid'   => $this->id,
+            'uniqid'   => $this->customer_id,
             'no_cust'  => $this->customer->kode_customer,
             'customer' => $this->customer->nama_customer,
             'address'  => $this->customer->alamat,

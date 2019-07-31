@@ -40,33 +40,20 @@ class laporanPiutangController extends Controller
         });
 
         $all = $data->map(function ($item, $key) {
-            if($item['jenis'] == 'D'){
-                return $item['saldo'];
-            }
-        });
-
-        $filter_kredit = $data->map(function ($item, $key) {
-            if($item['jenis'] == 'K'){
-                return $item['nominal'];
-            }
-        });
-
-        // dd($piutang);
-        // total pembayaran dengan jenis (K)
-        $kredit = $filter_kredit->reduce(function($carry, $item) {
-            return $carry + $item;
+            return $item['nominal'];
         });
 
         //  total utang seluruh data
         $total = $all->reduce(function($carry, $item) {
             return $carry + $item;
         });
-        // dd($all);
+
+        // dd($total);
         $options = [
             'data' => $filter,
             'from' => $date[0],
             'to'   => $date[1],
-            'total'=> (!$customer ? ($total - $kredit) : 0)
+            'total'=> ($total > 0 ? -$total : $total)
         ];
         // dd($kredit);
         $pdf = PDF::loadView('print.laporan_piutang', $options);

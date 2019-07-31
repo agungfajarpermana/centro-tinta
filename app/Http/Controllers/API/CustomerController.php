@@ -28,7 +28,7 @@ class CustomerController extends Controller
         $piutang = Piutang::where('customer_id', $customer)->where('saldo', '>', 0)
                             ->orderBy('id', 'DESC')
                             ->first();
-
+        
         if($piutang){
             return new CustomerPiutangResource(
                 $piutang
@@ -61,7 +61,7 @@ class CustomerController extends Controller
                     'branch_id'      => 1,
                     'customer_id'    => $request->customerId,
                 ]);
-
+                
                 $data = $product->map(function($item, $key) use ($order, $branchProduct) {
                     
                     // create data order detail

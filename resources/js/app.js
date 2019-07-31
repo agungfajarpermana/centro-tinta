@@ -22,6 +22,10 @@ Vue.filter('dateformat', (value) => {
     return moment(value).format('D MMMM, Y')
 })
 
+Vue.config.devtools = false
+Vue.config.debug = false
+Vue.config.silent = true
+
 export const Bus = new Vue();
 
 const router = new VueRouter({

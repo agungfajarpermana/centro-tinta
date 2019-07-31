@@ -105,8 +105,8 @@
 
                                     <tr v-else v-for="(order, index) in ordersModal" :key="index">
                                         <td class="left-align">
-                                            <span v-if="!order.editProduct" @dblclick="changeEdit(order.uniqid, 'product')">{{ order.product }}</span>
-                                            <div v-else @dblclick="cancelEdit(order.uniqid, 'product')" class="col s12 m8 lg8" style="margin-left:-15px;">
+                                            <span v-if="!order.editProduct" @dblclick="(!customerModal.confirm ? changeEdit(order.uniqid, 'product') : '')">{{ order.product }}</span>
+                                            <div v-else @dblclick="(!customerModal.confirm ? cancelEdit(order.uniqid, 'product') : '')" class="col s12 m8 lg8" style="margin-left:-15px;">
                                                 <multiselect v-model="valueProduct" :options="productEdit"
                                                     :loading="productEdit.length < 1 || isLoading"
                                                     :max-height="150"
@@ -117,8 +117,8 @@
                                             </div>
                                         </td>
                                         <td class="center-align">
-                                            <span v-if="!order.editQty" @dblclick="changeEdit(order.uniqid, 'qty')">{{ order.qty }}</span>
-                                            <div v-else @dblclick="cancelEdit(order.uniqid, 'qty')" class="col s2 offset-s5">
+                                            <span v-if="!order.editQty" @dblclick="(!customerModal.confirm ? changeEdit(order.uniqid, 'qty') : '')">{{ order.qty }}</span>
+                                            <div v-else @dblclick="!customerModal.confirm ? cancelEdit(order.uniqid, 'qty') : ''" class="col s2 offset-s5">
                                                 <input type="text" v-model="productQty" @keyup.enter="editDataQty(order.uniqid)">
                                             </div>
                                         </td>
